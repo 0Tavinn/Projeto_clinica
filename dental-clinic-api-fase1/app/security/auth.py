@@ -30,10 +30,10 @@ ACCESS_TOKEN_TYPE = "access"
 REFRESH_TOKEN_TYPE = "refresh"
 
 
-def _create_token(*, subject: str, role: Role, clinic_id: str, token_type: str, expires_delta: datetime.timedelta) -> str:
+def _create_token(*, subject: int, role: Role, clinic_id: int, token_type: str, expires_delta: datetime.timedelta) -> str:
     now = datetime.datetime.now(datetime.timezone.utc)
     payload = {
-        "sub": subject,
+        "sub": str(subject),
         "role": role.value,
         "clinic_id": clinic_id,
         "type": token_type,
@@ -95,7 +95,7 @@ def authenticate_user(db: Session, email: str, password: str) -> User:
         verify_password(password, "$argon2id$v=19$m=65536,t=3,p=4$" + "0" * 22)
         raise generic_error
 
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.password_hash):
         raise generic_error
 
     if not user.is_active:

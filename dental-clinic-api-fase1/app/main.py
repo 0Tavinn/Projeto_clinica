@@ -13,6 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.common.error_handlers import register_exception_handlers
 from app.core.config import get_settings
 from app.users.router import router as users_router
+from app.users.management_router import router as user_management_router
+from app.patients.router import router as patients_router
 
 settings = get_settings()
 
@@ -41,7 +43,8 @@ app.add_middleware(
 register_exception_handlers(app)
 
 app.include_router(users_router, prefix=settings.API_V1_PREFIX)
-
+app.include_router(user_management_router, prefix=settings.API_V1_PREFIX)
+app.include_router(patients_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/health", tags=["health"], summary="Health check")
 def health_check() -> dict:

@@ -1,34 +1,37 @@
-"""Contratos de entrada/saída (Pydantic) do módulo de usuários e autenticação."""
+"""Contratos de entrada e saída do módulo de usuários e autenticação."""
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 from app.security.roles import Role
 
 
 class UserRead(BaseModel):
-    """Representação pública de um usuário (nunca inclui hashed_password)."""
+    """Representação pública de um usuário, sem expor a senha."""
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: str
-    clinic_id: str
-    email: EmailStr
+    id: int
+    clinic_id: int
     full_name: str
+    email: EmailStr
+    cpf: str
+    phone: str | None
     role: Role
     is_active: bool
 
 
 class UserCreate(BaseModel):
-    """
-    Usado apenas internamente (ex.: script de seed / futura rota
-    administrativa de gestão de usuários). Não exposto como endpoint público
-    de auto-registro no MVP — cadastro de usuários do sistema é uma
-    operação administrativa, fora do escopo de auto-cadastro de pacientes.
-    """
+    """Dados recebidos para cadastrar um usuário da clínica."""
 
-    clinic_id: str
+    full_name: str = Field(min_length=1, max_length=150)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
-    full_name: str = Field(min_length=1, max_length=255)
+    cpf: str = Field(
+        min_length=11,
+        max_length=11,
+        pattern=r"^\d{11}$",
+        description="CPF com 11 dígitos, sem pontuação.",
+    )
+    phone: str | None = Field(default=None, max_length=20)
     role: Role
 
 
@@ -43,10 +46,10 @@ class Token(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    """Payload decodificado de um JWT (claims relevantes para a aplicação)."""
+    """Dados relevantes presentes no token JWT."""
 
-    sub: str  # user id
+    sub: str
     role: Role
-    clinic_id: str
-    type: str  # "access" | "refresh"
+    clinic_id: int
+    type: str
     exp: int

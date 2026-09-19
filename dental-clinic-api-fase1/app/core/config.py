@@ -31,12 +31,10 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     DEBUG: bool = False
 
-    # --- Banco de dados -------------------------------------------------
-    # Exemplo MySQL: mysql+pymysql://user:password@host:3306/dbname
-    # A arquitetura evita dialect-specific features para permitir migração
-    # futura para PostgreSQL (postgresql+psycopg://...).
+    # Exemplo PostgreSQL:
+    # postgresql+psycopg://user:password@host:5432/database
     DATABASE_URL: str = Field(
-        default="mysql+pymysql://dental_user:dental_pass@localhost:3306/dental_clinic",
+        default="postgresql+psycopg://clinic_app:change_me@127.0.0.1:5432/clinic_management",
     )
 
     # --- Segurança / JWT --------------------------------------------------

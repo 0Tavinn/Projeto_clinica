@@ -17,7 +17,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post(
     "/login",
     response_model=Token,
-    summary="Autentica um usuário (recepcionista ou dentista) e emite tokens JWT.",
+    summary="Autentica um usuário ativo e emite tokens JWT.",
     dependencies=[Depends(enforce_login_rate_limit)],
 )
 def login(

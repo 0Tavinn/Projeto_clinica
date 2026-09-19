@@ -1,4 +1,5 @@
-"""Serviço de autenticação: orquestra repository + security para login/refresh."""
+"""Serviços de autenticação e cadastro de usuários."""
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.common.exceptions import UnauthorizedError
@@ -9,8 +10,10 @@ from app.security.auth import (
     create_refresh_token,
     decode_token,
 )
+from app.security.hashing import hash_password
+from app.users.models import User
 from app.users.repository import UserRepository
-from app.users.schemas import Token
+from app.users.schemas import Token, UserCreate
 
 
 def login(db: Session, email: str, password: str) -> Token:
@@ -28,8 +31,8 @@ def refresh_access_token(db: Session, refresh_token: str) -> Token:
         raise UnauthorizedError("Token informado não é um refresh token válido.")
 
     user_id = payload.get("sub")
-    repo = UserRepository(db)
-    user = repo.get_by_id(user_id) if user_id else None
+    repository = UserRepository(db)
+    user = repository.get_by_id(user_id) if user_id else None
 
     if user is None or not user.is_active:
         raise UnauthorizedError("Não foi possível renovar a sessão.")
@@ -38,3 +41,38 @@ def refresh_access_token(db: Session, refresh_token: str) -> Token:
         access_token=create_access_token(user),
         refresh_token=create_refresh_token(user),
     )
+
+
+def create_user(
+    db: Session,
+    *,
+    clinic_id: int,
+    payload: UserCreate,
+) -> User:
+    """Cria um usuário vinculado à clínica do administrador autenticado."""
+    repository = UserRepository(db)
+
+    if repository.get_by_email(str(payload.email)):
+        raise ValueError("Já existe um usuário cadastrado com este e-mail.")
+
+    if repository.get_by_cpf(payload.cpf):
+        raise ValueError("Já existe um usuário cadastrado com este CPF.")
+
+    user = User(
+        clinic_id=clinic_id,
+        full_name=payload.full_name.strip(),
+        email=str(payload.email).lower(),
+        password_hash=hash_password(payload.password),
+        cpf=payload.cpf,
+        phone=payload.phone,
+        role=payload.role,
+        is_active=True,
+    )
+
+    try:
+        return repository.create(user)
+    except IntegrityError as error:
+        db.rollback()
+        raise ValueError(
+            "Não foi possível cadastrar o usuário. E-mail ou CPF já existe."
+        ) from error
