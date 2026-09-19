@@ -10,7 +10,7 @@ dependencies = [
     "uvicorn[standard]==0.52.4",
     "sqlalchemy==2.0.52",
     "alembic==1.19.1",
-    "pymysql==1.2.0",
+    "psycopg[binary]",
     "passlib[argon2]==1.7.4",
     "argon2-cffi==25.1.0",
     "python-jose[cryptography]==3.5.0",
@@ -32,3 +32,8 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+exclude = ["alembic*", "scripts*", "tests*"]

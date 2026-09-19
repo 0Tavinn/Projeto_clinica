@@ -1,14 +1,7 @@
-"""
-Models ORM de usuário e clínica.
-
-`clinic_id` é incluído em `User` desde já (mesmo com uma única clínica em
-uso no MVP) para permitir evolução futura para multiclínica sem migração
-estrutural disruptiva.
-"""
+"""Models ORM de clínica e usuário, alinhados ao schema PostgreSQL oficial."""
 import datetime
-import uuid
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -16,77 +9,73 @@ from app.core.database import Base
 from app.security.roles import Role
 
 
-def _uuid() -> str:
-    return str(uuid.uuid4())
-
-
-def _utcnow() -> datetime.datetime:
-    return datetime.datetime.now(datetime.timezone.utc)
-
-
 class Clinic(Base):
-    """
-    Entidade mínima de clínica.
-
-    Modelada agora apenas o suficiente para servir de FK em `User` e demais
-    entidades futuras (Patient, Appointment, MedicalRecord). Gestão completa
-    de multiclínica fica para fase 2.
-    """
+    """Mapeia a tabela `clinics` do PostgreSQL."""
 
     __tablename__ = "clinics"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(150), nullable=False)
+    cnpj: Mapped[str] = mapped_column(String(14), nullable=False, unique=True)
+    phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    email: Mapped[str] = mapped_column(String(255), nullable=False)
+    address: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default="true"
+    )
     created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(timezone=True), default=_utcnow, nullable=False
+        DateTime(timezone=True), nullable=False, server_default=func.now()
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow, nullable=False
+        DateTime(timezone=True), nullable=False, server_default=func.now()
     )
 
     users: Mapped[list["User"]] = relationship(back_populates="clinic")
 
 
 class User(Base):
+    """Mapeia a tabela `users` do PostgreSQL."""
+
     __tablename__ = "users"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    clinic_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("clinics.id"), nullable=False, index=True
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    clinic_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("clinics.id", onupdate="CASCADE", ondelete="RESTRICT"),
+        nullable=False,
     )
-
+    full_name: Mapped[str] = mapped_column(String(150), nullable=False)
     email: Mapped[str] = mapped_column(
-        String(255), nullable=False, unique=True, index=True
+        String(255), nullable=False, unique=True
     )
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
-    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
-
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    cpf: Mapped[str] = mapped_column(String(11), nullable=False, unique=True)
+    phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     role: Mapped[Role] = mapped_column(
         SAEnum(
             Role,
-            name="user_role",
             native_enum=False,
-            length=32,
-            # Por padrão o SQLAlchemy persistiria `Role.RECEPTIONIST.name`
-            # ("RECEPTIONIST"). Forçamos persistir `.value` ("receptionist")
-            # para ficar consistente com o valor usado no payload do JWT e
-            # em qualquer serialização externa.
-            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+            length=20,
+            values_callable=lambda enum_cls: [
+                member.value for member in enum_cls
+            ],
         ),
         nullable=False,
     )
-
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-
+    is_active: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default="true"
+    )
     created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(timezone=True), default=_utcnow, nullable=False
+        DateTime(timezone=True), nullable=False, server_default=func.now()
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow, nullable=False
+        DateTime(timezone=True), nullable=False, server_default=func.now()
     )
 
     clinic: Mapped["Clinic"] = relationship(back_populates="users")
 
-    def __repr__(self) -> str:  # pragma: no cover - apenas debug
-        return f"<User id={self.id} email={self.email} role={self.role}>"
+    def __repr__(self) -> str:
+        return (
+            f"<User id={self.id} email={self.email} "
+            f"role={self.role.value}>"
+        )

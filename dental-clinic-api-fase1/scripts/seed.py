@@ -1,91 +1,91 @@
 """
-Script de seed — cria uma clínica e os usuários iniciais (recepcionista e
-dentista) para permitir o primeiro login.
-
-Não existe endpoint público de auto-registro no MVP: a criação de usuários
-do sistema é uma operação administrativa. Este script cobre o bootstrap
-inicial de desenvolvimento/demo.
+Seed local para criar a clínica inicial e o administrador da demonstração.
 
 Uso:
     python -m scripts.seed
-    (ou, dentro do container: docker compose exec api python -m scripts.seed)
 
-As credenciais podem ser sobrescritas por variáveis de ambiente
-SEED_RECEPTIONIST_EMAIL / SEED_RECEPTIONIST_PASSWORD /
-SEED_DENTIST_EMAIL / SEED_DENTIST_PASSWORD — recomendado em qualquer
-ambiente que não seja a máquina local do desenvolvedor.
+O banco PostgreSQL deve existir previamente. Este script não cria tabelas e
+não executa migrações Alembic.
 """
 import os
 
-from app.core.database import Base, SessionLocal, engine
+from sqlalchemy import select
+
+from app.core.database import SessionLocal
 from app.security.hashing import hash_password
 from app.security.roles import Role
 from app.users.models import Clinic, User
 from app.users.repository import UserRepository
 
 
-def _get_or_create_clinic(db) -> Clinic:
-    clinic = db.query(Clinic).first()
+def get_or_create_clinic(db) -> Clinic:
+    cnpj = os.getenv("SEED_CLINIC_CNPJ", "00000000000191")
+
+    clinic = db.execute(
+        select(Clinic).where(Clinic.cnpj == cnpj)
+    ).scalar_one_or_none()
+
     if clinic:
         return clinic
-    clinic = Clinic(name="Clínica Odontológica Demo")
+
+    clinic = Clinic(
+        name=os.getenv("SEED_CLINIC_NAME", "Clínica Odontológica Demo"),
+        cnpj=cnpj,
+        phone=os.getenv("SEED_CLINIC_PHONE", "81999990000"),
+        email=os.getenv("SEED_CLINIC_EMAIL", "contato@clinica.demo"),
+        address=os.getenv(
+            "SEED_CLINIC_ADDRESS",
+            "Endereço de demonstração",
+        ),
+        is_active=True,
+    )
     db.add(clinic)
     db.commit()
     db.refresh(clinic)
+
+    print(f"[seed] clínica criada: {clinic.name}")
     return clinic
 
 
-def _get_or_create_user(db, *, clinic: Clinic, email: str, password: str, full_name: str, role: Role) -> User:
-    repo = UserRepository(db)
-    existing = repo.get_by_email(email)
+def get_or_create_administrator(db, clinic: Clinic) -> User:
+    email = os.getenv("SEED_ADMIN_EMAIL", "admin@clinica.demo").lower()
+    password = os.getenv("SEED_ADMIN_PASSWORD", "Admin@123")
+    cpf = os.getenv("SEED_ADMIN_CPF", "00000000000")
+    phone = os.getenv("SEED_ADMIN_PHONE", "81999990001")
+
+    repository = UserRepository(db)
+    existing = repository.get_by_email(email)
+
     if existing:
-        print(f"[seed] usuário já existe, pulando: {email}")
+        print(f"[seed] administrador já existe: {email}")
         return existing
 
     user = User(
         clinic_id=clinic.id,
-        email=email.lower(),
-        hashed_password=hash_password(password),
-        full_name=full_name,
-        role=role,
+        full_name=os.getenv("SEED_ADMIN_NAME", "Administrador Demo"),
+        email=email,
+        password_hash=hash_password(password),
+        cpf=cpf,
+        phone=phone,
+        role=Role.ADMINISTRATOR,
         is_active=True,
     )
-    created = repo.create(user)
-    print(f"[seed] usuário criado: {email} ({role.value})")
+
+    created = repository.create(user)
+    print(f"[seed] administrador criado: {email}")
     return created
 
 
 def main() -> None:
-    # Cria as tabelas caso ainda não existam (idempotente). Em produção o
-    # schema deve vir das migrações Alembic (`alembic upgrade head`); isto
-    # aqui é uma rede de segurança para ambientes de desenvolvimento rápido.
-    Base.metadata.create_all(bind=engine)
-
     db = SessionLocal()
+
     try:
-        clinic = _get_or_create_clinic(db)
+        clinic = get_or_create_clinic(db)
+        get_or_create_administrator(db, clinic)
 
-        _get_or_create_user(
-            db,
-            clinic=clinic,
-            email=os.getenv("SEED_RECEPTIONIST_EMAIL", "recepcao@clinica.demo"),
-            password=os.getenv("SEED_RECEPTIONIST_PASSWORD", "Recepcao@123"),
-            full_name="Recepção Demo",
-            role=Role.RECEPTIONIST,
-        )
-        _get_or_create_user(
-            db,
-            clinic=clinic,
-            email=os.getenv("SEED_DENTIST_EMAIL", "dentista@clinica.demo"),
-            password=os.getenv("SEED_DENTIST_PASSWORD", "Dentista@123"),
-            full_name="Dentista Demo",
-            role=Role.DENTIST,
-        )
-
-        print(
-            "[seed] concluído. ATENÇÃO: troque as senhas padrão antes de "
-            "usar fora de um ambiente local/demo."
-        )
+        print("[seed] concluído.")
+        print("[seed] Em ambiente local, login padrão: admin@clinica.demo")
+        print("[seed] Senha padrão: Admin@123")
     finally:
         db.close()
 
