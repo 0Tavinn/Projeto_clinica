@@ -1,267 +1,339 @@
 # Dental Clinic API
 
-Backend de uma aplicação de gestão de clínicas odontológicas, focado em
-**prontuários odontológicos** e **agendamentos clínicos**.
+API para gerenciamento de clínicas odontológicas, desenvolvida como projeto acadêmico da disciplina de Fábrica de Software.
 
-> ⚠️ **Este projeto é um MVP acadêmico/profissional.** Ele implementa boas
-> práticas de segurança e arquitetura (RBAC, JWT, hashing Argon2, auditoria,
-> validação rigorosa de entrada), mas **não deve ir para produção sem antes
-> passar por revisão jurídica, revisão de segurança e avaliação formal de
-> conformidade com a LGPD** (Lei Geral de Proteção de Dados), já que o
-> sistema trata dados pessoais e dados sensíveis de saúde. Itens como
-> política de retenção/exclusão de dados, DPO, base legal de tratamento e
-> auditoria de terceiros (ex.: provedor de IA) precisam de validação
-> jurídica antes de qualquer uso com pacientes reais.
+A versão atual implementa a base funcional da Sprint 3: autenticação, perfis de acesso, cadastro de usuários, CRUD de pacientes e persistência em PostgreSQL.
 
-## Status do projeto — Fase 1 concluída
+> Este é um projeto acadêmico. Antes de qualquer uso com pacientes reais, a aplicação deve passar por avaliação de segurança, conformidade com a LGPD e validação jurídica.
 
-A Fase 1 (fundação da API) está implementada e testada:
+## Funcionalidades implementadas
 
-- [x] Projeto FastAPI modular por domínio.
-- [x] Configuração de ambiente via variáveis de ambiente (Pydantic Settings).
-- [x] Banco MySQL + Alembic (migrações versionadas, autogenerate validado).
-- [x] Autenticação OAuth2 Password Bearer + JWT (access + refresh token).
-- [x] RBAC (controle de acesso por perfil).
-- [x] Health check (`GET /health`).
-- [x] Tratamento padronizado de erros (`{"error": {"code", "message", "details"}}`).
-- [x] Rate limiting no endpoint de login.
-- [x] Proteção contra enumeração de usuários no login.
-- [x] Docker Compose (API + MySQL).
-- [x] 22 testes automatizados (auth, RBAC, hashing, rate limit, health).
+- Autenticação com OAuth2 Password Bearer e JWT.
+- Tokens de acesso e atualização de sessão.
+- Senhas protegidas com Argon2.
+- Perfis de acesso:
+  - `ADMINISTRATOR`;
+  - `RECEPTIONIST`;
+  - `DENTIST`.
+- Cadastro de usuários protegido para administradores.
+- CRUD completo de pacientes:
+  - cadastrar;
+  - listar;
+  - consultar;
+  - atualizar;
+  - inativar.
+- Persistência real em PostgreSQL.
+- Documentação interativa pelo Swagger.
+- Testes automatizados com SQLite em memória.
 
-As demais fases do backlog (pacientes, profissionais, agendamentos,
-prontuários, resumo de pré-consulta por IA, auditoria, processamento
-CPU/OpenCL) seguem a mesma estrutura modular já estabelecida aqui e entram
-nas próximas iterações.
+## Regras de acesso
 
-## Decisão de perfis do MVP
+| Funcionalidade | Administrador | Recepcionista | Dentista |
+|---|---:|---:|---:|
+| Login | Sim | Sim | Sim |
+| Cadastro de usuários | Sim | Não | Não |
+| Cadastrar paciente | Sim | Sim | Não |
+| Consultar pacientes | Sim | Sim | Sim |
+| Atualizar paciente | Sim | Sim | Não |
+| Inativar paciente | Sim | Sim | Não |
 
-O domínio completo prevê 4 perfis: **Paciente**, **Recepcionista**,
-**Dentista** e **Administrador**. Para garantir entrega dentro do prazo, o
-MVP ativa apenas dois:
+O paciente não possui login nesta fase do projeto.
 
-- **Recepcionista** — cobre a ponta de **agendamento** (cadastro básico,
-  criação/gestão de consultas, prevenção de conflitos de horário).
-- **Dentista** — cobre a ponta de **prontuário** (registro clínico,
-  evolução do paciente, solicitação de resumo de pré-consulta por IA).
+A exclusão de pacientes é lógica: o endpoint `DELETE` altera o campo `is_active` para `false`, preservando o histórico clínico para futuras etapas de prontuário e agendamento.
 
-Essa é exatamente a combinação que atende ao objetivo central do projeto
-(prontuários + agendamentos) com o menor escopo possível. Paciente
-(acesso ao próprio histórico) e Administrador (relatórios financeiros,
-gestão administrativa) ficam modelados na arquitetura — enum `Role`, campo
-`clinic_id` em todas as entidades relevantes — mas **sem endpoints ativos**
-nesta fase. Isso evita retrabalho estrutural quando forem habilitados.
+## Estrutura do projeto
 
-O enum `Role` e o RBAC (`app/security/permissions.py`) reforçam essa
-decisão em tempo de execução: mesmo que um novo endpoint liste
-`Role.PATIENT` ou `Role.ADMIN` por engano em `require_roles(...)`, o acesso
-é negado enquanto esses perfis não estiverem em `MVP_ACTIVE_ROLES`.
-
-## Arquitetura
-
-Estrutura modular por domínio, com separação de responsabilidades:
-
-```
+```text
 app/
-  main.py                 # entry point FastAPI, CORS, error handlers, health check
+  main.py                     # Inicialização do FastAPI e registro dos routers
   core/
-    config.py              # Settings (env vars) — nunca hardcode segredos
-    database.py             # engine SQLAlchemy, sessão, Base declarativa
+    config.py                 # Configurações por variáveis de ambiente
+    database.py               # Engine, sessão e Base do SQLAlchemy
   security/
-    hashing.py               # hash/verify de senha (Argon2)
-    auth.py                  # emissão/validação de JWT, get_current_user
-    permissions.py           # RBAC (require_roles)
-    roles.py                 # enum Role + MVP_ACTIVE_ROLES
-    rate_limit.py             # rate limiter em memória (login)
+    auth.py                   # JWT, login e usuário autenticado
+    hashing.py                # Hash e validação de senhas com Argon2
+    permissions.py            # Regras de acesso por perfil
+    roles.py                  # Perfis da aplicação
+    rate_limit.py             # Limite de tentativas de login
   users/
-    models.py                # User, Clinic (SQLAlchemy)
-    schemas.py                # contratos Pydantic (Token, UserRead, ...)
-    repository.py              # acesso a dados
-    service.py                 # regras de negócio (login, refresh)
-    router.py                  # endpoints /auth/*
-  common/
-    exceptions.py              # exceções de domínio, desacopladas de HTTP
-    error_handlers.py           # tradução de exceções -> resposta HTTP padronizada
-  audit/                      # reservado para eventos de auditoria (próxima fase)
-alembic/                    # migrações versionadas
+    models.py                 # Models Clinic e User
+    schemas.py                # Schemas de autenticação e usuários
+    repository.py             # Acesso a dados de usuários
+    service.py                # Regras de autenticação e cadastro
+    router.py                 # Endpoints de autenticação
+    management_router.py      # Endpoint administrativo de usuários
+  patients/
+    models.py                 # Model Patient
+    schemas.py                # Schemas do CRUD de pacientes
+    repository.py             # Acesso a dados de pacientes
+    service.py                # Regras do CRUD de pacientes
+    router.py                 # Endpoints de pacientes
+database/
+  schema.sql                  # Estrutura oficial do banco PostgreSQL
 scripts/
-  seed.py                    # cria clínica + usuários iniciais (dev/demo)
-tests/                     # 22 testes (pytest + TestClient)
+  seed.py                     # Criação da clínica e administrador iniciais
+tests/
+  ...                         # Testes automatizados
 ```
 
-Módulos futuros (`patients`, `professionals`, `appointments`, `records`,
-`ai`, `processing`) seguem exatamente o mesmo padrão de `app/users`:
-`models.py` → `schemas.py` → `repository.py` → `service.py` → `router.py`.
+## Requisitos
 
-### Por que essa estrutura
+- WSL com Ubuntu ou outro ambiente Linux compatível;
+- Python 3.11 ou 3.12;
+- PostgreSQL;
+- Git.
 
-- **`repository` separado de `service`**: troca de banco (MySQL →
-  PostgreSQL) ou de estratégia de acesso a dados não deve tocar em regra de
-  negócio.
-- **Exceções de domínio (`common/exceptions.py`) desacopladas de HTTP**:
-  services nunca importam `fastapi`. A tradução para status HTTP acontece
-  só em `common/error_handlers.py`, então a lógica de negócio é testável
-  sem subir um app HTTP (ver `tests/test_permissions.py`).
-- **`Role` compartilhado entre `security` e `users`**: fonte única de
-  verdade para RBAC, evitando strings soltas de perfil espalhadas pelo
-  código.
+O projeto foi validado com:
 
-## Rodando localmente
+```text
+Python 3.12.14
+PostgreSQL 18
+```
 
-### Opção 1 — Docker Compose (recomendado)
+## Configuração do Python
+
+Caso utilize `pyenv`:
 
 ```bash
-cp .env.example .env
-# edite SECRET_KEY em .env com um valor forte, ex:
-# python -c "import secrets; print(secrets.token_urlsafe(64))"
-
-docker compose up --build
+pyenv install 3.12.14
 ```
-
-A API sobe em `http://localhost:8000`, já com `alembic upgrade head`
-executado automaticamente. Depois, popule os usuários iniciais:
 
 ```bash
-docker compose exec api python -m scripts.seed
+pyenv local 3.12.14
 ```
 
-### Opção 2 — Ambiente local (Python + MySQL à parte)
+Crie e ative o ambiente virtual:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-
-cp .env.example .env
-# ajuste DATABASE_URL para seu MySQL local e defina SECRET_KEY
-
-alembic upgrade head
-python -m scripts.seed
-uvicorn app.main:app --reload
 ```
 
-Documentação interativa (OpenAPI/Swagger) disponível em
-`http://localhost:8000/docs`.
+```bash
+source .venv/bin/activate
+```
 
-### Credenciais padrão do seed (⚠️ apenas dev/demo — troque antes de qualquer outro uso)
+Instale as dependências:
+
+```bash
+python -m pip install --upgrade pip
+```
+
+```bash
+python -m pip install -e ".[dev]"
+```
+
+## Configuração do PostgreSQL
+
+Inicie o serviço:
+
+```bash
+sudo service postgresql start
+```
+
+Se ainda não existir um banco local, crie o usuário e o banco:
+
+```bash
+sudo -u postgres psql
+```
+
+Dentro do PostgreSQL:
+
+```sql
+CREATE ROLE clinic_app
+WITH LOGIN
+PASSWORD 'SUA_SENHA_LOCAL';
+```
+
+```sql
+CREATE DATABASE clinic_management
+WITH
+OWNER = clinic_app
+ENCODING = 'UTF8';
+```
+
+Saia:
+
+```sql
+\q
+```
+
+Aplique a estrutura oficial:
+
+```bash
+psql -h 127.0.0.1 -p 5432 -U clinic_app -d clinic_management -W -f database/schema.sql
+```
+
+O banco será criado com as tabelas:
+
+```text
+appointments
+audit_logs
+clinical_evolutions
+clinics
+dentists
+medical_records
+patients
+users
+```
+
+## Configuração do ambiente
+
+Crie o arquivo local de variáveis:
+
+```bash
+cp .env.example .env
+```
+
+No arquivo `.env`, configure a URL do banco:
+
+```env
+DATABASE_URL=postgresql+psycopg://clinic_app:SUA_SENHA_LOCAL@127.0.0.1:5432/clinic_management
+```
+
+Se a senha possuir caracteres especiais, ela deve ser codificada na URL. Por exemplo, o caractere `@` deve ser substituído por `%40`.
+
+Também defina uma chave JWT segura:
+
+```env
+SECRET_KEY=troque-por-uma-chave-local-segura
+```
+
+O arquivo `.env` não deve ser enviado ao GitHub.
+
+## Criação dos dados iniciais
+
+Com o banco criado e o ambiente virtual ativo, execute:
+
+```bash
+python -m scripts.seed
+```
+
+O script cria, quando ainda não existirem:
+
+- uma clínica de demonstração;
+- um administrador inicial.
+
+Credenciais locais de demonstração:
 
 | Perfil | Email | Senha |
 |---|---|---|
-| Recepcionista | `recepcao@clinica.demo` | `Recepcao@123` |
-| Dentista | `dentista@clinica.demo` | `Dentista@123` |
+| Administrador | `admin@clinica.demo` | `Admin@123` |
 
-Sobrescrevíveis via `SEED_RECEPTIONIST_EMAIL`, `SEED_RECEPTIONIST_PASSWORD`,
-`SEED_DENTIST_EMAIL`, `SEED_DENTIST_PASSWORD`.
+Troque essas credenciais antes de qualquer uso fora do ambiente acadêmico local.
 
-## Rodando os testes
+## Executando a API
+
+Com o ambiente virtual ativo:
 
 ```bash
-pip install -e ".[dev]"
-pytest -v
+uvicorn app.main:app --reload
 ```
 
-Os testes rodam contra **SQLite em memória** (nunca contra o MySQL de
-desenvolvimento/produção) — ver `tests/conftest.py`. Cobrem:
+A API ficará disponível em:
 
-- Login: sucesso, senha incorreta, email inexistente (com a **mesma**
-  resposta genérica de senha incorreta, para não permitir enumeração de
-  contas), usuário inativo, rate limit.
-- `GET /auth/me`: token ausente, token inválido, token válido (e confirma
-  que `hashed_password` nunca é serializado).
-- Refresh token: fluxo completo, rejeição de access token usado como
-  refresh token.
-- RBAC: bloqueio cross-role e bloqueio de perfis ainda não ativos no MVP
-  (`PATIENT`/`ADMIN`), mesmo que um endpoint futuro os liste por engano.
-- Hashing Argon2 e rate limiter isolado (unitários).
-
-## Autenticação — fluxo resumido
-
-1. `POST /api/v1/auth/login` — form `x-www-form-urlencoded` com `username`
-   (email) e `password` (padrão OAuth2 Password Bearer do FastAPI). Retorna
-   `access_token` + `refresh_token`.
-2. Use `Authorization: Bearer <access_token>` nos demais endpoints.
-3. Quando o access token expirar, chame `POST /api/v1/auth/refresh` com
-   `{"refresh_token": "..."}` para obter um novo par de tokens.
-4. `GET /api/v1/auth/me` retorna os dados do usuário autenticado.
-
-Exemplo com `curl`:
-
-```bash
-curl -X POST http://localhost:8000/api/v1/auth/login \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=recepcao@clinica.demo&password=Recepcao@123"
-
-curl http://localhost:8000/api/v1/auth/me \
-  -H "Authorization: Bearer <access_token>"
+```text
+http://localhost:8000
 ```
 
-## Segurança — o que já está implementado
+Documentação Swagger:
 
-- Hash de senha com **Argon2** (via passlib), com fallback de verificação
-  para bcrypt (hashes legados futuros).
-- **JWT** com expiração configurável para access e refresh token,
-  algoritmo configurável via `JWT_ALGORITHM`.
-- **OAuth2 Password Bearer** padrão do FastAPI.
-- **RBAC** explícito por endpoint (`require_roles`), com perfis do MVP
-  reforçados em tempo de execução.
-- Validação de entrada rigorosa via **Pydantic** (schemas dedicados de
-  entrada/saída — nunca se expõe o model ORM diretamente).
-- **Proteção contra enumeração de usuários**: mensagem de erro idêntica
-  para "usuário não existe" e "senha incorreta", com hash *dummy* executado
-  no caso de usuário inexistente para reduzir diferença de tempo de
-  resposta.
-- **Rate limiting** no endpoint de login (ver limitação abaixo).
-- **CORS configurável por ambiente** (`CORS_ORIGINS`).
-- **Segredos exclusivamente via variáveis de ambiente** — `SECRET_KEY`
-  default inseguro é **rejeitado automaticamente** se `ENVIRONMENT=production`.
-- **Logs sem dado sensível**: os handlers de erro nunca logam corpo de
-  requisição, senha, token ou conteúdo clínico — apenas metadados
-  (path, método, tipo de erro, status).
-- Tratamento de erro padronizado, sem vazar stack trace/detalhes internos
-  ao cliente em erros 500.
+```text
+http://localhost:8000/docs
+```
 
-### Limitações conhecidas (documentadas de propósito)
+Health check:
 
-- O rate limiter (`app/security/rate_limit.py`) guarda estado **em memória
-  do processo**. Funciona corretamente com uma única instância/worker.
-  Em produção com múltiplas réplicas, troque por um backend compartilhado
-  (Redis, ex. via `slowapi` + Redis, ou rate limiting no API Gateway) — a
-  troca foi isolada nesse módulo exatamente para não exigir mudanças nos
-  routers.
-- TLS não é implementado pela aplicação em si (é responsabilidade da
-  infraestrutura/proxy reverso em produção — ex.: Nginx, load balancer).
-- Auditoria de operações sensíveis (`app/audit/`) está reservada na
-  estrutura, mas ainda não implementada — entra em fase posterior, junto
-  com os módulos de prontuário/agendamento que ela precisa auditar.
-- Política de retenção e exclusão de dados: a estrutura já favorece
-  inativação lógica sobre exclusão física (ver `is_active` em `User`), mas
-  a política formal de retenção precisa ser definida com apoio jurídico
-  antes de produção.
+```text
+GET http://localhost:8000/health
+```
 
-## Migrações (Alembic)
+## Fluxo de demonstração pelo Swagger
+
+1. Acesse `http://localhost:8000/docs`.
+2. Clique em **Authorize**.
+3. Faça login com:
+
+```text
+username: admin@clinica.demo
+password: Admin@123
+```
+
+4. Use `POST /api/v1/users` para cadastrar recepcionistas e dentistas.
+5. Use os endpoints de `Patients` para demonstrar o CRUD.
+6. O Swagger armazena e envia o token JWT automaticamente após a autorização.
+
+## Principais endpoints
+
+### Autenticação
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/v1/auth/login` | Realiza login e retorna tokens JWT |
+| `POST` | `/api/v1/auth/refresh` | Renova os tokens de sessão |
+| `GET` | `/api/v1/auth/me` | Retorna o usuário autenticado |
+
+### Usuários
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/v1/users` | Cadastra usuário da clínica do administrador autenticado |
+
+### Pacientes
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/v1/patients` | Cadastra paciente |
+| `GET` | `/api/v1/patients` | Lista pacientes ativos da clínica |
+| `GET` | `/api/v1/patients/{patient_id}` | Consulta um paciente |
+| `PATCH` | `/api/v1/patients/{patient_id}` | Atualiza paciente |
+| `DELETE` | `/api/v1/patients/{patient_id}` | Inativa paciente |
+
+## Testes automatizados
+
+Execute:
 
 ```bash
-# gerar uma nova migração a partir de mudanças nos models
-alembic revision --autogenerate -m "descrição da mudança"
+python -m pytest
+```
 
-# aplicar migrações pendentes
+Resultado validado:
+
+```text
+23 passed
+```
+
+Os testes utilizam SQLite em memória e não alteram o banco PostgreSQL local.
+
+## Validação da persistência no PostgreSQL
+
+Para verificar os pacientes diretamente no banco:
+
+```bash
+psql -h 127.0.0.1 -p 5432 -U clinic_app -d clinic_management -W
+```
+
+Dentro do PostgreSQL:
+
+```sql
+SELECT
+    id,
+    full_name,
+    cpf,
+    medical_record_number,
+    is_active,
+    updated_at
+FROM patients
+ORDER BY id;
+```
+
+## Observação sobre Alembic e Docker
+
+O arquivo de migração Alembic existente pertence à estrutura inicial baseada em MySQL. Não execute:
+
+```bash
 alembic upgrade head
-
-# reverter a última migração
-alembic downgrade -1
 ```
 
-`alembic/env.py` lê a URL do banco das `Settings` da aplicação (variáveis
-de ambiente), não do `alembic.ini` — evita duas fontes de verdade
-divergentes para credenciais de banco.
+na versão atual do projeto, pois o banco PostgreSQL já é criado a partir de `database/schema.sql`.
 
-## Compatibilidade MySQL → PostgreSQL
-
-Os models evitam tipos/dialects específicos do MySQL: enums são
-persistidos como `String` (via `native_enum=False`, não `ENUM` nativo do
-MySQL), UUIDs são `String(36)` gerados em Python (não `AUTO_INCREMENT`
-nem tipo nativo de UUID), e timestamps usam `DateTime(timezone=True)`
-padrão do SQLAlchemy. Trocar para PostgreSQL deve exigir apenas alterar
-`DATABASE_URL` para `postgresql+psycopg://...` e revisar as migrações
-Alembic geradas (o autogenerate pode precisar de pequenos ajustes de tipo,
-mas nenhuma reescrita de model é esperada).
+A execução local oficial desta fase utiliza WSL, PostgreSQL e Uvicorn. A configuração Docker será revisada em uma etapa posterior para refletir a arquitetura PostgreSQL atual.
