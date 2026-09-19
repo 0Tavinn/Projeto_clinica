@@ -66,8 +66,8 @@ def test_me_returns_current_user(client, dentist_user):
     assert response.status_code == 200
     body = response.json()
     assert body["email"] == dentist_user.email
-    assert body["role"] == "dentist"
-    assert "hashed_password" not in body
+    assert body["role"] == "DENTIST"
+    assert "password_hash" not in body
 
 
 def test_me_without_token_is_unauthorized(client):
