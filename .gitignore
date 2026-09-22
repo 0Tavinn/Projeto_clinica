@@ -1,0 +1,28 @@
+# Variáveis locais e senhas
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.mypy_cache/
+*.egg-info/
+
+# Front-end
+node_modules/
+dist/
+.vite/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Metadados criados pelo Windows ao baixar/copiar arquivos
+*:Zone.Identifier
+
+# Configurações locais do Codex, se não fizerem parte do projeto
+.codex/
+.agents/
