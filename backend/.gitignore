@@ -1,0 +1,33 @@
+# Ambientes Virtuais (conforme citado no seu README)
+.venv/
+venv/
+env/
+
+# Cache do Python e FastAPI
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Cache de Testes (Pytest)
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Segredos e Configurações Locais (CRÍTICO)
+.env
+
+# Bancos de dados locais (usado nos testes do seu projeto)
+*.sqlite3
+*.db
+
+# Arquivos de IDE (VS Code, PyCharm, etc)
+.vscode/
+.idea/
+
+# Artefatos gerados pela instalação Python
+*.egg-info/
+
+# Metadados criados pelo Windows ao baixar/copiar arquivos
+*:Zone.Identifier
