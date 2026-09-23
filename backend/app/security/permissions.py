@@ -38,7 +38,14 @@ require_any_staff = require_roles(
     Role.DENTIST,
 )
 
+# Administrador e recepcionista podem inativar pacientes.
 require_patient_manager = require_roles(
+    Role.ADMINISTRATOR,
+    Role.RECEPTIONIST,
+)
+
+# Administrador, recepcionista e dentista podem cadastrar e editar pacientes.
+require_patient_editor = require_roles(
     Role.ADMINISTRATOR,
     Role.RECEPTIONIST,
     Role.DENTIST,
