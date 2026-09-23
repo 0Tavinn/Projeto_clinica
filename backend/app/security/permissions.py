@@ -41,4 +41,5 @@ require_any_staff = require_roles(
 require_patient_manager = require_roles(
     Role.ADMINISTRATOR,
     Role.RECEPTIONIST,
+    Role.DENTIST,
 )
