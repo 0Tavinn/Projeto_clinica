@@ -42,3 +42,23 @@ def test_require_administrator_allows_administrator():
 
 def _call_dependency(dependency_factory, fake_user):
     return dependency_factory(fake_user)
+
+def test_require_administrator_blocks_dentist():
+    """Garante que o administrador bloqueia o acesso de dentistas."""
+    with pytest.raises(ForbiddenError):
+        _call_dependency(require_administrator, _FakeUser(Role.DENTIST))
+
+
+def test_require_administrator_blocks_receptionist():
+    """Garante que o administrador bloqueia o acesso de recepcionistas."""
+    with pytest.raises(ForbiddenError):
+        _call_dependency(require_administrator, _FakeUser(Role.RECEPTIONIST))
+
+
+def test_require_dentist_allows_dentist():
+    """Garante que o dentista tem acesso às rotas permitidas para sua role."""
+    result = _call_dependency(
+        require_dentist,
+        _FakeUser(Role.DENTIST),
+    )
+    assert result.role == Role.DENTIST

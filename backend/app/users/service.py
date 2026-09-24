@@ -16,6 +16,13 @@ from app.users.repository import UserRepository
 from app.users.schemas import Token, UserCreate
 
 
+def list_users_by_clinic(db: Session, clinic_id: int) -> list[User]:
+    """Retorna todos os utilizadores cadastrados na clínica do administrador autenticado."""
+    repository = UserRepository(db)
+    # Se o seu UserRepository já tiver um método para filtrar por clínica, utilize-o. 
+    # Caso contrário, pode usar uma consulta direta via SQLAlchemy através da sessão:
+    return db.query(User).filter(User.clinic_id == clinic_id).all()
+
 def login(db: Session, email: str, password: str) -> Token:
     user = authenticate_user(db, email, password)
     return Token(

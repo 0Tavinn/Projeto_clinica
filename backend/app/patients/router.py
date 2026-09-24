@@ -8,7 +8,11 @@ from app.core.database import get_db
 from app.patients import service
 from app.patients.models import Patient
 from app.patients.schemas import PatientCreate, PatientRead, PatientUpdate
-from app.security.permissions import require_any_staff, require_patient_manager
+from app.security.permissions import (
+    require_any_staff,
+    require_patient_manager,
+    require_patient_editor,  # <-- Nova permissão incluindo o Dentista
+)
 from app.users.models import User
 
 router = APIRouter(prefix="/patients", tags=["patients"])
@@ -23,7 +27,7 @@ router = APIRouter(prefix="/patients", tags=["patients"])
 def create_patient(
     payload: PatientCreate,
     db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(require_patient_manager)],
+    current_user: Annotated[User, Depends(require_patient_editor)],  # <-- Admin, Recepcionista e Dentista
 ) -> Patient:
     try:
         return service.create_patient(
@@ -84,7 +88,7 @@ def update_patient(
     patient_id: int,
     payload: PatientUpdate,
     db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(require_patient_manager)],
+    current_user: Annotated[User, Depends(require_patient_editor)],  # <-- Admin, Recepcionista e Dentista
 ) -> Patient:
     try:
         patient = service.update_patient(
@@ -121,7 +125,7 @@ def update_patient(
 def deactivate_patient(
     patient_id: int,
     db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(require_patient_manager)],
+    current_user: Annotated[User, Depends(require_patient_manager)],  # <-- Mantido restrito (Admin e Recepcionista)
 ) -> Response:
     deactivated = service.deactivate_patient(
         db,
