@@ -6,8 +6,6 @@ export type LoginFieldErrors = Partial<Record<LoginField, string>>;
 
 export const INITIAL_LOGIN_VALUES: LoginFormData = { username: "", password: "" };
 
-const INVALID_CREDENTIALS_MESSAGE = "E-mail ou senha inválidos.";
-
 type ValidationResult =
   | { success: true; data: LoginFormData }
   | { success: false; fieldErrors: LoginFieldErrors };
@@ -29,13 +27,10 @@ export type LoginErrorState = {
   fieldErrors: LoginFieldErrors;
 };
 
-// Traduz a falha da API para o que a tela exibe. A API responde 401 também para usuário inativo.
+// Traduz a falha da API para o que a tela exibe. As mensagens vêm prontas da API
+// (401 "Email ou senha inválidos." vale também para usuário inativo; 429; etc.).
 export function mapLoginError(error: unknown): LoginErrorState {
   const apiError = toApiError(error);
-
-  if (apiError.status === 401) {
-    return { formError: INVALID_CREDENTIALS_MESSAGE, fieldErrors: {} };
-  }
 
   if (apiError.status === 422) {
     const { username, password } = apiError.fieldErrors;
@@ -47,6 +42,5 @@ export function mapLoginError(error: unknown): LoginErrorState {
     };
   }
 
-  // 429, rede e demais erros já chegam com mensagem pronta do ApiError.
   return { formError: apiError.message, fieldErrors: {} };
 }

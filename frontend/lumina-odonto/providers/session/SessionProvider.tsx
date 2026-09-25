@@ -19,7 +19,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     user: null,
   });
 
-  // Tokens ficam no localStorage: a sessão só pode ser restaurada no navegador.
+  // Tokens ficam no sessionStorage: a sessão só pode ser restaurada no navegador.
   useEffect(() => {
     let active = true;
     authService.restoreSession().then((user) => {

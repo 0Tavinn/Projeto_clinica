@@ -29,22 +29,24 @@ export type TokenPair = {
 
 const isBrowser = typeof window !== "undefined";
 
+// sessionStorage: o token sobrevive ao F5, mas some ao fechar a aba/navegador —
+// nada da sessão fica salvo no computador entre usos.
 export const tokenStorage = {
   getAccessToken(): string | null {
-    return isBrowser ? localStorage.getItem(ACCESS_TOKEN_KEY) : null;
+    return isBrowser ? sessionStorage.getItem(ACCESS_TOKEN_KEY) : null;
   },
   getRefreshToken(): string | null {
-    return isBrowser ? localStorage.getItem(REFRESH_TOKEN_KEY) : null;
+    return isBrowser ? sessionStorage.getItem(REFRESH_TOKEN_KEY) : null;
   },
   setTokens({ access_token, refresh_token }: TokenPair) {
     if (!isBrowser) return;
-    localStorage.setItem(ACCESS_TOKEN_KEY, access_token);
-    localStorage.setItem(REFRESH_TOKEN_KEY, refresh_token);
+    sessionStorage.setItem(ACCESS_TOKEN_KEY, access_token);
+    sessionStorage.setItem(REFRESH_TOKEN_KEY, refresh_token);
   },
   clear() {
     if (!isBrowser) return;
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(REFRESH_TOKEN_KEY);
   },
 };
 
@@ -66,24 +68,18 @@ export type ValidationIssue = {
   type: string;
 };
 
+// A API já padroniza todo erro neste envelope, com mensagem em português
+// (backend/app/common/error_handlers.py). O front só lê e repassa.
 type ErrorEnvelope = {
   error?: {
     code?: string;
     message?: string;
     details?: ValidationIssue[] | null;
   };
-  detail?: ValidationIssue[] | string;
 };
 
-const DEFAULT_MESSAGES: Record<number, string> = {
-  401: "Sessão expirada ou credenciais inválidas.",
-  403: "Você não tem permissão para realizar esta ação.",
-  404: "Registro não encontrado.",
-  409: "CPF, e-mail ou prontuário já cadastrado.",
-  422: "Campos inválidos ou incompletos.",
-  429: "Muitas tentativas. Aguarde alguns instantes e tente novamente.",
-  500: "Erro interno. Tente novamente mais tarde.",
-};
+// Só para respostas fora do envelope (ex.: proxy ou falha inesperada no cliente).
+const FALLBACK_ERROR_MESSAGE = "Erro inesperado. Tente novamente mais tarde.";
 
 const NETWORK_ERROR_MESSAGE =
   "Não foi possível conectar à API. Verifique sua conexão e tente novamente.";
@@ -124,28 +120,22 @@ export function toApiError(error: unknown): ApiError {
   if (error instanceof ApiError) return error;
 
   if (!axios.isAxiosError<ErrorEnvelope>(error)) {
-    return new ApiError(DEFAULT_MESSAGES[500], 500);
+    return new ApiError(FALLBACK_ERROR_MESSAGE, 500);
   }
 
+  // Sem resposta, não há envelope: é o único erro cuja mensagem vem do front.
   if (!error.response) {
     return new ApiError(NETWORK_ERROR_MESSAGE, null, "NETWORK_ERROR");
   }
 
   const { status, data } = error.response;
   const envelope = data?.error;
-  const rawDetail = Array.isArray(data?.detail) ? data.detail : [];
-  const message =
-    status >= 500
-      ? DEFAULT_MESSAGES[500]
-      : (envelope?.message ??
-        DEFAULT_MESSAGES[status] ??
-        DEFAULT_MESSAGES[500]);
 
   return new ApiError(
-    message,
+    envelope?.message ?? FALLBACK_ERROR_MESSAGE,
     status,
     envelope?.code ?? null,
-    envelope?.details ?? rawDetail,
+    envelope?.details ?? [],
   );
 }
 
