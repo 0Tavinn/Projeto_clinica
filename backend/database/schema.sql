@@ -12,6 +12,9 @@
 -- Inicia uma transação para que toda a estrutura seja criada de forma conjunta.
 BEGIN;
 
+-- Disponibiliza comparação por igualdade em índices GiST.
+-- É necessária para combinar o dentista com o período da consulta.
+CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 -- ============================================================================
 -- TABELA: clinics
@@ -258,6 +261,10 @@ CREATE TABLE appointments (
     -- Duração prevista da consulta, em minutos.
     duration_minutes INTEGER NOT NULL DEFAULT 30,
 
+    -- Intervalo interno ocupado pela consulta.
+    -- É preenchido automaticamente a partir do horário e da duração.
+    scheduled_period TSTZRANGE NOT NULL,
+
     -- Registra a data e a hora em que o agendamento foi criado.
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -292,18 +299,30 @@ CREATE TABLE appointments (
     CONSTRAINT ck_appointments_status
         CHECK (
             status IN (
-                'SCHEDULED',
-                'CONFIRMED',
-                'COMPLETED',
-                'CANCELED'
+                'SCHEDULED', -- Consulta agendada e aguardando atendimento ou confirmação.
+                'CONFIRMED', -- Agendamento confirmado pelo paciente.
+                'COMPLETED', -- Consulta realizada com sucesso.
+                'CANCELED', -- Agendamento cancelado antes da consulta.
+                'NO_SHOW' -- Paciente não compareceu à consulta sem aviso prévio.
             )
         ),
 
-    -- Garante que a duração informada seja maior que zero.
     CONSTRAINT ck_appointments_duration
-        CHECK (duration_minutes > 0)
-);
+        CHECK (duration_minutes > 0),
 
+    -- Impede a criação de um período vazio.
+    CONSTRAINT ck_appointments_period_not_empty
+        CHECK (NOT isempty(scheduled_period)),
+
+    -- Impede dois agendamentos ativos em períodos sobrepostos
+    -- para o mesmo dentista.
+    CONSTRAINT ex_appointments_dentist_active_period
+        EXCLUDE USING gist (
+            dentist_id WITH =,
+            scheduled_period WITH &&
+        )
+        WHERE (status IN ('SCHEDULED', 'CONFIRMED'))
+);
 
 -- ============================================================================
 -- TABELA: medical_records
@@ -529,10 +548,25 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Calcula automaticamente o período ocupado pelo agendamento.
+CREATE OR REPLACE FUNCTION set_appointment_period()
+RETURNS TRIGGER
+AS $$
+BEGIN
+    NEW.scheduled_period := tstzrange(
+        NEW.scheduled_at,
+        NEW.scheduled_at
+            + make_interval(mins => NEW.duration_minutes),
+        '[)'
+    );
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 -- ============================================================================
--- GATILHOS DE ATUALIZAÇÃO
--- Cada gatilho executa a função set_updated_at antes de uma atualização.
+-- GATILHOS AUTOMÁTICOS
+-- Atualizam datas de modificação e calculam o período dos agendamentos.
 -- ============================================================================
 
 -- Atualiza automaticamente updated_at na tabela clinics.
@@ -558,6 +592,12 @@ CREATE TRIGGER trg_patients_set_updated_at
 BEFORE UPDATE ON patients
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
+
+-- Recalcula o período sempre que o agendamento for criado ou alterado.
+CREATE TRIGGER trg_appointments_set_period
+BEFORE INSERT OR UPDATE ON appointments
+FOR EACH ROW
+EXECUTE FUNCTION set_appointment_period();
 
 -- Atualiza automaticamente updated_at na tabela appointments.
 CREATE TRIGGER trg_appointments_set_updated_at
