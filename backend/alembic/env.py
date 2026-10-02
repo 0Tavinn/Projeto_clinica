@@ -18,6 +18,9 @@ from app.core.database import Base  # noqa: E402
 # do autogenerate. Ao adicionar novos módulos de domínio (patients,
 # appointments, records, ...), importe seus `models.py` aqui também.
 from app.users import models as users_models  # noqa: E402,F401
+from app.patients import models as patients_models  # noqa: E402,F401
+from app.dentists import models as dentists_models  # noqa: E402,F401
+from app.appointments import models as appointments_models  # noqa: E402,F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -295,7 +295,8 @@ CREATE TABLE appointments (
                 'SCHEDULED',
                 'CONFIRMED',
                 'COMPLETED',
-                'CANCELED'
+                'CANCELED',
+                'NO_SHOW'
             )
         ),
 
