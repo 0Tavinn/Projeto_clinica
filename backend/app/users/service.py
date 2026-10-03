@@ -2,7 +2,9 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.common.exceptions import UnauthorizedError
+from app.common.exceptions import UnauthorizedError, ValidationAppError
+from app.dentists.models import Dentist
+from app.security.roles import Role
 from app.security.auth import (
     REFRESH_TOKEN_TYPE,
     authenticate_user,
@@ -11,7 +13,7 @@ from app.security.auth import (
     decode_token,
 )
 from app.security.hashing import hash_password
-from app.users.models import User
+from app.users.models import Clinic, User
 from app.users.repository import UserRepository
 from app.users.schemas import Token, UserCreate
 
@@ -59,6 +61,10 @@ def create_user(
     """Cria um usuário vinculado à clínica do administrador autenticado."""
     repository = UserRepository(db)
 
+    clinic = db.get(Clinic, clinic_id)
+    if clinic is None or not clinic.is_active:
+        raise ValidationAppError("A clínica deve estar ativa.")
+
     if repository.get_by_email(str(payload.email)):
         raise ValueError("Já existe um usuário cadastrado com este e-mail.")
 
@@ -77,9 +83,26 @@ def create_user(
     )
 
     try:
-        return repository.create(user)
+        db.add(user)
+        db.flush()
+        if payload.role is Role.DENTIST:
+            db.add(
+                Dentist(
+                    user_id=user.id,
+                    cro_number=payload.cro_number.strip().upper(),
+                    cro_state=payload.cro_state.strip().upper(),
+                    specialty=payload.specialty.strip() if payload.specialty else None,
+                )
+            )
+            db.flush()
+        db.commit()
+        db.refresh(user)
+        return user
     except IntegrityError as error:
         db.rollback()
         raise ValueError(
-            "Não foi possível cadastrar o usuário. E-mail ou CPF já existe."
+            "Não foi possível cadastrar o usuário. E-mail, CPF ou CRO já existe."
         ) from error
+    except Exception:
+        db.rollback()
+        raise
