@@ -25,6 +25,57 @@ export type UserCreatePayload = {
   cpf: string
   phone: string | null
   role: UserRole
+  cro_number?: string
+  cro_state?: string
+  specialty?: string | null
+}
+
+export type Dentist = {
+  id: number
+  user_id: number
+  full_name: string
+  cro_number: string
+  cro_state: string
+  specialty: string | null
+  is_active: boolean
+}
+
+export type AppointmentStatus = 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED' | 'NO_SHOW'
+
+export type AppointmentStatusChange = Exclude<AppointmentStatus, 'SCHEDULED'>
+
+export type AppointmentParticipant = {
+  id: number
+  full_name: string
+}
+
+export type Appointment = {
+  id: number
+  clinic_id: number
+  patient: AppointmentParticipant
+  dentist: AppointmentParticipant
+  scheduled_at: string
+  duration_minutes: number
+  status: AppointmentStatus
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type AppointmentPayload = {
+  patient_id: number
+  dentist_id: number
+  scheduled_at: string
+  duration_minutes: number
+  notes: string | null
+}
+
+export type AppointmentFilters = {
+  start_date?: string
+  end_date?: string
+  dentist_id?: number
+  patient_id?: number
+  status?: AppointmentStatus
 }
 
 export type Patient = {
@@ -267,4 +318,40 @@ export const patientsApi = {
   deactivate: (id: number) => apiRequest<void>(`/patients/${id}`, {
     method: 'DELETE',
   }),
+}
+
+function toQueryString(params: Record<string, string | number | undefined>): string {
+  const query = new URLSearchParams()
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') query.set(key, String(value))
+  })
+  const serialized = query.toString()
+  return serialized ? `?${serialized}` : ''
+}
+
+// Contrato proposto para a Sprint 05: ajustar as rotas quando a API de agendamentos for publicada.
+export const dentistsApi = {
+  list: () => apiRequest<Dentist[]>('/dentists'),
+}
+
+export const appointmentsApi = {
+  list: (filters: AppointmentFilters = {}) => apiRequest<Appointment[]>(
+    `/appointments${toQueryString(filters)}`,
+  ),
+  get: (id: number) => apiRequest<Appointment>(`/appointments/${id}`),
+  create: (payload: AppointmentPayload) => apiRequest<Appointment>('/appointments', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+  update: (id: number, payload: AppointmentPayload) => apiRequest<Appointment>(`/appointments/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  }),
+  updateStatus: (id: number, status: AppointmentStatusChange) => apiRequest<Appointment>(
+    `/appointments/${id}/status`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    },
+  ),
 }
