@@ -44,16 +44,13 @@ export type AppointmentStatus = 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCE
 
 export type AppointmentStatusChange = Exclude<AppointmentStatus, 'SCHEDULED'>
 
-export type AppointmentParticipant = {
-  id: number
-  full_name: string
-}
-
 export type Appointment = {
   id: number
   clinic_id: number
-  patient: AppointmentParticipant
-  dentist: AppointmentParticipant
+  patient_id: number
+  patient_name: string
+  dentist_id: number
+  dentist_name: string
   scheduled_at: string
   duration_minutes: number
   status: AppointmentStatus
@@ -70,6 +67,7 @@ export type AppointmentPayload = {
   notes: string | null
 }
 
+// Datas no formato YYYY-MM-DD (fuso local); convertidas para instantes antes da requisição.
 export type AppointmentFilters = {
   start_date?: string
   end_date?: string
@@ -329,14 +327,28 @@ function toQueryString(params: Record<string, string | number | undefined>): str
   return serialized ? `?${serialized}` : ''
 }
 
-// Contrato proposto para a Sprint 05: ajustar as rotas quando a API de agendamentos for publicada.
+function startOfLocalDay(date: string, offsetDays = 0): string {
+  const day = new Date(`${date}T00:00:00`)
+  day.setDate(day.getDate() + offsetDays)
+  return day.toISOString()
+}
+
+// A API filtra scheduled_at em [start_date, end_date), então o fim vira o início do dia seguinte.
+function toAppointmentQuery({ start_date, end_date, ...filters }: AppointmentFilters): string {
+  return toQueryString({
+    ...filters,
+    start_date: start_date ? startOfLocalDay(start_date) : undefined,
+    end_date: end_date ? startOfLocalDay(end_date, 1) : undefined,
+  })
+}
+
 export const dentistsApi = {
   list: () => apiRequest<Dentist[]>('/dentists'),
 }
 
 export const appointmentsApi = {
   list: (filters: AppointmentFilters = {}) => apiRequest<Appointment[]>(
-    `/appointments${toQueryString(filters)}`,
+    `/appointments${toAppointmentQuery(filters)}`,
   ),
   get: (id: number) => apiRequest<Appointment>(`/appointments/${id}`),
   create: (payload: AppointmentPayload) => apiRequest<Appointment>('/appointments', {
