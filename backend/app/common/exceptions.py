@@ -28,6 +28,13 @@ class ConflictError(AppError):
     default_message = "Conflito ao processar a operação."
 
 
+class AppointmentTimeConflictError(ConflictError):
+    """Conflito de horário detectado pela API ou pelo PostgreSQL."""
+
+    code = "APPOINTMENT_TIME_CONFLICT"
+    default_message = "O dentista já possui uma consulta agendada nesse período."
+
+
 class ValidationAppError(AppError):
     """Erros de validação de regra de negócio (não de schema/Pydantic)."""
 
