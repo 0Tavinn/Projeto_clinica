@@ -16,8 +16,10 @@ class DentistRead(BaseModel):
 
     id: int
     user_id: int
+    full_name: str
     cro_number: str
     cro_state: str
     specialty: str | None
+    is_active: bool
     created_at: datetime
     updated_at: datetime

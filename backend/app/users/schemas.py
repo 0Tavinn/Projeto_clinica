@@ -1,5 +1,5 @@
 """Contratos de entrada e saída do módulo de usuários e autenticação."""
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
 
 from app.security.roles import Role
 
@@ -33,6 +33,23 @@ class UserCreate(BaseModel):
     )
     phone: str | None = Field(default=None, max_length=20)
     role: Role
+    cro_number: str | None = Field(default=None, min_length=1, max_length=30)
+    cro_state: str | None = Field(
+        default=None,
+        min_length=2,
+        max_length=2,
+        pattern=r"^[A-Za-z]{2}$",
+    )
+    specialty: str | None = Field(default=None, max_length=100)
+
+    @model_validator(mode="after")
+    def validate_professional_data(self):
+        if self.role is Role.DENTIST:
+            if not self.cro_number or not self.cro_state:
+                raise ValueError("Dentistas devem informar número e UF do CRO.")
+        elif any((self.cro_number, self.cro_state, self.specialty)):
+            raise ValueError("Dados profissionais são permitidos somente para dentistas.")
+        return self
 
 
 class RefreshRequest(BaseModel):

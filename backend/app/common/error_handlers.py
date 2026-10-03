@@ -17,6 +17,7 @@ e previsível para tratar erros, independente da camada que os gerou.
 import logging
 
 from fastapi import FastAPI, Request, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -72,7 +73,10 @@ def register_exception_handlers(app: FastAPI) -> None:
         headers = {"WWW-Authenticate": "Bearer"} if http_status == 401 else None
         return JSONResponse(
             status_code=http_status,
-            content=_error_body(type(exc).__name__.upper(), exc.message),
+            content=_error_body(
+                getattr(exc, "code", type(exc).__name__.upper()),
+                exc.message,
+            ),
             headers=headers,
         )
 
@@ -82,16 +86,22 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         # Erros de validação do Pydantic (schema/entrada). Não logamos o
         # corpo cru da requisição para evitar vazar dados sensíveis em logs.
+        validation_details = jsonable_encoder(
+            exc.errors(),
+            custom_encoder={Exception: str},
+        )
         logger.info(
             "validation_error path=%s method=%s errors=%s",
             request.url.path,
             request.method,
-            exc.errors(),
+            validation_details,
         )
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=_error_body(
-                "VALIDATION_ERROR", "Dados de entrada inválidos.", exc.errors()
+                "VALIDATION_ERROR",
+                "Dados de entrada inválidos.",
+                validation_details,
             ),
         )
 

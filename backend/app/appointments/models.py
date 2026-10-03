@@ -3,9 +3,11 @@ import datetime
 import enum
 
 from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, Integer, Text, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+from app.dentists.models import Dentist
+from app.patients.models import Patient
 
 
 class AppointmentStatus(str, enum.Enum):
@@ -50,3 +52,13 @@ class Appointment(Base):
     updated_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+    patient: Mapped[Patient] = relationship(lazy="joined")
+    dentist: Mapped[Dentist] = relationship(lazy="joined")
+
+    @property
+    def patient_name(self) -> str:
+        return self.patient.full_name
+
+    @property
+    def dentist_name(self) -> str:
+        return self.dentist.user.full_name

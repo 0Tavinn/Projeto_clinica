@@ -2,9 +2,10 @@
 import datetime
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, UniqueConstraint, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+from app.users.models import User
 
 
 class Dentist(Base):
@@ -30,3 +31,12 @@ class Dentist(Base):
     updated_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+    user: Mapped[User] = relationship(lazy="joined")
+
+    @property
+    def full_name(self) -> str:
+        return self.user.full_name
+
+    @property
+    def is_active(self) -> bool:
+        return self.user.is_active

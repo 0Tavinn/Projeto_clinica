@@ -2,11 +2,12 @@
 import datetime
 
 from sqlalchemy import Select, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.appointments.models import Appointment, AppointmentStatus
+from app.common.exceptions import AppointmentTimeConflictError
 from app.dentists.models import Dentist
-from app.users.models import User
 
 
 class AppointmentRepository:
@@ -88,11 +89,22 @@ class AppointmentRepository:
 
     def create(self, appointment: Appointment) -> Appointment:
         self.db.add(appointment)
-        self.db.commit()
+        self._commit()
         self.db.refresh(appointment)
         return appointment
 
     def save(self, appointment: Appointment) -> Appointment:
-        self.db.commit()
+        self._commit()
         self.db.refresh(appointment)
         return appointment
+
+    def _commit(self) -> None:
+        try:
+            self.db.commit()
+        except IntegrityError as error:
+            self.db.rollback()
+            original = error.orig
+            sqlstate = getattr(original, "sqlstate", None) or getattr(original, "pgcode", None)
+            if sqlstate == "23P01":
+                raise AppointmentTimeConflictError() from error
+            raise
