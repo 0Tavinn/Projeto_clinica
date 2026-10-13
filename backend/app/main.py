@@ -15,6 +15,10 @@ from app.core.config import get_settings
 from app.users.router import router as users_router
 from app.users.management_router import router as user_management_router
 from app.patients.router import router as patients_router
+from app.appointments.router import router as appointments_router
+from app.dentists import models as dentist_models  # noqa: F401
+from app.appointments import models as appointment_models  # noqa: F401
+from app.dentists.router import router as dentists_router
 
 settings = get_settings()
 
@@ -45,6 +49,8 @@ register_exception_handlers(app)
 app.include_router(users_router, prefix=settings.API_V1_PREFIX)
 app.include_router(user_management_router, prefix=settings.API_V1_PREFIX)
 app.include_router(patients_router, prefix=settings.API_V1_PREFIX)
+app.include_router(appointments_router, prefix=settings.API_V1_PREFIX)
+app.include_router(dentists_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/health", tags=["health"], summary="Health check")
 def health_check() -> dict:

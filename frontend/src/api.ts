@@ -25,6 +25,55 @@ export type UserCreatePayload = {
   cpf: string
   phone: string | null
   role: UserRole
+  cro_number?: string
+  cro_state?: string
+  specialty?: string | null
+}
+
+export type Dentist = {
+  id: number
+  user_id: number
+  full_name: string
+  cro_number: string
+  cro_state: string
+  specialty: string | null
+  is_active: boolean
+}
+
+export type AppointmentStatus = 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED' | 'NO_SHOW'
+
+export type AppointmentStatusChange = Exclude<AppointmentStatus, 'SCHEDULED'>
+
+export type Appointment = {
+  id: number
+  clinic_id: number
+  patient_id: number
+  patient_name: string
+  dentist_id: number
+  dentist_name: string
+  scheduled_at: string
+  duration_minutes: number
+  status: AppointmentStatus
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type AppointmentPayload = {
+  patient_id: number
+  dentist_id: number
+  scheduled_at: string
+  duration_minutes: number
+  notes: string | null
+}
+
+// Datas no formato YYYY-MM-DD (fuso local); convertidas para instantes antes da requisição.
+export type AppointmentFilters = {
+  start_date?: string
+  end_date?: string
+  dentist_id?: number
+  patient_id?: number
+  status?: AppointmentStatus
 }
 
 export type Patient = {
@@ -267,4 +316,54 @@ export const patientsApi = {
   deactivate: (id: number) => apiRequest<void>(`/patients/${id}`, {
     method: 'DELETE',
   }),
+}
+
+function toQueryString(params: Record<string, string | number | undefined>): string {
+  const query = new URLSearchParams()
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') query.set(key, String(value))
+  })
+  const serialized = query.toString()
+  return serialized ? `?${serialized}` : ''
+}
+
+function startOfLocalDay(date: string, offsetDays = 0): string {
+  const day = new Date(`${date}T00:00:00`)
+  day.setDate(day.getDate() + offsetDays)
+  return day.toISOString()
+}
+
+// A API filtra scheduled_at em [start_date, end_date), então o fim vira o início do dia seguinte.
+function toAppointmentQuery({ start_date, end_date, ...filters }: AppointmentFilters): string {
+  return toQueryString({
+    ...filters,
+    start_date: start_date ? startOfLocalDay(start_date) : undefined,
+    end_date: end_date ? startOfLocalDay(end_date, 1) : undefined,
+  })
+}
+
+export const dentistsApi = {
+  list: () => apiRequest<Dentist[]>('/dentists'),
+}
+
+export const appointmentsApi = {
+  list: (filters: AppointmentFilters = {}) => apiRequest<Appointment[]>(
+    `/appointments${toAppointmentQuery(filters)}`,
+  ),
+  get: (id: number) => apiRequest<Appointment>(`/appointments/${id}`),
+  create: (payload: AppointmentPayload) => apiRequest<Appointment>('/appointments', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+  update: (id: number, payload: AppointmentPayload) => apiRequest<Appointment>(`/appointments/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  }),
+  updateStatus: (id: number, status: AppointmentStatusChange) => apiRequest<Appointment>(
+    `/appointments/${id}/status`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    },
+  ),
 }
