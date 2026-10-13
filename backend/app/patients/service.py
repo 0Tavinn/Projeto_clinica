@@ -71,12 +71,16 @@ def update_patient(
     if patient is None:
         return None
 
-    changes = payload.model_dump(exclude_unset=True, exclude_none=True)
+    changes = payload.model_dump(exclude_unset=True)
 
     if not changes:
         raise PatientValidationError(
             "Informe ao menos um campo para atualizar o paciente."
         )
+
+    required_fields = {"full_name", "cpf", "medical_record_number", "birth_date"}
+    if any(changes.get(field) is None for field in required_fields & changes.keys()):
+        raise PatientValidationError("Campos obrigatórios não podem ser nulos.")
 
     if "full_name" in changes:
         changes["full_name"] = changes["full_name"].strip()
@@ -87,13 +91,13 @@ def update_patient(
         )
 
     if "phone" in changes:
-        changes["phone"] = changes["phone"].strip()
+        changes["phone"] = changes["phone"].strip() if changes["phone"] else None
 
     if "email" in changes:
-        changes["email"] = str(changes["email"]).lower()
+        changes["email"] = str(changes["email"]).lower() if changes["email"] else None
 
     if "address" in changes:
-        changes["address"] = changes["address"].strip()
+        changes["address"] = changes["address"].strip() if changes["address"] else None
 
     for field_name, value in changes.items():
         setattr(patient, field_name, value)

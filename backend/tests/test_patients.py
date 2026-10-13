@@ -52,3 +52,43 @@ def test_patient_crud(client, administrator_user):
     final_list_response = client.get("/api/v1/patients", headers=headers)
     assert final_list_response.status_code == 200
     assert final_list_response.json() == []
+
+
+def test_patient_optional_fields_can_be_cleared(client, administrator_user):
+    headers = auth_headers(client, administrator_user.email)
+    created = client.post(
+        "/api/v1/patients",
+        headers=headers,
+        json={
+            "full_name": "Paciente Exemplo",
+            "cpf": "22233344455",
+            "medical_record_number": "PRT-0002",
+            "birth_date": "1990-01-01",
+            "phone": "81999990010",
+            "email": "paciente@example.com",
+            "address": "Rua Exemplo, 10",
+        },
+    )
+    assert created.status_code == 201
+    patient_id = created.json()["id"]
+
+    cleared = client.patch(
+        f"/api/v1/patients/{patient_id}",
+        headers=headers,
+        json={"phone": None, "email": None, "address": None},
+    )
+    assert cleared.status_code == 200
+    assert all(cleared.json()[field] is None for field in ("phone", "email", "address"))
+    assert cleared.json()["full_name"] == "Paciente Exemplo"
+
+    persisted = client.get(f"/api/v1/patients/{patient_id}", headers=headers)
+    assert persisted.status_code == 200
+    assert all(persisted.json()[field] is None for field in ("phone", "email", "address"))
+
+    invalid = client.patch(
+        f"/api/v1/patients/{patient_id}",
+        headers=headers,
+        json={"full_name": None},
+    )
+    assert invalid.status_code == 400
+    assert client.get(f"/api/v1/patients/{patient_id}", headers=headers).json()["full_name"] == "Paciente Exemplo"

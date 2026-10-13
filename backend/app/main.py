@@ -1,11 +1,8 @@
 """
 Entry point da API de gestão de clínicas odontológicas.
 
-Fase 1 (fundação): app FastAPI, CORS, tratamento padronizado de erros,
-autenticação/RBAC e health check. Demais domínios (pacientes, profissionais,
-agendamentos, prontuários, IA) entram em fases seguintes, seguindo a mesma
-estrutura modular (routers/schemas/models/repositories/services) já
-estabelecida em `app/users`.
+Inclui CORS, tratamento de erros, autenticação/RBAC, health check, usuários,
+pacientes, dentistas e Agenda. Prontuário e Evolução Clínica seguem pendentes.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware

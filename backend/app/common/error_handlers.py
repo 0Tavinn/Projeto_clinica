@@ -84,17 +84,21 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def validation_error_handler(
         request: Request, exc: RequestValidationError
     ) -> JSONResponse:
-        # Erros de validação do Pydantic (schema/entrada). Não logamos o
-        # corpo cru da requisição para evitar vazar dados sensíveis em logs.
-        validation_details = jsonable_encoder(
-            exc.errors(),
-            custom_encoder={Exception: str},
-        )
+        # Pydantic inclui `input` e `ctx` em exc.errors(); ambos podem conter
+        # senhas ou dados de pacientes. Envie apenas metadados de validação.
+        validation_details = [
+            {
+                "loc": jsonable_encoder(issue.get("loc", [])),
+                "msg": issue.get("msg", "Dados de entrada inválidos."),
+                "type": issue.get("type", "value_error"),
+            }
+            for issue in exc.errors()
+        ]
         logger.info(
-            "validation_error path=%s method=%s errors=%s",
+            "validation_error path=%s method=%s error_count=%s",
             request.url.path,
             request.method,
-            validation_details,
+            len(validation_details),
         )
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
