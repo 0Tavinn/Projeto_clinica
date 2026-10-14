@@ -20,7 +20,7 @@ Configure no `.env` local `DATABASE_URL`, `SECRET_KEY` e `CORS_ORIGINS` para a
 origem do frontend. Nunca versione ou compartilhe valores dessas variáveis.
 Para um banco **novo e vazio**, aplique `database/schema.sql`; para um banco
 PostgreSQL anterior à Agenda, siga a inspeção e a migração específica descritas
-no [guia do banco](../docs/database-setup.md). Não aplique o SQL de criação e a
+no [guia do banco](../docs/guides/database-setup.md). Não aplique o SQL de criação e a
 migração da Agenda em sequência no mesmo banco novo. `alembic upgrade head`
 não reproduz o esquema PostgreSQL completo nesta base.
 
@@ -53,7 +53,7 @@ recebe formulário OAuth2 com e-mail em `username` e senha em `password`.
 | Agenda | `POST /appointments`, `GET /appointments`, `GET /appointments/{id}`, `PATCH /appointments/{id}`, `PATCH /appointments/{id}/status`, `POST /appointments/{id}/cancel` | Leitura por equipe com filtro de dentista; escrita conforme perfil e situação |
 
 As regras exatas de payload, status e permissão estão no
-[contrato de integração](../docs/api-integration.md). O paciente não possui
+[contrato de integração](../docs/guides/api-integration.md). O paciente não possui
 login. O endpoint `DELETE /patients/{id}` faz inativação lógica.
 
 ## Testes

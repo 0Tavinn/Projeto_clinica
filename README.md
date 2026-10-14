@@ -61,7 +61,7 @@ registro recebe `is_active = false` e não é apagado fisicamente.
 - Prontuário e Evolução Clínica: models, schemas, serviços, rotas, permissões
   específicas, interface e testes ainda precisam ser desenvolvidos.
 - Aprovar as decisões clínicas reunidas na
-  [revisão técnica](docs/clinical-records-review.md).
+  [revisão técnica](docs/reference/clinical-records-review.md).
 - Conciliar o schema PostgreSQL, as migrações Alembic e o ambiente Docker antes
   de oferecer provisionamento automatizado em bancos existentes.
 - Reunir evidências de testes e da demonstração final. A presença de rotas e
@@ -94,13 +94,13 @@ README.md                    # Visão geral do projeto
 
 ## Documentação técnica
 
-- [Contrato de integração da API](docs/api-integration.md)
-- [Guia de desenvolvimento local](docs/development.md)
-- [Preparação do banco PostgreSQL](docs/database-setup.md)
-- [Revisão clínica para repasse](docs/clinical-records-review.md)
+- **[Guia de desenvolvimento local](docs/development.md)**
+- [Contrato de integração da API](docs/guides/api-integration.md)
+- [Preparação do banco PostgreSQL](docs/guides/database-setup.md)
+- [Revisão clínica para repasse](docs/reference/clinical-records-review.md)
 - [Planejamento proposto da Sprint 6](docs/sprint/sprint-06.md)
-- [Arquitetura](docs/architecture.md)
-- [Banco de dados](docs/database.md)
+- [Arquitetura](docs/reference/architecture.md)
+- [Banco de dados](docs/reference/database.md)
 - [Planejamento da Sprint 4](docs/sprint/sprint-04.md)
 
 ## Swagger da API

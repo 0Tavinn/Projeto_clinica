@@ -239,7 +239,7 @@ CANCELED
 NO_SHOW
 ```
 
-O backend não deverá permitir a troca livre do estado. As transições precisam seguir as regras registradas em `docs/business-rules.md`.
+O backend não deverá permitir a troca livre do estado. As transições precisam seguir as regras registradas em `docs/reference/business-rules.md`.
 
 Consultas concluídas, canceladas ou marcadas como ausência não devem voltar para um estado ativo sem uma regra específica de reabertura.
 

@@ -249,10 +249,9 @@ Projeto_clinica/
 │   ├── pyproject.toml
 │   └── README.md
 ├── docs/
-│   ├── architecture.md
-│   ├── database.md
-│   ├── api-integration.md
 │   ├── development.md
+│   ├── guides/
+│   ├── reference/
 │   └── sprint/
 └── frontend/
 ```

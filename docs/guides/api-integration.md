@@ -310,7 +310,7 @@ passado. Estados finais não recebem novas transições. O frontend usa
 O número `medical_record_number` do paciente é cadastral. Não existe rota
 para ler prontuário clínico nem para criar, editar ou finalizar evoluções nesta
 base. As regras clínicas estão em discussão na
-[revisão técnica](clinical-records-review.md).
+[revisão técnica](../reference/clinical-records-review.md).
 
 ## Regras de persistência e isolamento de clínica
 
@@ -445,7 +445,7 @@ credenciais.
 
 ## Limites para a Sprint 6
 
-O [plano da Sprint 6](sprint/sprint-06.md) é uma proposta para aprovação da
+O [plano da Sprint 6](../sprint/sprint-06.md) é uma proposta para aprovação da
 equipe. Ele prevê rotas, permissões e telas de Prontuário e Evolução Clínica,
 que ainda não fazem parte deste contrato. Ao implementar o módulo, atualize
 este documento com os schemas e estados reais antes de integrar o frontend.

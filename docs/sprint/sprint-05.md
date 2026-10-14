@@ -161,8 +161,8 @@ feat/demo-seed-data
 - Validar as relações entre consultas, pacientes, dentistas e clínica.
 - Conferir a relação entre `users`, `dentists` e `appointments`.
 - Registrar os ajustes necessários no banco de dados para o módulo de Agenda.
-- Elaborar e manter o documento `docs/requirements.md`.
-- Elaborar e manter o documento `docs/business-rules.md`.
+- Elaborar e manter o documento `docs/reference/requirements.md`.
+- Elaborar e manter o documento `docs/reference/business-rules.md`.
 - Preparar a proposta das regras de negócio de agendamento.
 - Validar com a equipe as regras definidas antes da implementação.
 - Registrar as decisões que ainda dependem de confirmação da equipe.
@@ -271,7 +271,7 @@ Após a revisão e a incorporação dos testes, Tarcísio deverá abrir a Pull R
 - Definir o fluxo de cadastro dos dados profissionais do dentista necessários para o agendamento.
 - Conferir os estados aceitos pela tabela de agendamentos.
 - Validar com a equipe as transições permitidas entre os estados.
-- Implementar as regras documentadas em `docs/business-rules.md`.
+- Implementar as regras documentadas em `docs/reference/business-rules.md`.
 - Criar os schemas, serviços, repositórios e rotas necessários para agendamentos.
 - Implementar a listagem de consultas por período, dentista, paciente e situação.
 - Implementar o cadastro de consulta.

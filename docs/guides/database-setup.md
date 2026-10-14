@@ -80,4 +80,4 @@ como decisão da equipe.
 `backend/compose.yaml` ainda usa MySQL, não inclui o frontend e executa
 `alembic upgrade head`. Ele não é um caminho suportado para PostgreSQL nesta
 base. Execute PostgreSQL local, API e frontend como descrito no
-[guia de desenvolvimento](development.md).
+[guia de desenvolvimento](../development.md).

@@ -24,7 +24,10 @@ Projeto_clinica/
 │   ├── pyproject.toml
 │   └── README.md
 ├── docs/
-│   └── sprint/             # Sprint 4 e proposta da Sprint 6
+│   ├── development.md      # Guia principal para começar a desenvolver
+│   ├── guides/             # Guias operacionais e de integração
+│   ├── reference/          # Arquitetura, requisitos e regras de negócio
+│   └── sprint/             # Planejamentos das sprints
 └── frontend/                # React/Vite, cliente HTTP e testes de sessão
 ```
 
@@ -83,7 +86,7 @@ O PostgreSQL é o banco oficial da API. A URL de conexão é definida pela vari�
 `DATABASE_URL` no `.env`, usando o driver Psycopg configurado no projeto.
 
 O procedimento detalhado para banco novo, banco anterior à Agenda e banco já
-atualizado está em [database-setup.md](database-setup.md). `schema.sql` é para
+atualizado está em [database-setup.md](guides/database-setup.md). `schema.sql` é para
 **banco vazio**; a migração SQL da Agenda é para um banco PostgreSQL com o
 esquema anterior verificado. Não execute nenhum deles em um banco compartilhado
 sem conferir o estado e a autorização do responsável.
@@ -172,7 +175,7 @@ o resultado no Pull Request ou no relatório individual da Sprint.
 Os clusters descartáveis foram encerrados e removidos. Há avisos de
 depreciação de dependências na suíte da API; eles não causaram falhas. O
 procedimento em banco compartilhado continua dependente da inspeção e
-autorização descritas em [database-setup.md](database-setup.md).
+autorização descritas em [database-setup.md](guides/database-setup.md).
 
 ## Docker e Alembic nesta base
 
@@ -297,7 +300,7 @@ banco nas evidências compartilhadas.
 A base já contém autenticação, usuários, pacientes, dentistas e Agenda. O
 terceiro módulo previsto é Prontuário e Evolução Clínica; o
 [planejamento](sprint/sprint-06.md) ainda deve ser alinhado pela equipe e a
-[revisão clínica](clinical-records-review.md) registra decisões pendentes. O
+[revisão clínica](reference/clinical-records-review.md) registra decisões pendentes. O
 frontend, a API e o PostgreSQL precisam ser ensaiados em conjunto antes da
 demonstração. Docker e a estratégia de migrações para bancos existentes não
 estão concluídos nesta base.
