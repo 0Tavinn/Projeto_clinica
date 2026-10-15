@@ -55,3 +55,12 @@ class ForbiddenError(AppError):
 
 class InactiveUserError(UnauthorizedError):
     default_message = "Usuário inativo."
+
+class ValidationAppError(AppError):
+    """Erros de validação de regra de negócio (não de schema/Pydantic)."""
+    default_message = "Dados inválidos para esta operação."
+
+class InvalidTransitionError(ValidationAppError):
+    """Retornado para regras de negócio e mudanças de estado inválidas."""
+    code = "INVALID_STATE_TRANSITION"
+    default_message = "Esta operação não é permitida no estado atual do registro."

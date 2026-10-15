@@ -10,6 +10,9 @@ estabelecida em `app/users`.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.records.router import router as records_router
+app.include_router(records_router)
+
 from app.common.error_handlers import register_exception_handlers
 from app.core.config import get_settings
 from app.users.router import router as users_router
@@ -56,3 +59,4 @@ app.include_router(dentists_router, prefix=settings.API_V1_PREFIX)
 def health_check() -> dict:
     """Endpoint simples de liveness, sem dependência de banco (Fase 1)."""
     return {"status": "ok", "app": settings.APP_NAME, "environment": settings.ENVIRONMENT}
+
