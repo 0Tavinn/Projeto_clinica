@@ -1,23 +1,24 @@
 # Lumina Odonto
 
-Sistema de gestão para clínica odontológica desenvolvido no contexto das
-disciplinas de Fábrica de Software e Extensão. O objetivo é formar uma base
-segura e organizada para a equipe administrar o acesso ao sistema e os
-cadastros de pacientes.
+Sistema acadêmico de gestão para clínica odontológica, desenvolvido nas
+disciplinas de Fábrica de Software e Extensão.
 
-Este README descreve somente o que está disponível no repositório nesta etapa.
-Funcionalidades planejadas não devem ser tratadas como concluídas.
+Esta branch prepara a base compartilhável para o desenvolvimento da Sprint 6.
+O [planejamento da Sprint 6](docs/sprint/sprint-06.md) ainda é uma **proposta
+para alinhamento da equipe**. O módulo de Prontuário e Evolução Clínica não foi
+implementado nesta base.
 
-## Estado atual — Sprint 4
+## Estado atual da aplicação
 
-A API já oferece autenticação, controle de perfis, cadastro de usuários da
-equipe e gestão de pacientes. Não há código de front-end versionado no
-repositório; a integração da interface com a API ainda é uma atividade da
-Sprint 4.
+A aplicação possui frontend React/Vite, API FastAPI e persistência projetada
+para PostgreSQL. O código conecta autenticação, gestão de usuários, pacientes,
+dentistas e Agenda. A execução integrada em um banco de equipe depende da
+configuração local e de validação nesse ambiente.
 
-O Docker existente ainda precisa ser alinhado ao PostgreSQL usado pela API. Por
-isso, o fluxo de desenvolvimento atual é o ambiente local com FastAPI e
-PostgreSQL, conforme o guia de desenvolvimento.
+O fluxo suportado nesta base é local, com PostgreSQL, FastAPI e Vite em
+processos separados. `backend/compose.yaml` ainda usa MySQL e não fornece o
+ambiente PostgreSQL/frontend da Sprint 6. Veja o
+[guia de desenvolvimento](docs/development.md).
 
 ## Funcionalidades implementadas
 
@@ -25,34 +26,49 @@ PostgreSQL, conforme o guia de desenvolvimento.
 - Login OAuth2 Password com JWT de acesso e renovação de sessão.
 - Consulta do usuário autenticado.
 - Perfis `ADMINISTRATOR`, `RECEPTIONIST` e `DENTIST`.
-- Cadastro de usuários, restrito a administradores.
+- Listagem e cadastro de usuários por administradores; cadastro de dentista
+  cria também seu perfil profissional com CRO e UF.
+- Listagem de dentistas ativos para administrador e recepção.
 - Cadastro, listagem, consulta, edição e inativação lógica de pacientes.
-- Isolamento dos pacientes por clínica e validações de CPF, e-mail e campos
-  obrigatórios.
+- Agenda: criação, consulta, filtros, atualização, reagendamento, cancelamento
+  e mudanças de situação por perfil, com verificação de horários.
+- Interface web conectada às rotas de autenticação, usuários, pacientes,
+  dentistas e Agenda.
 - Documentação interativa da API via Swagger/OpenAPI.
-- Testes automatizados da API com SQLite em memória.
+- Testes automatizados da API com SQLite em memória e testes locais do cliente
+  de autenticação do frontend.
 
 ## Permissões confirmadas
 
 | Ação | Administrador | Recepcionista | Dentista |
 |---|:---:|:---:|:---:|
 | Login, refresh e consulta do próprio usuário | Sim | Sim | Sim |
-| Cadastrar usuário | Sim | Não | Não |
+| Listar e cadastrar usuários | Sim | Não | Não |
+| Listar dentistas ativos | Sim | Sim | Não |
 | Listar e consultar pacientes | Sim | Sim | Sim |
-| Cadastrar, editar e inativar pacientes | Sim | Sim | Não |
+| Cadastrar e editar pacientes | Sim | Sim | Sim |
+| Inativar pacientes | Sim | Sim | Não |
+| Criar, editar e cancelar consultas | Sim | Sim | Não |
+| Consultar Agenda | Sim | Sim | Somente consultas próprias |
+| Concluir consultas | Sim | Não | Somente consultas próprias, após o início |
+| Registrar ausência | Sim | Sim | Somente consultas próprias, após o início |
 
 O paciente não possui acesso ao sistema. A exclusão pela API é lógica: o
 registro recebe `is_active = false` e não é apagado fisicamente.
 
-## Próximos passos e fora do escopo atual
+## Pendente para a Sprint 6
 
-- Listagem de usuários: `GET /api/v1/users` ainda não existe.
-- Permitir que dentistas cadastrem ou alterem pacientes ainda não está
-  implementado.
-- Front-end integrado, agenda, prontuários, IA e métricas financeiras não têm
-  implementação disponível neste repositório.
-- Docker e Alembic precisam ser revisados antes de serem usados como fluxo de
-  provisionamento do PostgreSQL.
+- Prontuário e Evolução Clínica: models, schemas, serviços, rotas, permissões
+  específicas, interface e testes ainda precisam ser desenvolvidos.
+- Aprovar as decisões clínicas reunidas na
+  [revisão técnica](docs/reference/clinical-records-review.md).
+- Conciliar o schema PostgreSQL, as migrações Alembic e o ambiente Docker antes
+  de oferecer provisionamento automatizado em bancos existentes.
+- Reunir evidências de testes e da demonstração final. A presença de rotas e
+  telas no código não substitui essa validação.
+- Corrigir a navegação móvel antes de uma demonstração em celular: o CSS
+  oculta a barra lateral em telas estreitas, mas o botão "Abrir menu" ainda
+  não possui ação. Pode ser uma tarefa separada desta preparação de base.
 
 ## Tecnologias utilizadas
 
@@ -71,17 +87,20 @@ backend/                    # API FastAPI, schema PostgreSQL, testes e scripts
   app/                       # Rotas, regras de negócio, modelos e segurança
   database/schema.sql        # Estrutura de referência do PostgreSQL
   tests/                     # Testes automatizados
-docs/                        # Documentação técnica e materiais da Sprint 4
-frontend/                    # Diretório reservado; sem código versionado atual
+docs/                        # Documentação técnica e planejamento proposto da Sprint 6
+frontend/                    # React/Vite, cliente da API e testes do cliente
 README.md                    # Visão geral do projeto
 ```
 
 ## Documentação técnica
 
-- [Contrato de integração da API](docs/api-integration.md)
-- [Guia de desenvolvimento local](docs/development.md)
-- [Arquitetura](docs/architecture.md)
-- [Banco de dados](docs/database.md)
+- **[Guia de desenvolvimento local](docs/development.md)**
+- [Contrato de integração da API](docs/guides/api-integration.md)
+- [Preparação do banco PostgreSQL](docs/guides/database-setup.md)
+- [Revisão clínica para repasse](docs/reference/clinical-records-review.md)
+- [Planejamento proposto da Sprint 6](docs/sprint/sprint-06.md)
+- [Arquitetura](docs/reference/architecture.md)
+- [Banco de dados](docs/reference/database.md)
 - [Planejamento da Sprint 4](docs/sprint/sprint-04.md)
 
 ## Swagger da API

@@ -97,7 +97,7 @@ def test_dentist_professional_fields_are_validated(client, administrator_user):
     assert missing_cro_response.status_code == 422
     missing_cro_error = missing_cro_response.json()["error"]
     assert missing_cro_error["code"] == "VALIDATION_ERROR"
-    assert isinstance(missing_cro_error["details"][0]["ctx"]["error"], str)
+    assert {"loc", "msg", "type"} == set(missing_cro_error["details"][0])
 
     receptionist = _user_payload(
         email="recepcao.extra@clinica.example.com",
@@ -109,9 +109,8 @@ def test_dentist_professional_fields_are_validated(client, administrator_user):
         "/api/v1/users", headers=headers, json=receptionist
     )
     assert receptionist_response.status_code == 422
-    assert isinstance(
-        receptionist_response.json()["error"]["details"][0]["ctx"]["error"],
-        str,
+    assert {"loc", "msg", "type"} == set(
+        receptionist_response.json()["error"]["details"][0]
     )
 
 

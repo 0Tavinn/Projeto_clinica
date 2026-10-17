@@ -1,4 +1,4 @@
-const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api/v1').replace(/\/$/, '')
+const API_URL = (import.meta.env?.VITE_API_URL ?? 'http://localhost:8000/api/v1').replace(/\/$/, '')
 
 const ACCESS_TOKEN_KEY = 'lumina.access_token'
 const REFRESH_TOKEN_KEY = 'lumina.refresh_token'
@@ -233,7 +233,7 @@ export async function apiRequest<T>(
 ): Promise<T> {
   let response = await fetchApi(path, { ...options, headers: requestHeaders(options) })
 
-  if (response.status === 401 && retryAfterRefresh && !path.startsWith('/auth/')) {
+  if (response.status === 401 && retryAfterRefresh && (path === '/auth/me' || !path.startsWith('/auth/'))) {
     try {
       await refreshSession()
       response = await fetchApi(path, { ...options, headers: requestHeaders(options) })

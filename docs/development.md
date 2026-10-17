@@ -2,10 +2,10 @@
 
 ## Objetivo
 
-Este guia descreve como a equipe deve preparar, executar e colaborar no projeto
-Lumina Odonto durante a Sprint 4. Ele registra o estado atual do repositório e
-separa o fluxo local obrigatório do trabalho de infraestrutura que ainda está
-pendente.
+Este guia prepara o trabalho local da equipe para a Sprint 6. O planejamento
+em [sprint-06.md](sprint/sprint-06.md) ainda é uma proposta. A base atual tem
+autenticação, usuários, pacientes, dentistas e Agenda integrados no código;
+Prontuário e Evolução Clínica permanecem pendentes.
 
 ## Estrutura atual do repositório
 
@@ -15,8 +15,8 @@ Projeto_clinica/
 ├── .gitignore
 ├── backend/
 │   ├── app/                 # API FastAPI organizada por domínio
-│   ├── alembic/             # Migrações antigas; requer alinhamento
-│   ├── database/schema.sql  # Estrutura PostgreSQL de referência
+│   ├── alembic/             # Revisões parciais; requer baseline
+│   ├── database/            # Schema completo e migração SQL da Agenda
 │   ├── scripts/             # Seed local
 │   ├── tests/               # Testes com SQLite em memória
 │   ├── Dockerfile
@@ -24,23 +24,24 @@ Projeto_clinica/
 │   ├── pyproject.toml
 │   └── README.md
 ├── docs/
-│   └── sprint/sprint-04.md
-└── frontend/                # Reservado para a interface web
+│   ├── development.md      # Guia principal para começar a desenvolver
+│   ├── guides/             # Guias operacionais e de integração
+│   ├── reference/          # Arquitetura, requisitos e regras de negócio
+│   └── sprint/             # Planejamentos das sprints
+└── frontend/                # React/Vite, cliente HTTP e testes de sessão
 ```
 
-No estado atual, não há código de front-end versionado dentro de `frontend/`.
-O back-end contém os módulos `core`, `security`, `common`, `users` e
-`patients`. As entidades de agenda, prontuário, evoluções, auditoria e IA ainda
-não possuem implementação de API.
+Os routers de autenticação, usuários, pacientes, dentistas e Agenda estão
+registrados em `backend/app/main.py`. A tela rotulada como prontuário apresenta
+somente dados cadastrais do paciente; ainda não há acesso a conteúdo clínico.
 
 ## Pré-requisitos
 
 - Git;
 - Python 3.11 ou 3.12;
 - PostgreSQL disponível localmente;
+- Node.js 22 ou superior e npm para o frontend e seus testes locais;
 - Ambiente Linux/WSL ou equivalente compatível com o projeto;
-- Opcionalmente, Docker Desktop com integração WSL habilitada para o trabalho
-  futuro de containerização.
 
 As versões suportadas do Python e as dependências do back-end estão em
 `backend/pyproject.toml`.
@@ -84,36 +85,53 @@ Regras obrigatórias:
 O PostgreSQL é o banco oficial da API. A URL de conexão é definida pela variável
 `DATABASE_URL` no `.env`, usando o driver Psycopg configurado no projeto.
 
-O arquivo `backend/database/schema.sql` cria a estrutura atual do banco. Ele
-deve ser aplicado somente em um banco novo ou em um ambiente autorizado pela
-equipe, pois executa DDL. Antes de aplicá-lo, confirme o ambiente e faça backup
-quando houver dados relevantes.
+O procedimento detalhado para banco novo, banco anterior à Agenda e banco já
+atualizado está em [database-setup.md](guides/database-setup.md). `schema.sql` é para
+**banco vazio**; a migração SQL da Agenda é para um banco PostgreSQL com o
+esquema anterior verificado. Não execute nenhum deles em um banco compartilhado
+sem conferir o estado e a autorização do responsável.
 
 Fluxo local recomendado para uma instalação nova:
 
 1. criar o usuário e o banco PostgreSQL locais;
 2. preencher `DATABASE_URL` no `.env` sem expor a senha;
-3. aplicar `database/schema.sql` no banco autorizado;
+3. aplicar `database/schema.sql` com `ON_ERROR_STOP=1` no banco vazio;
 4. executar o seed local somente quando a equipe decidir criar os dados de
    demonstração;
-5. iniciar a API e validar o Swagger.
+5. iniciar a API e o frontend em terminais separados.
 
-O seed é idempotente para a clínica e o administrador de demonstração, mas ele
-altera dados. Não o execute em bases compartilhadas sem autorização explícita.
+O seed procura evitar duplicar seus registros de demonstração, mas altera o
+banco. Não o execute em bases compartilhadas sem autorização explícita. As
+consultas fictícias são criadas em data futura; ajuste os filtros da Agenda
+para localizá-las.
 
-## Executar a API e acessar o Swagger
+## Executar API e frontend
 
-Com o ambiente virtual ativado e o PostgreSQL configurado:
+Terminal 1, na pasta `backend/`, com o ambiente virtual ativado e o PostgreSQL
+configurado:
 
 ```bash
 uvicorn app.main:app --reload
 ```
+
+Terminal 2, na pasta `frontend/`:
+
+```bash
+npm ci
+npm run dev
+```
+
+O frontend usa `http://localhost:5173` e chama por padrão
+`http://localhost:8000/api/v1`. Para outra API, configure `VITE_API_URL` no
+ambiente do frontend com o prefixo `/api/v1`. Inclua a origem exata do frontend
+em `CORS_ORIGINS` no `.env` da API. Nunca publique URLs com credenciais.
 
 Endereços locais:
 
 | Recurso | Endereço |
 |---|---|
 | API | `http://localhost:8000` |
+| Frontend | `http://localhost:5173` |
 | Swagger | `http://localhost:8000/docs` |
 | Health check | `http://localhost:8000/health` |
 
@@ -130,29 +148,51 @@ python -m pytest
 ```
 
 Os testes existentes usam SQLite em memória e não usam o PostgreSQL local.
-Eles cobrem autenticação, hash de senha, rate limit, health check, permissões
-básicas e um fluxo de CRUD de pacientes. Eles não substituem testes de
-integração com PostgreSQL nem a validação do front-end.
+Eles cobrem autenticação, hash de senha, limite de login, health check,
+permissões, usuários, pacientes e Agenda. Eles não substituem um ensaio com
+PostgreSQL e dados descartáveis.
+
+Na pasta `frontend/`, execute os testes do cliente de sessão e o build:
+
+```bash
+npm test
+npm run build
+```
 
 Antes de declarar uma alteração concluída, execute a suíte aplicável e registre
 o resultado no Pull Request ou no relatório individual da Sprint.
 
-## Docker e Alembic durante a Sprint 4
+### Validação desta preparação (13/10/2026)
 
-Docker e Alembic requerem ajustes e não são a fonte de verdade para validar o
-fluxo local atual.
+| Comando ou ensaio | Resultado | Limite |
+|---|---|---|
+| `cd backend && .venv/bin/python -m pytest -q` | 47 testes passaram | SQLite em memória; não prova o banco da equipe. O `TestClient` travou no sandbox desta preparação e a suíte foi executada fora dele, ainda isolada do PostgreSQL por `tests/conftest.py`. |
+| `cd frontend && npm test` | 1 arquivo de teste passou, cobrindo 3 cenários de restauração de sessão | Cliente HTTP simulado; não testa navegador ou API real. |
+| `cd frontend && npm run build` | TypeScript e Vite concluíram | Compilação não substitui ensaio visual. |
+| PostgreSQL 18 descartável em `/tmp`: `schema.sql` em banco vazio; esquema anterior mais migração SQL em outro banco | O esquema novo criou 8 tabelas; a migração completou, preencheu o período de consulta existente e rejeitou sobreposição | Bancos isolados de teste; nenhum banco da equipe foi alterado. |
+| FastAPI/TestClient com PostgreSQL descartável | Login, criação/listagem de dentista, criação de paciente e agendamento, e listagem da Agenda passaram | Fluxo parcial, sem frontend em navegador, reinício da API, múltiplas clínicas ou dados existentes da equipe. |
+
+Os clusters descartáveis foram encerrados e removidos. Há avisos de
+depreciação de dependências na suíte da API; eles não causaram falhas. O
+procedimento em banco compartilhado continua dependente da inspeção e
+autorização descritas em [database-setup.md](guides/database-setup.md).
+
+## Docker e Alembic nesta base
+
+Docker e Alembic ainda não reproduzem todo o esquema PostgreSQL utilizado pela
+Agenda e previsto para a Sprint 6.
 
 - `backend/compose.yaml` ainda contém configuração antiga de MySQL;
 - a API e `database/schema.sql` foram direcionados para PostgreSQL;
-- a migração Alembic atual não corresponde ao schema PostgreSQL nem aos models
-  atuais;
-- não execute `alembic upgrade head` no estado atual;
-- não use o Compose atual como caminho de validação da Sprint 4.
+- as revisões Alembic cobrem apenas parte do `schema.sql` e não substituem o
+  procedimento de banco descrito acima;
+- não execute `alembic upgrade head` em um banco com dados para tentar
+  reconciliar estruturas divergentes;
+- não use o Compose atual como ambiente PostgreSQL da Sprint 6.
 
-Primeiro valide localmente o fluxo `front-end → API → PostgreSQL`. Depois,
-trate a atualização de Docker e a estratégia de migrações em branch e Pull
-Request separados, com revisão técnica. O Docker não deve bloquear a conclusão
-do fluxo funcional da Sprint 4.
+Para esta base, use o fluxo local `frontend → API → PostgreSQL`. A estratégia
+de migrações para bancos existentes e o ambiente Docker precisam de revisão
+técnica antes de serem apresentados como reproduzíveis.
 
 ## Organização de branches
 
@@ -255,10 +295,12 @@ banco nas evidências compartilhadas.
 - Use contas e dados de demonstração somente em ambientes autorizados.
 - Revise o diff antes de cada push para detectar arquivos acidentais.
 
-## Escopo técnico imediato da Sprint 4
+## Escopo técnico imediato da Sprint 6
 
-O objetivo imediato é validar o fluxo completo de login, cadastro de equipe e
-gestão de pacientes entre front-end, API e PostgreSQL. As integrações de IA,
-agenda, prontuário completo, Docker final, Alembic alinhado e infraestrutura de
-produção permanecem como trabalho posterior ou paralelo, sem bloquear essa
-validação local.
+A base já contém autenticação, usuários, pacientes, dentistas e Agenda. O
+terceiro módulo previsto é Prontuário e Evolução Clínica; o
+[planejamento](sprint/sprint-06.md) ainda deve ser alinhado pela equipe e a
+[revisão clínica](reference/clinical-records-review.md) registra decisões pendentes. O
+frontend, a API e o PostgreSQL precisam ser ensaiados em conjunto antes da
+demonstração. Docker e a estratégia de migrações para bancos existentes não
+estão concluídos nesta base.

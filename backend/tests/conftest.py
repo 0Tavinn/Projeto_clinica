@@ -1,9 +1,10 @@
 import os
 
-# Testes usam SQLite em memória, nunca o PostgreSQL de desenvolvimento.
-os.environ.setdefault("ENVIRONMENT", "test")
-os.environ.setdefault("SECRET_KEY", "test-secret-key-not-for-production")
-os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
+# Testes usam SQLite em memória, mesmo quando o shell ou .env aponta para PostgreSQL.
+os.environ["ENVIRONMENT"] = "test"
+os.environ["DEBUG"] = "false"
+os.environ["SECRET_KEY"] = "test-secret-key-not-for-production"
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 
 import pytest
 from fastapi.testclient import TestClient

@@ -7,7 +7,7 @@
 - **Referência principal:** funcionalidades consolidadas na Sprint 04.
 - **Referência complementar:** [Requisitos do sistema](./requirements.md).
 - **Situação:** regras atuais documentadas e propostas para revisão da equipe.
-- **Destino no repositório:** `docs/business-rules.md`.
+- **Destino no repositório:** `docs/reference/business-rules.md`.
 
 Este documento descreve as condições que orientam as operações do Lumina Odonto. O relatório da Sprint 04 e os testes relatados pela equipe têm prioridade sobre propostas anteriores quando houver divergências.
 

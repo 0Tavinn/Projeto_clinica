@@ -2,9 +2,9 @@
 
 ## Objetivo
 
-Este documento descreve o contrato **atualmente implementado** pela API do
-Lumina Odonto para orientar a integração do front-end na Sprint 4. Ele não
-antecipa endpoints ou permissões que ainda não existem no código.
+Este documento descreve as rotas presentes na base de preparação da Sprint 6.
+Autenticação, equipe, pacientes, dentistas e Agenda possuem consumidores no
+frontend. Prontuário e Evolução Clínica ainda não têm contrato implementado.
 
 ## Endereços locais
 
@@ -84,11 +84,17 @@ retorna o perfil que deve orientar a navegação e os controles da interface.
 | Operação | Administrador | Recepcionista | Dentista |
 |---|:---:|:---:|:---:|
 | Login, refresh e consulta do próprio usuário | Sim | Sim | Sim |
-| Cadastrar usuário da equipe | Sim | Não | Não |
+| Listar e cadastrar usuários da equipe | Sim | Não | Não |
+| Listar dentistas ativos | Sim | Sim | Não |
 | Listar ou consultar pacientes | Sim | Sim | Sim |
-| Cadastrar paciente | Sim | Sim | Não |
-| Editar paciente | Sim | Sim | Não |
+| Cadastrar paciente | Sim | Sim | Sim |
+| Editar paciente | Sim | Sim | Sim |
 | Inativar paciente | Sim | Sim | Não |
+| Criar, editar e cancelar consultas | Sim | Sim | Não |
+| Listar e consultar Agenda | Sim | Sim | Somente próprias consultas |
+| Confirmar consultas | Sim | Sim | Não |
+| Concluir consultas | Sim | Não | Somente próprias, após o início |
+| Registrar ausência | Sim | Sim | Somente próprias, após o início |
 
 As permissões acima refletem a API atual. O front-end deve esconder ações não
 autorizadas por perfil, mas a API continua sendo a autoridade final e pode
@@ -151,6 +157,7 @@ Resposta de `GET /api/v1/auth/me` (`200`):
 | Método | Rota | Finalidade | Perfil | Campos principais | Respostas esperadas |
 |---|---|---|---|---|---|
 | `POST` | `/api/v1/users` | Cadastra usuário na clínica do administrador | Administrador | `full_name`, `email`, `password`, `cpf`, `phone`, `role` | `201`, `401`, `403`, `409`, `422`, `500` |
+| `GET` | `/api/v1/users` | Lista usuários da clínica | Administrador | Header `Authorization` | `200`, `401`, `403`, `500` |
 
 Campos obrigatórios para cadastro de usuário:
 
@@ -162,6 +169,8 @@ Campos obrigatórios para cadastro de usuário:
 | `cpf` | Exatamente 11 dígitos, sem pontuação |
 | `role` | `ADMINISTRATOR`, `RECEPTIONIST` ou `DENTIST` |
 | `phone` | Opcional, até 20 caracteres |
+| `cro_number`, `cro_state` | Obrigatórios quando `role=DENTIST`; CRO até 30 caracteres, UF com duas letras |
+| `specialty` | Opcional para dentistas, até 100 caracteres |
 
 Exemplo de requisição:
 
@@ -194,18 +203,26 @@ Exemplo de resposta de criação (`201`):
 }
 ```
 
-Não existe `GET /api/v1/users` na versão atual. Portanto, a tela de equipe
-não consegue obter uma lista de usuários pela API e não deve supor que essa
-rota esteja disponível.
+`POST /users` com `role=DENTIST` grava usuário e perfil profissional na mesma
+transação. A tela de equipe usa `GET /users` para atualizar a listagem.
+
+### Dentistas
+
+| Método | Rota | Finalidade | Perfil |
+|---|---|---|---|
+| `GET` | `/api/v1/dentists` | Lista profissionais ativos da clínica para seleção na Agenda | Administrador ou recepcionista |
+| `POST` | `/api/v1/dentists` | Completa um perfil profissional de usuário dentista existente | Administrador |
+
+O frontend usa a listagem e cadastra novos dentistas por `POST /users`.
 
 ### Pacientes
 
 | Método | Rota | Finalidade | Perfil | Campos principais | Respostas esperadas |
 |---|---|---|---|---|---|
-| `POST` | `/api/v1/patients` | Cadastra paciente | Administrador ou recepcionista | Dados do paciente | `201`, `401`, `403`, `409`, `422`, `500` |
+| `POST` | `/api/v1/patients` | Cadastra paciente | Administrador, recepcionista ou dentista | Dados do paciente | `201`, `401`, `403`, `409`, `422`, `500` |
 | `GET` | `/api/v1/patients` | Lista pacientes ativos da clínica | Qualquer perfil ativo | Header `Authorization` | `200`, `401`, `403`, `500` |
 | `GET` | `/api/v1/patients/{patient_id}` | Consulta paciente ativo | Qualquer perfil ativo | `patient_id` | `200`, `401`, `403`, `404`, `422`, `500` |
-| `PATCH` | `/api/v1/patients/{patient_id}` | Atualiza paciente ativo | Administrador ou recepcionista | `patient_id` e campos alterados | `200`, `400`, `401`, `403`, `404`, `409`, `422`, `500` |
+| `PATCH` | `/api/v1/patients/{patient_id}` | Atualiza paciente ativo | Administrador, recepcionista ou dentista | `patient_id` e campos alterados | `200`, `400`, `401`, `403`, `404`, `409`, `422`, `500` |
 | `DELETE` | `/api/v1/patients/{patient_id}` | Inativa paciente sem apagá-lo | Administrador ou recepcionista | `patient_id` | `204`, `401`, `403`, `404`, `422`, `500` |
 
 Campos obrigatórios no cadastro de paciente:
@@ -254,16 +271,51 @@ Exemplo de resposta de criação (`201`):
 ```
 
 No `PATCH`, envie somente os campos que devem mudar. É necessário enviar ao
-menos um campo útil. Atualmente, campos com valor `null` são ignorados pela
-API; portanto, o front-end não consegue limpar um campo opcional enviando
-`null`.
+menos um campo. Envie `null` para limpar `phone`, `email` ou `address`;
+campos obrigatórios não aceitam `null`.
 
 O `DELETE` é uma inativação lógica e responde sem corpo (`204`). Em seguida,
 atualize a listagem local ou faça nova chamada para `GET /patients`.
 
+### Agenda
+
+| Método | Rota | Finalidade | Perfil |
+|---|---|---|---|
+| `POST` | `/api/v1/appointments` | Cria consulta futura | Administrador ou recepcionista |
+| `GET` | `/api/v1/appointments` | Lista consultas da clínica; dentista vê apenas as próprias | Todos os perfis da equipe |
+| `GET` | `/api/v1/appointments/{appointment_id}` | Consulta detalhes, com a mesma restrição por perfil | Todos os perfis da equipe |
+| `PATCH` | `/api/v1/appointments/{appointment_id}` | Atualiza ou reagenda; dentista só pode enviar situação permitida | Perfis conforme a operação |
+| `PATCH` | `/api/v1/appointments/{appointment_id}/status` | Altera a situação | Perfis conforme situação e vínculo |
+| `POST` | `/api/v1/appointments/{appointment_id}/cancel` | Cancela sem apagar | Administrador ou recepcionista |
+
+Criação e atualização usam `patient_id`, `dentist_id`, `scheduled_at` em ISO
+8601, `duration_minutes` e `notes`. A resposta acrescenta `id`, `clinic_id`,
+nomes de paciente e dentista, `status`, `created_at` e `updated_at`. A API
+define `clinic_id` pelo usuário autenticado; o frontend não o envia.
+
+`GET /appointments` aceita `start_date`, `end_date` (instantes ISO, início
+inclusivo e fim exclusivo), `dentist_id`, `patient_id` e `status`. A interface
+envia período, dentista e situação. O serviço valida paciente e dentista
+ativos na mesma clínica, horário futuro, duração positiva e ausência de
+conflito. A restrição PostgreSQL complementa essa checagem quando o banco
+estiver preparado conforme [database-setup.md](database-setup.md).
+
+Estados: `SCHEDULED`, `CONFIRMED`, `COMPLETED`, `CANCELED`, `NO_SHOW`. A
+recepção confirma, cancela e registra ausência; o administrador também
+conclui; o dentista conclui ou registra ausência apenas nas próprias
+consultas. Conclusão e ausência exigem que o início da consulta já tenha
+passado. Estados finais não recebem novas transições. O frontend usa
+`PATCH /{id}/status` para essas ações.
+
+O número `medical_record_number` do paciente é cadastral. Não existe rota
+para ler prontuário clínico nem para criar, editar ou finalizar evoluções nesta
+base. As regras clínicas estão em discussão na
+[revisão técnica](../reference/clinical-records-review.md).
+
 ## Regras de persistência e isolamento de clínica
 
-Os dados de usuários e pacientes são persistidos no PostgreSQL. O vínculo com
+Os serviços persistem usuários, pacientes e Agenda no banco configurado para a
+API. O caminho local recomendado usa PostgreSQL. O vínculo com
 `clinic_id` não é definido pelo front-end: a API o obtém do usuário autenticado
 e limita consultas e alterações àquela clínica.
 
@@ -289,7 +341,7 @@ e limita consultas e alterações àquela clínica.
 | `401` | Credenciais, access token ou refresh token inválido/expirado; encerre ou renove a sessão conforme o fluxo |
 | `403` | Usuário autenticado sem permissão; mantenha a sessão e mostre acesso negado |
 | `404` | Recurso inexistente, inativo ou fora da clínica do usuário |
-| `409` | Conflito, normalmente e-mail, CPF ou prontuário já cadastrado |
+| `409` | Conflito, incluindo identificadores duplicados ou horário da Agenda ocupado |
 | `422` | Payload inválido; destaque os campos apontados em `error.details` quando disponível |
 | `500` | Falha interna; mostre uma mensagem genérica e não exponha detalhes técnicos |
 
@@ -391,14 +443,13 @@ Se o navegador bloquear uma requisição por CORS, confirme primeiro:
 Não altere CORS pelo front-end e não use `*` quando a aplicação precisar enviar
 credenciais.
 
-## Funcionalidades previstas para a Sprint 4
+## Limites para a Sprint 6
 
-As funcionalidades a seguir estão no planejamento da Sprint, mas **não fazem
-parte do contrato atual**:
+O [plano da Sprint 6](../sprint/sprint-06.md) é uma proposta para aprovação da
+equipe. Ele prevê rotas, permissões e telas de Prontuário e Evolução Clínica,
+que ainda não fazem parte deste contrato. Ao implementar o módulo, atualize
+este documento com os schemas e estados reais antes de integrar o frontend.
 
-- `GET /api/v1/users` para a tela de gestão da equipe;
-- autorização para dentistas cadastrarem e editarem pacientes;
-- testes automatizados para as novas permissões e para a listagem de equipe.
-
-Até que essas mudanças sejam implementadas e testadas, o front-end não deve
-apresentá-las como disponíveis.
+Os testes automatizados da API usam SQLite em memória. A disponibilidade de
+PostgreSQL, os gatilhos, as restrições específicas e a persistência após
+reinício exigem verificação em ambiente isolado ou autorizado.

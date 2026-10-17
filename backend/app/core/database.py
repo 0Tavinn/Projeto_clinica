@@ -1,9 +1,8 @@
 """
 Configuração de banco de dados (SQLAlchemy 2.x).
 
-Usa apenas construções compatíveis com MySQL e PostgreSQL (evita tipos e
-funções específicas de dialect) para permitir a migração planejada de MySQL
-para PostgreSQL sem reescrever os models.
+Configura a engine SQLAlchemy para o PostgreSQL usado pela API. Os testes
+unitários usam SQLite em memória; o schema completo é aplicado por SQL.
 """
 from typing import Generator
 

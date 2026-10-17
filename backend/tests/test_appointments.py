@@ -158,7 +158,7 @@ def test_update_and_reschedule_rejects_explicit_nulls(
     assert null_time.status_code == 422
     null_time_error = null_time.json()["error"]
     assert null_time_error["code"] == "VALIDATION_ERROR"
-    assert isinstance(null_time_error["details"][0]["ctx"]["error"], str)
+    assert {"loc", "msg", "type"} == set(null_time_error["details"][0])
 
     null_duration = client.patch(
         f"/api/v1/appointments/{appointment.id}",
@@ -166,9 +166,8 @@ def test_update_and_reschedule_rejects_explicit_nulls(
         headers=headers,
     )
     assert null_duration.status_code == 422
-    assert isinstance(
-        null_duration.json()["error"]["details"][0]["ctx"]["error"],
-        str,
+    assert {"loc", "msg", "type"} == set(
+        null_duration.json()["error"]["details"][0]
     )
 
 
