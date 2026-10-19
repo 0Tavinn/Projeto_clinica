@@ -1,7 +1,7 @@
 """Models ORM de clínica e usuário, alinhados ao schema PostgreSQL oficial."""
 import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -72,48 +72,10 @@ class User(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
 
-    # Relacionamentos
     clinic: Mapped["Clinic"] = relationship(back_populates="users")
-    
-    # 1-para-1 com Dentist. Permite Null pois o usuário pode ser Recepcionista ou Admin
-    dentist: Mapped["Dentist" | None] = relationship(back_populates="user")
 
     def __repr__(self) -> str:
         return (
             f"<User id={self.id} email={self.email} "
             f"role={self.role.value}>"
         )
-
-
-class Dentist(Base):
-    """Mapeia a tabela `dentists` do PostgreSQL."""
-
-    __tablename__ = "dentists"
-    __table_args__ = (
-        # Impede a repetição de um CRO dentro do mesmo estado
-        UniqueConstraint("cro_number", "cro_state", name="uq_dentists_cro"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("users.id", onupdate="CASCADE", ondelete="RESTRICT"),
-        nullable=False,
-        unique=True, # Garante que um usuário possua no máximo um perfil de dentista
-    )
-    cro_number: Mapped[str] = mapped_column(String(30), nullable=False)
-    cro_state: Mapped[str] = mapped_column(String(2), nullable=False)
-    specialty: Mapped[str | None] = mapped_column(String(100), nullable=True)
-
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
-    )
-
-    # Relacionamento inverso para User
-    user: Mapped["User"] = relationship(back_populates="dentist")
-
-    def __repr__(self) -> str:
-        return f"<Dentist id={self.id} cro={self.cro_number}/{self.cro_state}>"

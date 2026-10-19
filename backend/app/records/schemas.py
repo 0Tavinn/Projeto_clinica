@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import Optional, List
 from datetime import datetime
 
@@ -38,12 +38,24 @@ class ClinicalEvolutionBase(BaseModel):
 
 # ✅ Recebe o patient_id em vez do medical_record_id
 class ClinicalEvolutionDraftCreate(ClinicalEvolutionBase):
-    patient_id: int
+    model_config = ConfigDict(extra="forbid")
+
+    patient_id: int = Field(gt=0)
+    appointment_id: int | None = Field(default=None, gt=0)
 
 class ClinicalEvolutionUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     description: Optional[str] = None
     procedure_performed: Optional[str] = None
     notes: Optional[str] = None
+
+    @field_validator("description")
+    @classmethod
+    def reject_null_description(cls, value: str | None) -> str:
+        if value is None:
+            raise ValueError("A descrição não pode ser nula.")
+        return value
 
 class ClinicalEvolutionResponse(ClinicalEvolutionBase):
     id: int

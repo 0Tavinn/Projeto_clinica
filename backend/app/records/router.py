@@ -15,15 +15,18 @@ from app.records.service import RecordService
 
 router = APIRouter(prefix="/patients", tags=["Medical Records & Evolutions"])
 
-@router.get("/{patient_id}/record", response_model=MedicalRecordResponse)
-def get_or_open_medical_record(
+@router.get(
+    "/{patient_id}/record",
+    response_model=MedicalRecordResponse,
+    summary="Consulta um prontuário existente, sem criar um novo registro.",
+)
+def get_medical_record(
     patient_id: int, 
     current_user: CurrentUser, 
     db: Session = Depends(get_db)
 ):
-    # O RecordService faz o bloqueio de Admin/Recepcionista logo ao instanciar
     service = RecordService(db, current_user)
-    return service.get_or_create_medical_record(patient_id)
+    return service.get_medical_record(patient_id)
 
 
 @router.get("/{patient_id}/evolutions", response_model=List[ClinicalEvolutionResponse])
