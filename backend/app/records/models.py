@@ -30,9 +30,9 @@ class MedicalRecord(Base):
     )
 
     # Relacionamentos
-    patient: Mapped["Patient"] = relationship("Patient", back_populates="medical_record")
+    patient: Mapped["Patient"] = relationship("Patient")
     evolutions: Mapped[list["ClinicalEvolution"]] = relationship(
-        "ClinicalEvolution", back_populates="medical_record", cascade="all, delete-orphan"
+        "ClinicalEvolution", back_populates="medical_record"
     )
 
     def __repr__(self) -> str:
