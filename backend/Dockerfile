@@ -6,9 +6,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Dependências de sistema mínimas para compilar drivers/argon2 se necessário.
+# Dependências de sistema mínimas para o driver PostgreSQL e Argon2.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential default-libmysqlclient-dev pkg-config \
+    && apt-get install -y --no-install-recommends build-essential libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml ./
