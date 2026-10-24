@@ -309,21 +309,21 @@ Como exemplo sujeito à aprovação, pode ser utilizado `LO-001-2026-000001`. A 
 
 ### RN-031 — Acesso e responsabilidade pelos registros clínicos
 
-O prontuário acompanha o paciente na clínica; diferentes dentistas podem atendê-lo. Cada evolução identifica seu responsável. Não se exige vínculo exclusivo permanente paciente–dentista. As permissões de leitura, abertura e escrita são definidas por ação.
+O prontuário acompanha o paciente na clínica; diferentes dentistas podem atendê-lo. Cada evolução identifica seu responsável. Não se exige vínculo exclusivo permanente paciente–dentista. A operação autorizada de confirmação de uma consulta na Agenda concede leitura ao dentista responsável pelo paciente daquela consulta na mesma clínica; essa autorização permanece após conclusão, ausência ou cancelamento posteriores à confirmação. Rascunhos de outros autores não são disponibilizados. Abertura e escrita seguem decisões próprias.
 
-**Situação em 23/10/2026:** direção definida por Paulo; política operacional ainda para aprovação da equipe/professor, com implementação parcial. **RF relacionados:** RF-023 e RF-024. Ver [RN-031](./regras-de-negocio/RN-031-acesso-e-responsabilidade-pelo-prontuario.md).
+**Situação em 24/10/2026:** concessão e permanência aprovadas por Paulo; autorização persistente não implementada. Persistência, legado e alteração dos participantes exigem desenho; D02–D06 continuam abertas nos pontos não decididos. **RF relacionados:** RF-023 e RF-024. Ver [RN-031](./regras-de-negocio/RN-031-RF-023-acesso-ao-prontuario.md).
 
 ### RN-032 — Preservação do histórico clínico
 
-Evoluções devem preservar conteúdo, autoria e horários; registros finalizados não recebem edição comum. Identificação profissional histórica e retificação vinculada ao original são refinamentos propostos para aprovação.
+Evoluções devem preservar conteúdo, autoria e horários; registros finalizados não recebem edição comum. A privacidade dos rascunhos segue a direção aprovada em RN-031. Identificação profissional histórica e retificação vinculada ao original são refinamentos propostos para aprovação.
 
-**Situação em 23/10/2026:** bloqueio comum de edição implementado; cópia histórica, proteção concorrente e retificação pendentes. **RF relacionado:** RF-024. Ver [RN-032](./regras-de-negocio/RN-032-preservacao-do-historico-clinico.md).
+**Situação em 23/10/2026:** bloqueio comum de edição implementado; cópia histórica, proteção concorrente e retificação pendentes. **RF relacionado:** RF-024. Ver [RN-032](./regras-de-negocio/RN-032-RF-024-preservacao-do-historico-clinico.md).
 
 ### RN-033 — IA como apoio ao profissional
 
 O resumo de apoio deve ser identificado e baseado em histórico autorizado, com fontes conferíveis; não cria nem finaliza evolução automaticamente e depende de revisão profissional.
 
-**Situação em 23/10/2026:** proposta sem implementação; dados e processamento precisam de aprovação. **RF relacionado:** RF-025. Ver [RN-033](./regras-de-negocio/RN-033-ia-como-apoio-ao-profissional.md).
+**Situação em 23/10/2026:** proposta sem implementação; dados e processamento precisam de aprovação. **RF relacionado:** RF-025. Ver [RN-033](./regras-de-negocio/RN-033-RF-025-ia-como-apoio-ao-profissional.md).
 
 ### RN-034 — Operações com rastreabilidade
 

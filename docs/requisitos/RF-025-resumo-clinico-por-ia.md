@@ -1,6 +1,6 @@
 # RF-025 — Disponibilizar resumos de apoio ao dentista por IA
 
-**Revisão:** 23/10/2026. **Situação:** proposta discutida com Paulo; sem implementação ou inclusão automática na entrega de 24/10. **Regra:** [RN-033](../regras-de-negocio/RN-033-ia-como-apoio-ao-profissional.md). **Decisões:** D01 e D07 no [índice](README.md).
+**Revisão:** 23/10/2026. **Situação:** proposta discutida com Paulo; sem implementação ou inclusão automática na entrega de 24/10. **Regra:** [RN-033](../regras-de-negocio/RN-033-RF-025-ia-como-apoio-ao-profissional.md). **Decisões:** D01 e D07 no [índice](README.md).
 
 ## Objetivo e fluxo proposto
 

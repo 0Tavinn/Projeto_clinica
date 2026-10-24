@@ -196,13 +196,15 @@ Os estados e as transições permitidas serão definidos com a equipe; a lista p
 
 ### RF-023 — Consultar prontuários clínicos
 
-O sistema deve permitir ao dentista autorizado consultar o prontuário do paciente, preservado entre atendimentos por profissionais diferentes, sem vínculo exclusivo permanente paciente–dentista. A política de leitura e abertura precisa ser aprovada por ação.
+O sistema deve permitir ao dentista autorizado consultar o prontuário do paciente, preservado entre atendimentos por profissionais diferentes, sem vínculo exclusivo permanente paciente–dentista. A concessão da leitura pela operação autorizada de confirmação de consulta na Agenda e sua permanência foram aprovadas por Paulo em 24/10/2026; o contrato de abertura do prontuário continua pendente em D02.
 
-**Situação em 23/10/2026:** implementação parcial; direção de produto confirmada por Paulo e detalhes operacionais pendentes. Ver [RF-023](./requisitos/RF-023-prontuario-do-paciente.md).
+**Situação em 24/10/2026:** implementação parcial; a autorização persistente aprovada ainda não foi implementada. Persistência, legado e alteração dos participantes exigem desenho técnico. Ver [RF-023](./requisitos/RF-023-prontuario-do-paciente.md).
 
 ### RF-024 — Registrar evoluções clínicas
 
 O sistema deve registrar cada evolução no prontuário com autoria individual obtida da sessão, dados do atendimento, rascunho e finalização. Diferentes dentistas podem acrescentar seus registros ao mesmo prontuário, preservando os anteriores.
+
+A concessão de leitura definida em RN-031 não autoriza, por si só, criar ou finalizar uma evolução; essas condições permanecem em D03 e D04.
 
 **Situação em 23/10/2026:** implementação parcial; validações e autoria histórica precisam de correção. Ver [RF-024](./requisitos/RF-024-evolucoes-clinicas.md) e [decisões pendentes](./requisitos/README.md).
 

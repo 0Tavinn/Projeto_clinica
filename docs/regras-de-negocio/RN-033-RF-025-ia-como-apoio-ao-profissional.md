@@ -1,6 +1,6 @@
 # RN-033 — IA como apoio ao profissional
 
-**Revisão:** 23/10/2026. **RF relacionado:** [RF-025](../requisitos/RF-025-resumo-clinico-por-ia.md). **Situação:** proposta; não implementada. **Pendências:** D01 e D07 no [índice](../requisitos/README.md).
+**Revisão:** 24/10/2026. **RF relacionado:** [RF-025](../requisitos/RF-025-resumo-clinico-por-ia.md). **Situação:** proposta; não implementada. **Dependências:** a política de leitura de D01 foi aprovada, mas sua autorização persistente ainda depende de desenho e implementação; D07 e a proposta de IA continuam pendentes no [índice](../requisitos/README.md).
 
 O resumo deve ser identificado como conteúdo de apoio, com origem e momento de geração. Sua leitura e processamento obedecem à mesma autorização do histórico utilizado. A proposta usa evoluções finalizadas autorizadas; rascunhos de terceiros e dados de outra clínica não devem compor o processamento.
 

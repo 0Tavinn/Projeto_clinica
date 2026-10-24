@@ -1,38 +1,103 @@
 # RF-023 — Consultar prontuários clínicos
 
-**Revisão:** 23/10/2026. **Situação:** implementação parcial; diretrizes de Paulo e propostas operacionais abaixo. **Regra relacionada:** [RN-031](../regras-de-negocio/RN-031-acesso-e-responsabilidade-pelo-prontuario.md). **Decisões:** D01, D02, D03 e D06 no [índice](README.md).
+**Revisão:** 24/10/2026.
+**Regra principal:** RN-031.
+**Relacionados:** RF-012, RF-022 e RF-024.
+**Situação:** concessão e permanência aprovadas por Paulo Sérgio; implementação parcial.
 
-## Objetivo e direção definida
+## 1. Objetivo
 
-Permitir que o dentista autorizado consulte o prontuário do paciente para preparar e acompanhar o atendimento. Um paciente conserva o mesmo prontuário na clínica ao longo de consultas com profissionais diferentes. A autoria é identificada em cada evolução; não se exige associação exclusiva permanente entre paciente e dentista.
+Permitir ao dentista autorizado consultar o prontuário do paciente para preparar e acompanhar seu atendimento.
 
-**Ator:** dentista autenticado com cadastro profissional elegível. **Entradas:** paciente e consulta, quando o acesso vier da Agenda. **Saída:** dados do prontuário e histórico autorizado. Perfil, clínica e política de leitura são conferidos pela API em cada operação.
+O paciente mantém um prontuário na clínica, compartilhado entre os profissionais autorizados. A autoria de cada evolução permanece individual.
 
-## Fluxo recomendado para aprovação
+## 2. Ator e autorização
 
-1. O dentista abre uma consulta sob sua responsabilidade ou pesquisa um paciente permitido pela política aprovada. O painel de atendimentos do dia é um refinamento de RF-012.
-2. A API confere elegibilidade do usuário, clínica do paciente e autorização para leitura. A existência do paciente na lista não basta para autorizar conteúdo clínico.
-3. A consulta do prontuário não cria dados. Se inexistente, a interface informa a situação e oferece a operação explícita de abertura somente a quem tiver permissão (D02).
-4. A tela reúne últimas evoluções finalizadas e acesso ao histórico completo autorizado, ordenado e com identificação do autor. Rascunhos aparecem apenas ao autor como proposta de privacidade.
-5. O dentista pode consultar o histórico e preparar o registro durante o atendimento; a matriz de estados da consulta ainda será fechada em D03. Não exigir consulta concluída para toda leitura preparatória.
-6. A evolução atual segue RF-024. O resumo opcional segue RF-025 e não bloqueia o acesso aos registros originais.
+O ator é o dentista autenticado, ativo e com cadastro profissional elegível.
 
-## Critérios de aceite
+A autorização é concedida quando uma consulta entre aquele paciente e dentista é confirmada pela operação autorizada da Agenda.
 
-Os critérios mantêm os IDs do detalhamento anterior; representam o comportamento pretendido após fechar as decisões, não testes já aprovados.
+Uma consulta apenas agendada não concede acesso.
 
-| ID | Resultado verificável |
+A autorização permanece após conclusão, ausência ou cancelamento posteriores à confirmação, conforme RN-031.
+
+## 3. Funcionalidade
+
+O sistema deve permitir ao dentista autorizado:
+
+1. Localizar e consultar o prontuário do paciente.
+2. Consultar suas observações gerais.
+3. Consultar as evoluções finalizadas de todos os autores.
+4. Identificar autoria e horários apresentados nos registros.
+5. Consultar seus próprios rascunhos.
+6. Retornar ao prontuário posteriormente para acompanhamento.
+
+A apresentação de uma lista de prontuários autorizados deve ser alinhada ao painel do dentista em RF-012. Essa lista não deve ser confundida com o cadastro geral de pacientes da clínica.
+
+Rascunhos de outros autores não devem ser disponibilizados.
+
+## 4. Verificações em cada consulta
+
+A API deve validar usuário ativo, perfil profissional, clínica e autorização persistida.
+
+A existência do paciente no cadastro, uma URL conhecida ou um botão na interface não substitui essas verificações.
+
+Administrador, recepção e outra clínica não devem obter conteúdo clínico por rotas alternativas, inclusive pelo campo de observações gerais.
+
+## 5. Abertura do prontuário
+
+A consulta e a abertura do prontuário são operações distintas no comportamento proposto.
+
+A proposta é:
+
+- GET consulta sem criar dados.
+- Operação explícita abre o prontuário quando autorizada.
+- Tentativas repetidas ou concorrentes não criam prontuários duplicados.
+
+Essa alteração depende da decisão D02 e do contrato coordenado entre backend e frontend. A política de acesso aprovada não representa aprovação automática desse contrato.
+
+## 6. Critérios de aceite
+
+Os IDs anteriores foram preservados. Os critérios representam o comportamento esperado; não são resultados de testes já aprovados.
+
+| ID | Resultado esperado |
 |---|---|
-| RF-023-CA01 | Dentista autorizado consulta o prontuário existente sem criar outro. |
-| RF-023-CA02 | Consultar prontuário inexistente não escreve no banco; a abertura explícita aprovada gera no máximo um prontuário, inclusive em tentativas simultâneas. |
-| RF-023-CA03 | Administrador, recepção e outra clínica não obtêm conteúdo por telas ou rotas alternativas, conforme a matriz clínica proposta. |
-| RF-023-CA04 | A política de leitura aprovada é aplicada no backend; a ausência de vínculo exclusivo não amplia automaticamente a permissão. |
-| RF-023-CA05 | Histórico respeita visibilidade de registros de outros autores e privacidade dos rascunhos conforme a política aprovada. |
-| RF-023-CA06 | Dois dentistas autorizados acrescentam registros ao mesmo prontuário sem trocar autoria dos anteriores. |
-| RF-023-CA07 | Acesso negado, ausência de prontuário e falha de conexão recebem mensagens distintas, sem exposição de dados de outra clínica. |
+| RF-023-CA01 | Dentista autorizado consulta prontuário existente sem criar duplicidade. |
+| RF-023-CA02 | Após aprovação de D02, consultar prontuário inexistente não escreve no banco; abertura explícita gera no máximo um prontuário, inclusive sob concorrência. |
+| RF-023-CA03 | Administrador, recepção e outra clínica não obtêm conteúdo clínico por telas ou rotas alternativas. |
+| RF-023-CA04 | A API verifica a concessão definida em RN-031 em toda leitura clínica. |
+| RF-023-CA05 | Dentista autorizado recebe evoluções finalizadas de todos os autores e somente seus próprios rascunhos. |
+| RF-023-CA06 | Dentistas autorizados utilizam o mesmo prontuário, preservando autoria; as operações de escrita seguem RF-024. |
+| RF-023-CA07 | Acesso negado, prontuário inexistente e falha de conexão recebem tratamento distinto, sem exposição indevida. |
+| RF-023-CA08 | Após confirmação e conclusão da consulta, a autorização permanece para acompanhamento. |
+| RF-023-CA09 | Dentista sem autorização não recebe conteúdo apenas por pertencer à clínica ou ter autoria antiga. |
+| RF-023-CA10 | Consulta somente agendada, sem autorização anterior, não libera acesso; confirmação concede ao paciente e dentista corretos. |
+| RF-023-CA11 | Cancelamento ou ausência posteriores à confirmação mantêm o acesso, inclusive quando aquela era a única consulta entre os participantes. |
+| RF-023-CA12 | Repetição ou concorrência na confirmação não produz concessões inconsistentes; falha da operação não deixa autorização indevida. |
+| RF-023-CA13 | Confirmar consulta de outro paciente ou dentista não concede acesso ao profissional errado. |
+| RF-023-CA14 | A autorização permanece verificável após reiniciar API e PostgreSQL. |
+| RF-023-CA15 | Usuário inativo ou fora da clínica autorizada não consegue utilizar a concessão para acessar conteúdo. |
+| RF-023-CA16 | Registros antigos seguem tratamento explícito, sem presumir confirmação somente pelo estado atual da consulta. |
 
-## Comportamento atual e dependências
+## 7. Escopo futuro e pendências
 
-`GET /api/v1/patients/{patient_id}/record` cria o prontuário ausente. A listagem de evoluções aceita qualquer dentista da clínica e inclui rascunhos de outros autores. A tela separa histórico e formulário. A API da Agenda restringe às próprias consultas, enquanto a lista cadastral de pacientes cobre toda a clínica.
+A revogação individual pelo administrador fica fora do MVP.
 
-Rever `backend/app/records/{router,service,repository}.py` e `frontend/src/{App.tsx,api.ts}`. A mudança do GET depende de migração coordenada da chamada atual `getOrOpen`; não declarar a interface integrada corrigida apenas porque o novo endpoint passou isoladamente.
+Continuam pendentes:
+
+- Abertura explícita e contrato HTTP — D02.
+- Condições para escrever e finalizar — D03/D04.
+- Tratamento de paciente inativo — D06.
+- Migração das autorizações antigas e alteração posterior dos participantes — D01.
+
+A leitura autorizada não permite editar registros de terceiros nem registrar atendimento em qualquer situação.
+
+## 8. Implementação encontrada
+
+Na referência `9b26c81`, o GET cria prontuário ausente, e a autorização utiliza basicamente perfil e clínica. A listagem pode incluir rascunhos de outros autores.
+
+Esse comportamento ainda não atende à política de RN-031.
+
+Alterações ou testes realizados em outros checkouts não devem ser apresentados como integrados nesta pasta sem conferência.
+
+A implementação deverá envolver autorização clínica, confirmação da Agenda, persistência, interface e testes no PostgreSQL utilizado pelo projeto.
