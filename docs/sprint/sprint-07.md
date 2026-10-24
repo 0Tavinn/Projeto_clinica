@@ -27,7 +27,9 @@ Otávio verificará os nomes ainda antigos e padronizará a apresentação como 
 
 ### 2.3 Correções clínicas e escopo da Sprint 7
 
-Paulo coordenará as correções de backend e as regras que ainda precisem de decisão. O contrato de abertura do prontuário merece prioridade: a versão atual da API consulta um registro existente e pode retornar `404`, enquanto o frontend ainda chama essa leitura como se também abrisse o prontuário. A equipe deverá definir a operação de criação e testar o fluxo completo no PostgreSQL e pela interface antes de marcar a pendência como resolvida.
+**Detalhamento revisado em 23/10/2026:** [RFs clínicos, decisões e impactos](../requisitos/README.md) e [regras clínicas](../regras-de-negocio/README.md). Os arquivos distinguem direção de produto, propostas e implementação encontrada.
+
+Paulo coordenará as correções de backend e as regras que ainda precisem de decisão. O contrato de abertura do prontuário merece prioridade: na base `ab129d7`, o `GET` cria o prontuário quando ausente e o frontend depende desse comportamento. A proposta de separar leitura e abertura exige mudança coordenada da API e da interface. A equipe deverá definir a operação de criação e testar o fluxo completo no PostgreSQL e pela interface antes de marcar a pendência como resolvida.
 
 A pesquisa de OpenCL fica com Tarcísio nesta semana. Seu resultado será uma proposta revisável para o paralelismo do projeto; não se presume implementação integrada nem aceleração comprovada antes de um experimento medido e de decisão da equipe.
 

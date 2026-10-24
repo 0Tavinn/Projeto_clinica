@@ -120,6 +120,8 @@ O sistema deve apresentar um painel inicial após a autenticação, com resumos 
 
 **Situação:** implementado — Sprint 04, conforme a demonstração relatada pela equipe.
 
+**Refinamento proposto em 23/10/2026:** painel do dentista com consultas do dia e acesso ao atendimento; não implementado no dashboard atual. Ver [impactos clínicos](./requisitos/README.md).
+
 ### RF-013 — Validar cadastros e impedir duplicidades
 
 O sistema deve validar os campos obrigatórios e os formatos aceitos nos formulários de usuários e pacientes. Deve impedir duplicidade de e-mail e CPF de usuários e de CPF e número de prontuário de pacientes dentro da mesma clínica.
@@ -194,23 +196,21 @@ Os estados e as transições permitidas serão definidos com a equipe; a lista p
 
 ### RF-023 — Consultar prontuários clínicos
 
-O sistema deve permitir ao dentista consultar o prontuário e o histórico clínico de pacientes autorizados. A existência de um número de prontuário no cadastro atual não significa que esse módulo clínico esteja implementado.
+O sistema deve permitir ao dentista autorizado consultar o prontuário do paciente, preservado entre atendimentos por profissionais diferentes, sem vínculo exclusivo permanente paciente–dentista. A política de leitura e abertura precisa ser aprovada por ação.
 
-**Situação:** planejado — etapa futura.
+**Situação em 23/10/2026:** implementação parcial; direção de produto confirmada por Paulo e detalhes operacionais pendentes. Ver [RF-023](./requisitos/RF-023-prontuario-do-paciente.md).
 
 ### RF-024 — Registrar evoluções clínicas
 
-O sistema deve permitir ao dentista registrar observações e procedimentos relacionados ao atendimento no prontuário do paciente, identificando o profissional responsável e a data do registro. As regras de rascunho, finalização e alterações posteriores devem ser validadas antes da implementação.
+O sistema deve registrar cada evolução no prontuário com autoria individual obtida da sessão, dados do atendimento, rascunho e finalização. Diferentes dentistas podem acrescentar seus registros ao mesmo prontuário, preservando os anteriores.
 
-**Situação:** planejado — etapa futura.
+**Situação em 23/10/2026:** implementação parcial; validações e autoria histórica precisam de correção. Ver [RF-024](./requisitos/RF-024-evolucoes-clinicas.md) e [decisões pendentes](./requisitos/README.md).
 
 ### RF-025 — Disponibilizar resumos de apoio ao dentista por IA
 
-O sistema deve disponibilizar ao dentista resumos ou informações de apoio gerados a partir dos dados clínicos autorizados do paciente. A funcionalidade deve ser identificada como apoio ao profissional e depender da disponibilidade do prontuário e de suas evoluções.
+O sistema poderá apresentar resumo do histórico autorizado junto à tela de atendimento, com fontes e momento da geração, preservando acesso ao original e revisão humana.
 
-O processamento noturno, a preparação em lote e o uso de GPU/OpenCL descritos nos documentos anteriores permanecem propostas técnicas. Não há entrega funcional confirmada desses recursos na Sprint 04.
-
-**Situação:** planejado — etapa futura.
+**Situação em 23/10/2026:** proposta sem implementação; escopo, dados e processamento dependem de aprovação. Ver [RF-025](./requisitos/RF-025-resumo-clinico-por-ia.md). Não se presume processamento noturno, OpenCL ou inclusão automática na entrega de sábado.
 
 ### RF-026 — Consultar registros de auditoria
 

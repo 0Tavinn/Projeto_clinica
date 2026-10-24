@@ -26,3 +26,5 @@ Thumbs.db
 # Configurações locais do Codex, se não fizerem parte do projeto
 .codex/
 .agents/
+# Backups locais
+/project-backups/
