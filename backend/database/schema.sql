@@ -275,6 +275,10 @@ CREATE TABLE appointments (
     -- Define o campo id como chave primária.
     CONSTRAINT pk_appointments PRIMARY KEY (id),
 
+    -- Permite vincular uma concessão ao retrato exato dos participantes.
+    CONSTRAINT uq_appointments_access_origin
+        UNIQUE (id, clinic_id, patient_id, dentist_id),
+
     -- Relaciona o agendamento com a clínica.
     CONSTRAINT fk_appointments_clinic
         FOREIGN KEY (clinic_id)
@@ -324,6 +328,32 @@ CREATE TABLE appointments (
             scheduled_period WITH &&
         )
         WHERE (status IN ('SCHEDULED', 'CONFIRMED'))
+);
+
+
+-- ============================================================================
+-- TABELA: clinical_access_grants
+-- Uma confirmação autorizada da Agenda concede leitura ao dentista da
+-- consulta. A concessão pode existir antes da abertura do prontuário.
+-- O backend deve gravá-la na mesma transação que muda o estado para CONFIRMED.
+-- Esta FK preserva os participantes da consulta de origem: após a concessão,
+-- sua troca fica bloqueada. A política definitiva desse bloqueio ainda
+-- depende da aprovação de Paulo antes de aplicar em banco existente.
+-- ============================================================================
+
+CREATE TABLE clinical_access_grants (
+    appointment_id INTEGER NOT NULL,
+    clinic_id INTEGER NOT NULL,
+    patient_id INTEGER NOT NULL,
+    dentist_id INTEGER NOT NULL,
+    granted_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
+
+    CONSTRAINT pk_clinical_access_grants PRIMARY KEY (appointment_id),
+    CONSTRAINT fk_clinical_access_grants_origin
+        FOREIGN KEY (appointment_id, clinic_id, patient_id, dentist_id)
+        REFERENCES appointments (id, clinic_id, patient_id, dentist_id)
+        ON UPDATE RESTRICT
+        ON DELETE RESTRICT
 );
 
 
@@ -518,6 +548,10 @@ CREATE INDEX idx_appointments_patient_id
 -- Cria um índice para localizar a agenda de um dentista por data.
 CREATE INDEX idx_appointments_dentist_scheduled_at
     ON appointments (dentist_id, scheduled_at);
+
+-- Localiza concessões de leitura por clínica, dentista e paciente.
+CREATE INDEX idx_clinical_access_grants_lookup
+    ON clinical_access_grants (clinic_id, dentist_id, patient_id);
 
 -- Cria um índice para localizar as evoluções de um prontuário.
 CREATE INDEX idx_clinical_evolutions_medical_record_id
