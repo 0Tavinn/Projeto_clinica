@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 
+from app.records.access import require_clinical_access
 from app.records.repository import RecordRepository
 from app.records.models import ClinicalEvolution, MedicalRecord
 from app.records.schemas import ClinicalEvolutionDraftCreate, ClinicalEvolutionUpdate
 from app.users.models import User
-from app.patients.models import Patient
 from app.security.roles import Role
 
 # Importando da sua arquitetura real
@@ -26,12 +26,12 @@ class RecordService:
             raise ForbiddenError("Apenas profissionais de saúde podem acessar conteúdos clínicos.")
 
     def _verify_patient_access(self, patient_id: int):
-        patient = self.db.query(Patient).filter(Patient.id == patient_id).first()
-        if not patient:
-            raise NotFoundError("Paciente não encontrado no sistema.")
-        
-        if patient.clinic_id != self.current_user.clinic_id:
-            raise ForbiddenError("Acesso negado: Este paciente pertence a outra clínica.")
+        """Confere o vínculo antes de ler ou criar conteúdo do prontuário."""
+        patient, _ = require_clinical_access(
+            self.db,
+            current_user=self.current_user,
+            patient_id=patient_id,
+        )
         return patient
 
     def get_or_create_medical_record(self, patient_id: int, general_notes: str = None):
@@ -46,7 +46,10 @@ class RecordService:
         record = self.repo.get_medical_record_by_patient(patient_id)
         if not record:
             raise NotFoundError("Prontuário ainda não foi aberto para este paciente.")
-        return self.repo.get_evolutions_by_record(record.id)
+        return self.repo.get_evolutions_by_record(
+            record.id,
+            dentist_id=self.current_user.dentist.id,
+        )
 
     def create_evolution_draft(self, data: ClinicalEvolutionDraftCreate):
         self._verify_patient_access(data.patient_id)
@@ -64,13 +67,16 @@ class RecordService:
         return self.repo.create_evolution(evolution)
 
     def _verify_evolution_access(self, evolution_id: int) -> ClinicalEvolution:
-        evolution = self.repo.get_evolution_by_id(evolution_id)
-        if not evolution:
+        """Autoriza pelo paciente antes de carregar o texto da evolução."""
+        patient_id = self.repo.get_patient_id_for_evolution(evolution_id)
+        if patient_id is None:
             raise NotFoundError("Evolução clínica não encontrada.")
-        
-        if evolution.medical_record.patient.clinic_id != self.current_user.clinic_id:
-             raise ForbiddenError("Acesso negado: Registro pertence a outra clínica.")
-        
+
+        self._verify_patient_access(patient_id)
+
+        evolution = self.repo.get_evolution_by_id(evolution_id)
+        if evolution is None:
+            raise NotFoundError("Evolução clínica não encontrada.")
         return evolution
 
     def update_draft(self, evolution_id: int, data: ClinicalEvolutionUpdate):

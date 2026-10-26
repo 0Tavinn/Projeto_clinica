@@ -94,6 +94,7 @@ def update_appointment_status(
         appointment_id=appointment_id,
         current_user=current_user,
         requested_status=payload.status,
+        care_occurred_at=payload.care_occurred_at,
     )
 
 

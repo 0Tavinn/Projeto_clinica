@@ -1,5 +1,8 @@
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
-from app.records.models import MedicalRecord, ClinicalEvolution
+
+from app.records.models import ClinicalEvolution, MedicalRecord
+
 
 class RecordRepository:
     def __init__(self, db: Session):
@@ -17,11 +20,38 @@ class RecordRepository:
         return record
 
     # -- Evoluções --
-    def get_evolutions_by_record(self, medical_record_id: int) -> list[ClinicalEvolution]:
-        # Traz as mais recentes primeiro
-        return self.db.query(ClinicalEvolution).filter(
-            ClinicalEvolution.medical_record_id == medical_record_id
-        ).order_by(ClinicalEvolution.recorded_at.desc()).all()
+    def get_evolutions_by_record(
+        self, medical_record_id: int, *, dentist_id: int
+    ) -> list[ClinicalEvolution]:
+        """Retorna finalizadas e apenas rascunhos do dentista leitor."""
+        visible = or_(
+            ClinicalEvolution.status == "FINALIZED",
+            and_(
+                ClinicalEvolution.status == "DRAFT",
+                ClinicalEvolution.dentist_id == dentist_id,
+            ),
+        )
+        return (
+            self.db.query(ClinicalEvolution)
+            .filter(
+                ClinicalEvolution.medical_record_id == medical_record_id,
+                visible,
+            )
+            .order_by(ClinicalEvolution.recorded_at.desc())
+            .all()
+        )
+
+    def get_patient_id_for_evolution(self, evolution_id: int) -> int | None:
+        """Obtém só o vínculo com o paciente, antes de ler conteúdo clínico."""
+        statement = (
+            select(MedicalRecord.patient_id)
+            .join(
+                ClinicalEvolution,
+                ClinicalEvolution.medical_record_id == MedicalRecord.id,
+            )
+            .where(ClinicalEvolution.id == evolution_id)
+        )
+        return self.db.execute(statement).scalar_one_or_none()
 
     def get_evolution_by_id(self, evolution_id: int) -> ClinicalEvolution:
         return self.db.query(ClinicalEvolution).filter(ClinicalEvolution.id == evolution_id).first()

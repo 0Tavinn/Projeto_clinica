@@ -2,7 +2,7 @@
 import datetime
 import enum
 
-from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, Integer, Text, func
+from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, Integer, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -20,6 +20,16 @@ class AppointmentStatus(str, enum.Enum):
 
 class Appointment(Base):
     __tablename__ = "appointments"
+    __table_args__ = (
+        # A concessão referencia a consulta e seus participantes juntos.
+        UniqueConstraint(
+            "id",
+            "clinic_id",
+            "patient_id",
+            "dentist_id",
+            name="uq_appointments_access_origin",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     clinic_id: Mapped[int] = mapped_column(
