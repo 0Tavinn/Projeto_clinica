@@ -1,5 +1,12 @@
 # Autorização clínica persistente — preparo e ensaio SQL
 
+> **Atualização de 25/10/2026:** a entrega descrita abaixo foi publicada no
+> commit `01a01573a42b09bcfb3c337561817693554e0459`. As afirmações de
+> permanência por confirmação, os comandos e a indicação “sem commit” abaixo
+> registram o ensaio **histórico de 24/10**, antes da revisão aprovada em
+> RN-031/RF-023. A política e os ensaios atuais estão na seção de 25/10 ao fim
+> deste documento. Os scripts de 24/10 não constituem aceite da nova política.
+
 **Data:** 24/10/2026. **Branch:** `chore/sprint-07-docker-integration`.
 **Base inicial:** `698a3bd4d8d20af7efa828d7f78589e4ec4b7a5e`.
 **Estado:** proposta ensaiada em PostgreSQL 16 descartável; não aplicada ao
@@ -192,3 +199,154 @@ após concessão e definir correção excepcional de confirmação incorreta.
 Tratamento de consultas antigas sem prova de confirmação, D02 (abertura),
 D03 (estados de escrita e atendimento avulso) e D06 (paciente inativo)
 continuam pendentes. Não há revogação administrativa nesta entrega.
+
+## Atualização de 25/10 — preparação e continuidade
+
+**Base publicada:** `01a01573a42b09bcfb3c337561817693554e0459`.
+**Estado do ensaio de 25/10:** SQL preparado e ensaiado em PostgreSQL 16
+descartável, sem aplicação no volume `lumina_s07_docker_review_20261023`.
+Este relatório registra os testes SQL daquela data; alterações posteriores
+da API exigem validação própria. As oito edições documentais locais de Paulo
+em 25/10 foram preservadas.
+
+Arquivos novos desta atualização:
+
+| Arquivo | Uso |
+| --- | --- |
+| `backend/database/migrations/20261025_add_clinical_access_evidence.sql` | Acrescenta procedência e realização à estrutura publicada em 24/10. |
+| `backend/database/checks/20261025_clinical_access_seed.sql` | Insere somente dados fictícios, inclusive concessão antiga sem responsável comprovado. |
+| `backend/database/checks/20261025_clinical_access_exercise.sql` | Exercita restrições e consulta de elegibilidade de leitura. |
+| `backend/database/checks/20261025_clinical_access_verify.sql` | Confere persistência após reinício, somente por leitura. |
+| `backend/database/checks/run_20261025_clinical_access_pg16.sh` | Reproduz os três caminhos em recursos exclusivos e remove apenas os que criou. |
+
+`backend/database/schema.sql` foi atualizado para bancos novos. A migração
+publicada `20261024_add_clinical_access_grants.sql` **não foi modificada**.
+
+### Campos, restrições e semântica
+
+A PK por `appointment_id`, os participantes e o índice de busca permanecem.
+`granted_at` registra o instante da concessão. `confirmed_by_user_id` aponta
+para `users.id`, sem exigir que esse usuário continue ativo ou com o mesmo
+perfil depois: sua identidade histórica não é a elegibilidade atual do
+dentista leitor. O atendimento usa `care_occurred_at` (horário informado),
+`care_recorded_at` (instante do registro) e `care_recorded_by_user_id` (ator do
+registro). As duas referências de ator têm FK `ON UPDATE/DELETE RESTRICT`.
+
+O `CHECK ck_clinical_access_grants_care_complete` exige os três campos de
+realização juntos e exige `confirmed_by_user_id` não nulo quando há realização.
+Os quatro campos novos são anuláveis para preservar linhas existentes. Assim,
+uma linha antiga sem `confirmed_by_user_id`, ainda que sua consulta esteja
+`CONFIRMED` ou `COMPLETED`, **não constitui confirmação confiável** e não
+sustenta autorização pela consulta proposta. A migração não preenche atores
+nem atendimentos antigos. Conferência de procedência e eventual tratamento de
+legado precisam de decisão e evidência explícitas; não usar estado atual,
+autoria de evolução ou horário agendado como substitutos.
+
+FKs e `CHECK` protegem identidade referenciada, origem e completude dos campos.
+**Não provam** quem estava autenticado, que o ator tinha permissão, que ocorreu
+atendimento, que a clínica do ator correspondia, nem que `COMPLETED` foi
+gravado junto da realização. Writers fora das operações autorizadas precisam
+ser restringidos. A FK composta anterior continua bloqueando troca dos
+participantes após concessão; a regra definitiva e a correção excepcional
+seguem pendentes de Paulo.
+
+### Compatibilidade e aplicação futura
+
+1. **Banco novo e vazio:** usar somente `backend/database/schema.sql` atual.
+2. **Banco com esquema completo anterior à entrega de 24/10:** após inventário
+   do catálogo, aplicar a migração publicada de 24/10 e, depois, a migração de
+   25/10. Não executar `schema.sql` sobre esse banco.
+3. **Banco que já tem a estrutura publicada de 24/10:** após inventário, aplicar
+   somente a migração de 25/10. Ela recusa reaplicação e estrutura ausente.
+
+Esses caminhos exigem PostgreSQL 16 e a linhagem `schema.sql` completa,
+confirmada no catálogo. O preflight automático verifica pontos críticos, mas
+não comprova equivalência integral do banco, permissões ou histórico. Esquema
+Alembic antigo, misto ou divergente requer reconciliação própria; não usar
+`stamp` para simular equivalência. A migração nova toma `ACCESS EXCLUSIVE` em
+`clinical_access_grants`, com `lock_timeout` de 5 segundos e transação única.
+Medir locks e duração em restauração do destino antes de marcar janela.
+
+Antes de qualquer aplicação em banco existente, identificar host, banco e
+volume; fazer `pg_dump -Fc` em local protegido, preservar papéis/permissões
+necessários e **restaurar em outro PostgreSQL 16 autorizado**. Comparar catálogo,
+contagens e comportamento de leitura na restauração; só esse ensaio efetivo
+valida recuperação. Depois do commit, não restaurar por cima de novas escritas
+sem plano de reconciliação. Nada foi aplicado ao volume da revisão.
+
+### Contrato para o backend
+
+- **Confirmação:** bloquear a consulta (`FOR UPDATE`), validar ator autorizado,
+  paciente, dentista e clínica; gravar `CONFIRMED` e uma concessão com
+  `confirmed_by_user_id` e `granted_at` na **mesma transação**. A consulta pode
+  ainda não ter prontuário. Repetição/concorrência não podem criar segunda
+  concessão nem sobrescrever sua procedência.
+- **Concluir atendimento:** somente o dentista responsável e elegível, a partir
+  de `CONFIRMED` com concessão confiável; bloquear a mesma consulta e concessão,
+  validar participantes e horário informado, gravar `COMPLETED` e os três campos
+  `care_*` em **um commit**. Administrador e recepção não concluem. PATCH
+  genérico e rota específica precisam passar pelo mesmo serviço; `SCHEDULED`
+  para `COMPLETED` fica vedado. Falha parcial exige rollback. Concluir consulta
+  não finaliza a evolução clínica.
+- **Cancelamento/ausência e leitura:** não apagar concessões. Em cada leitura,
+  verificar usuário leitor ativo, perfil/cadastro profissional elegível e
+  clínica; buscar **qualquer** concessão confiável da dupla na clínica cuja
+  consulta esteja atualmente `CONFIRMED`, ou cuja consulta esteja `COMPLETED`
+  com realização completa e válida. A situação atual do confirmador histórico
+  não entra nessa verificação. Outra origem válida mantém acesso. Retornar
+  finalizadas de todos os autores e apenas rascunhos do próprio autor.
+
+O banco não impõe, por FK/CHECK, a transição de estado nem a validade
+assistencial da realização. Na data deste ensaio SQL, a API ainda não havia
+sido adaptada; os testes abaixo **não são testes da API**. D02, correções
+indevidas, troca de participantes, paciente inativo, estados de escrita,
+atendimento avulso, nome/CRO histórico e revogação administrativa permanecem
+fora desta entrega.
+
+### Reprodução e resultados novos
+
+Da raiz do repositório, com Docker acessível e imagem `postgres:16-alpine`:
+
+```bash
+bash backend/database/checks/run_20261025_clinical_access_pg16.sh
+```
+
+O script extrai os `schema.sql` dos commits `698a3bd4...` e `01a01573...` em
+`/tmp`, cria três contêineres e volumes com nomes `lumina_acl25_*_<sufixo>` e
+sem porta ou rede publicada, executa `psql -X -v ON_ERROR_STOP=1`, reinicia
+somente esses contêineres, verifica os dados e remove somente os recursos que
+criou. Os bancos internos são `lumina_acl25_new`, `lumina_acl25_upgrade` e
+`lumina_acl25_base`. Não usa Compose, banco real ou volume da revisão.
+
+**Execução efetiva em 25/10/2026, PostgreSQL 16.15:**
+
+- `new`: `schema.sql` atual, seed, exercício e verificação após reinício
+  passaram.
+- `upgrade`: schema publicado em `01a01573...`, seed anterior à migração nova,
+  migração, exercício e verificação após reinício passaram; a reaplicação foi
+  recusada sem apagar a concessão antiga.
+- `base`: schema de `698a3bd4...`, migração publicada de 24/10, seed, migração
+  nova, exercício e verificação após reinício passaram.
+- As colunas e definições das restrições de `clinical_access_grants` ficaram
+  idênticas nos três caminhos. A linha antiga conservou `granted_at` e os
+  quatro campos novos nulos; prontuário e evolução fictícios anteriores
+  permaneceram. A concessão pôde existir sem prontuário para o paciente A.
+- A consulta de elegibilidade negou preparação após primeira consulta
+  cancelada ou marcada ausente, preservou preparação por outra `CONFIRMED` e
+  continuidade pelo atendimento anterior com evidência completa. `COMPLETED`
+  legado sem procedência não concedeu acesso. A inativação e mudança de perfil
+  posteriores do confirmador não apagaram o fundamento do leitor elegível.
+- PK, FK de origem, FKs de responsáveis e `CHECK` rejeitaram duplicidade,
+  participantes/atores inválidos e realização parcial ou sem confirmação
+  confiável. Uma falha simulada reverteu estado e evidência no subbloco do
+  ensaio. Duas sessões concorrentes deixaram uma única concessão.
+- A primeira tentativa do script encontrou o servidor temporário de `initdb`
+  e falhou no terceiro destino; a espera foi corrigida e os dois ensaios
+  completos seguintes passaram. A limpeza automática removeu os recursos
+  exclusivos inclusive após essa falha. Ao final, restaram apenas os três
+  contêineres preexistentes da revisão e o volume
+  `lumina_s07_docker_review_20261023`.
+
+São resultados **estruturais SQL e da consulta de elegibilidade simulada**.
+Não comprovam autenticação HTTP, autorização do ator em “Concluir atendimento”,
+privacidade nas rotas, transação da API, tratamento de erros ou aceite clínico.

@@ -333,9 +333,11 @@ CREATE TABLE appointments (
 
 -- ============================================================================
 -- TABELA: clinical_access_grants
--- Uma confirmação autorizada da Agenda concede leitura ao dentista da
--- consulta. A concessão pode existir antes da abertura do prontuário.
--- O backend deve gravá-la na mesma transação que muda o estado para CONFIRMED.
+-- Uma confirmação autorizada registra preparação; ela só sustenta leitura
+-- enquanto a consulta estiver CONFIRMED. Atendimento registrado de forma
+-- confiável sustenta continuidade. A linha pode existir antes do prontuário.
+-- O backend deve gravar confirmação e concessão na mesma transação e, na
+-- conclusão, gravar COMPLETED e evidência de realização em outra transação única.
 -- Esta FK preserva os participantes da consulta de origem: após a concessão,
 -- sua troca fica bloqueada. A política definitiva desse bloqueio ainda
 -- depende da aprovação de Paulo antes de aplicar em banco existente.
@@ -347,13 +349,34 @@ CREATE TABLE clinical_access_grants (
     patient_id INTEGER NOT NULL,
     dentist_id INTEGER NOT NULL,
     granted_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
+    -- NULL identifica concessões anteriores sem responsável comprovado.
+    confirmed_by_user_id INTEGER,
+    -- Horário informado do atendimento; distinto do instante de registro.
+    care_occurred_at TIMESTAMP WITH TIME ZONE,
+    care_recorded_at TIMESTAMP WITH TIME ZONE,
+    care_recorded_by_user_id INTEGER,
 
     CONSTRAINT pk_clinical_access_grants PRIMARY KEY (appointment_id),
     CONSTRAINT fk_clinical_access_grants_origin
         FOREIGN KEY (appointment_id, clinic_id, patient_id, dentist_id)
         REFERENCES appointments (id, clinic_id, patient_id, dentist_id)
         ON UPDATE RESTRICT
-        ON DELETE RESTRICT
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_clinical_access_grants_confirmed_by
+        FOREIGN KEY (confirmed_by_user_id) REFERENCES users (id)
+        ON UPDATE RESTRICT ON DELETE RESTRICT,
+    CONSTRAINT fk_clinical_access_grants_care_recorded_by
+        FOREIGN KEY (care_recorded_by_user_id) REFERENCES users (id)
+        ON UPDATE RESTRICT ON DELETE RESTRICT,
+    CONSTRAINT ck_clinical_access_grants_care_complete
+        CHECK (
+            (care_occurred_at IS NULL AND care_recorded_at IS NULL
+             AND care_recorded_by_user_id IS NULL)
+            OR
+            (confirmed_by_user_id IS NOT NULL
+             AND care_occurred_at IS NOT NULL AND care_recorded_at IS NOT NULL
+             AND care_recorded_by_user_id IS NOT NULL)
+        )
 );
 
 
