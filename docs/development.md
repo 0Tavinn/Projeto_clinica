@@ -20,18 +20,15 @@ Projeto_clinica/
 │   ├── scripts/             # Seed local
 │   ├── tests/               # Testes com SQLite em memória
 │   ├── Dockerfile
-│   ├── compose.yaml
 │   ├── pyproject.toml
 │   └── README.md
+├── docker-compose.yml       # Orquestra PostgreSQL, API e frontend
 ├── docs/
-│   └── sprint/sprint-04.md
-└── frontend/                # Reservado para a interface web
+└── frontend/                # Aplicação React/Vite servida por Nginx
 ```
 
-No estado atual, não há código de front-end versionado dentro de `frontend/`.
-O back-end contém os módulos `core`, `security`, `common`, `users` e
-`patients`. As entidades de agenda, prontuário, evoluções, auditoria e IA ainda
-não possuem implementação de API.
+O back-end contém os módulos `core`, `security`, `common`, `users`, `patients`,
+`dentists`, `appointments` e `records`.
 
 ## Pré-requisitos
 
@@ -39,8 +36,7 @@ não possuem implementação de API.
 - Python 3.11 ou 3.12;
 - PostgreSQL disponível localmente;
 - Ambiente Linux/WSL ou equivalente compatível com o projeto;
-- Opcionalmente, Docker Desktop com integração WSL habilitada para o trabalho
-  futuro de containerização.
+- Docker Desktop ou Docker Engine com Docker Compose v2.
 
 As versões suportadas do Python e as dependências do back-end estão em
 `backend/pyproject.toml`.
@@ -137,22 +133,19 @@ integração com PostgreSQL nem a validação do front-end.
 Antes de declarar uma alteração concluída, execute a suíte aplicável e registre
 o resultado no Pull Request ou no relatório individual da Sprint.
 
-## Docker e Alembic durante a Sprint 4
+## Docker e Alembic
 
-Docker e Alembic requerem ajustes e não são a fonte de verdade para validar o
-fluxo local atual.
+O fluxo containerizado oficial está definido no `docker-compose.yml` da raiz:
 
-- `backend/compose.yaml` ainda contém configuração antiga de MySQL;
-- a API e `database/schema.sql` foram direcionados para PostgreSQL;
-- a migração Alembic atual não corresponde ao schema PostgreSQL nem aos models
-  atuais;
-- não execute `alembic upgrade head` no estado atual;
-- não use o Compose atual como caminho de validação da Sprint 4.
+```bash
+cp .env.example .env
+docker compose up --build
+```
 
-Primeiro valide localmente o fluxo `front-end → API → PostgreSQL`. Depois,
-trate a atualização de Docker e a estratégia de migrações em branch e Pull
-Request separados, com revisão técnica. O Docker não deve bloquear a conclusão
-do fluxo funcional da Sprint 4.
+O serviço PostgreSQL executa `backend/database/schema.sql` apenas quando o
+volume é criado. O Compose não executa `alembic upgrade head`: as migrações
+Alembic ainda precisam ser alinhadas ao schema PostgreSQL antes de se tornarem
+o mecanismo oficial de evolução do banco.
 
 ## Organização de branches
 

@@ -21,6 +21,8 @@ from app.users import models as users_models  # noqa: E402,F401
 from app.patients import models as patients_models  # noqa: E402,F401
 from app.dentists import models as dentists_models  # noqa: E402,F401
 from app.appointments import models as appointments_models  # noqa: E402,F401
+from app.records import models as records_models  # noqa: E402,F401
+from app.records import access_models as clinical_access_models  # noqa: E402,F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
