@@ -1,0 +1,14 @@
+id,camada,cenario,esperado,obtido,situacao,evidencia
+QA01-EDIT,API/PostgreSQL16,Perda da última autorização durante edição,Espera comprovada; cancelamento 200; edição 403; rascunho e versão intactos,Espera por lock; cancelamento 200; edição 403; DRAFT versão 1 sem finalização,aprovado,pytest-pg16-final.log
+QA01-FINALIZE,API/PostgreSQL16,Perda da última autorização durante finalização,Espera comprovada; cancelamento 200; finalização 403; rascunho e versão intactos,Espera por lock; cancelamento 200; finalização 403; DRAFT versão 1 sem finalização,aprovado,pytest-pg16-final.log
+QA01-OTHER,API/PostgreSQL16,Outra confirmação válida após cancelamento,Autorização permanece e edição aceita,Espera por lock; edição 200; DRAFT versão 2,aprovado,pytest-pg16-final.log
+QA01-CARE,API/PostgreSQL16,Atendimento anterior comprovado após cancelamento,Autorização permanece e finalização aceita,Espera por lock; finalização 200; FINALIZED versão 2,aprovado,pytest-pg16-final.log
+QA02-CONCURRENT,API/PostgreSQL16,Duas edições da versão 1 disputam a linha,Dois aguardam lock; respostas 200 e 409; uma gravação prevalece,Dois aguardaram lock; respostas 200 e 409; conteúdo do vencedor persistido,aprovado,pytest-pg16-final.log
+QA02-STALE,API/PostgreSQL16,Edição sequencial desatualizada,409 sem sobrescrever,409; conteúdo do vencedor preservado,aprovado,pytest-pg16-final.log
+QA02-CURRENT,API/PostgreSQL16,Edição com versão atual,200 e versão incrementada,200; versão 3 após segunda edição aceita,aprovado,pytest-pg16-final.log
+QA02-INVALID,API/PostgreSQL16,Versão ausente zero texto ou nula,422 VALIDATION_ERROR,Quatro entradas recusadas com 422,aprovado,pytest-pg16-final.log
+REG-FINALIZE,API/PostgreSQL16,Edição aguardando finalização,Finalizada preservada e edição recusada,Teste passou,aprovado,pytest-pg16-final.log
+REG-AUTH,API/PostgreSQL16,Autoria e outra clínica,403 sem alterar o registro,Ambos recusados com 403,aprovado,pytest-pg16-final.log
+REG-ROLLBACK,API/PostgreSQL16,Falha de gravação e abertura do prontuário,Sem estado parcial,Ambos os testes de rollback passaram,aprovado,pytest-pg16-final.log
+MIG-VERSION,SQL/PostgreSQL16,Migração em banco descartável com evolução prévia,Preservar dado com versão 1; rejeitar reaplicação e versão 0,Uma evolução preservada; reaplicação e versão 0 recusadas,aprovado,migration-pg16.log
+SQLITE-REG,API/SQLite,Regressão local complementar,Suíte concluir dentro do limite,Tempo máximo de 60 segundos sem saída; nenhuma aprovação atribuída,bloqueado,pytest-sqlite.log

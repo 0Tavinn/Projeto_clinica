@@ -5,8 +5,10 @@ from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app.appointments.models import Appointment, AppointmentStatus
+from app.appointments.evidence import add_confirmation, register_care
 from app.appointments.repository import AppointmentRepository
 from app.common.exceptions import (
+    AppointmentParticipantConflictError,
     AppointmentTimeConflictError,
     ForbiddenError,
     NotFoundError,
@@ -14,6 +16,7 @@ from app.common.exceptions import (
 )
 from app.dentists.models import Dentist
 from app.patients.models import Patient
+from app.records.access_repository import ClinicalAccessGrantRepository
 from app.security.roles import Role
 from app.users.models import Clinic, User
 
@@ -21,7 +24,6 @@ from app.users.models import Clinic, User
 _ALLOWED_TRANSITIONS = {
     AppointmentStatus.SCHEDULED: {
         AppointmentStatus.CONFIRMED,
-        AppointmentStatus.COMPLETED,
         AppointmentStatus.CANCELED,
         AppointmentStatus.NO_SHOW,
     },
@@ -34,7 +36,6 @@ _ALLOWED_TRANSITIONS = {
 _ROLE_STATUS_TARGETS = {
     Role.ADMINISTRATOR: {
         AppointmentStatus.CONFIRMED,
-        AppointmentStatus.COMPLETED,
         AppointmentStatus.CANCELED,
         AppointmentStatus.NO_SHOW,
     },
@@ -163,6 +164,20 @@ def get_appointment(
     return appointment
 
 
+def _get_appointment_for_update(
+    db: Session, *, clinic_id: int, appointment_id: int, current_user: User
+) -> Appointment:
+    """Bloqueia a consulta antes de conferir ou alterar sua situação."""
+    _active_clinic(db, clinic_id)
+    appointment = AppointmentRepository(db).get_for_update(appointment_id, clinic_id)
+    if appointment is None:
+        raise NotFoundError("Agendamento não encontrado.")
+    if current_user.role is Role.DENTIST:
+        if appointment.dentist.user_id != current_user.id:
+            raise NotFoundError("Agendamento não encontrado.")
+    return appointment
+
+
 def create_appointment(db: Session, *, clinic_id: int, payload) -> Appointment:
     _active_clinic(db, clinic_id)
     _participants(
@@ -189,10 +204,12 @@ def create_appointment(db: Session, *, clinic_id: int, payload) -> Appointment:
 
 
 def _apply_status_transition(
+    db: Session,
     appointment: Appointment,
     *,
     current_user: User,
     requested_status: AppointmentStatus,
+    care_occurred_at: datetime.datetime | None = None,
 ) -> None:
     allowed_targets = _ROLE_STATUS_TARGETS.get(current_user.role, set())
     if requested_status not in allowed_targets:
@@ -204,6 +221,25 @@ def _apply_status_transition(
             raise ValidationAppError(
                 "Conclusão e ausência só podem ser registradas após o início da consulta."
             )
+    if requested_status is AppointmentStatus.COMPLETED:
+        if care_occurred_at is None:
+            raise ValidationAppError("Informe o horário da realização do atendimento.")
+        # A evidência e COMPLETED serão gravados no mesmo commit do chamador.
+        register_care(
+            db,
+            appointment=appointment,
+            care_occurred_at=care_occurred_at,
+            care_recorded_by_user_id=current_user.id,
+        )
+    elif care_occurred_at is not None:
+        raise ValidationAppError("O horário da realização só pode acompanhar COMPLETED.")
+    if requested_status is AppointmentStatus.CONFIRMED:
+        # A evidência e a situação serão persistidas pelo mesmo commit.
+        add_confirmation(
+            db,
+            appointment=appointment,
+            confirmed_by_user_id=current_user.id,
+        )
     appointment.status = requested_status
 
 
@@ -214,31 +250,56 @@ def change_appointment_status(
     appointment_id: int,
     current_user: User,
     requested_status: AppointmentStatus,
+    care_occurred_at: datetime.datetime | None = None,
 ) -> Appointment:
-    appointment = get_appointment(
-        db,
-        clinic_id=clinic_id,
-        appointment_id=appointment_id,
-        current_user=current_user,
-    )
-    _participants(
-        db,
-        clinic_id=clinic_id,
-        patient_id=appointment.patient_id,
-        dentist_id=appointment.dentist_id,
-    )
-    _apply_status_transition(
-        appointment,
-        current_user=current_user,
-        requested_status=requested_status,
-    )
-    return AppointmentRepository(db).save(appointment)
+    try:
+        appointment = _get_appointment_for_update(
+            db,
+            clinic_id=clinic_id,
+            appointment_id=appointment_id,
+            current_user=current_user,
+        )
+        _participants(
+            db,
+            clinic_id=clinic_id,
+            patient_id=appointment.patient_id,
+            dentist_id=appointment.dentist_id,
+        )
+        _apply_status_transition(
+            db,
+            appointment,
+            current_user=current_user,
+            requested_status=requested_status,
+            care_occurred_at=care_occurred_at,
+        )
+        return AppointmentRepository(db).save(appointment)
+    except Exception:
+        # Solta o bloqueio e desfaz alterações pendentes em qualquer falha.
+        db.rollback()
+        raise
 
 
 def update_appointment(
     db: Session, *, clinic_id: int, appointment_id: int, current_user: User, payload
 ) -> Appointment:
-    appointment = get_appointment(
+    try:
+        return _update_appointment_locked(
+            db,
+            clinic_id=clinic_id,
+            appointment_id=appointment_id,
+            current_user=current_user,
+            payload=payload,
+        )
+    except Exception:
+        # Mantém os erros do domínio e encerra a transação que segurava o bloqueio.
+        db.rollback()
+        raise
+
+
+def _update_appointment_locked(
+    db: Session, *, clinic_id: int, appointment_id: int, current_user: User, payload
+) -> Appointment:
+    appointment = _get_appointment_for_update(
         db,
         clinic_id=clinic_id,
         appointment_id=appointment_id,
@@ -246,6 +307,7 @@ def update_appointment(
     )
     changes = payload.model_dump(exclude_unset=True)
     requested_status = changes.pop("status", None)
+    care_occurred_at = changes.pop("care_occurred_at", None)
 
     if current_user.role is Role.DENTIST:
         if changes:
@@ -259,9 +321,11 @@ def update_appointment(
             dentist_id=appointment.dentist_id,
         )
         _apply_status_transition(
+            db,
             appointment,
             current_user=current_user,
             requested_status=requested_status,
+            care_occurred_at=care_occurred_at,
         )
         return AppointmentRepository(db).save(appointment)
 
@@ -275,7 +339,18 @@ def update_appointment(
         dentist_id = changes.get("dentist_id", appointment.dentist_id)
         scheduled_at = changes.get("scheduled_at", appointment.scheduled_at)
         duration = changes.get("duration_minutes", appointment.duration_minutes)
-        _participants(db, clinic_id=clinic_id, patient_id=patient_id, dentist_id=dentist_id)
+        _participants(
+            db, clinic_id=clinic_id, patient_id=patient_id, dentist_id=dentist_id
+        )
+        if patient_id != appointment.patient_id or dentist_id != appointment.dentist_id:
+            # A consulta já está bloqueada; preservar a origem de toda evidência.
+            grant = ClinicalAccessGrantRepository(db).get_for_update(
+                appointment_id=appointment.id,
+                clinic_id=clinic_id,
+            )
+            if grant is not None:
+                raise AppointmentParticipantConflictError()
+
         changes["scheduled_at"] = _validate_slot(
             db,
             clinic_id=clinic_id,
@@ -296,9 +371,11 @@ def update_appointment(
                 dentist_id=appointment.dentist_id,
             )
         _apply_status_transition(
+            db,
             appointment,
             current_user=current_user,
             requested_status=requested_status,
+            care_occurred_at=care_occurred_at,
         )
     return AppointmentRepository(db).save(appointment)
 

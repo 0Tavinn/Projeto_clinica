@@ -1,0 +1,29 @@
+{
+  "frontend_http": 200,
+  "frontend_title": true,
+  "bundle_http": 200,
+  "built_api_url_present": true,
+  "cors_http": 200,
+  "cors_allow_origin": "http://localhost:18129",
+  "openapi_http": 200,
+  "route_count": 17,
+  "clinical_routes": [
+    "/api/v1/appointments",
+    "/api/v1/appointments/{appointment_id}",
+    "/api/v1/appointments/{appointment_id}/status",
+    "/api/v1/appointments/{appointment_id}/cancel",
+    "/api/v1/patients/{patient_id}/record",
+    "/api/v1/patients/{patient_id}/evolutions",
+    "/api/v1/patients/evolutions",
+    "/api/v1/patients/evolutions/{evolution_id}/draft",
+    "/api/v1/patients/evolutions/{evolution_id}/finalize"
+  ],
+  "report_routes": [],
+  "audit_routes": [],
+  "dashboard_uses_appointment_aggregate": false,
+  "report_view_present": false,
+  "frontend_completion_sends_care_time": false,
+  "frontend_get_or_open": true,
+  "frontend_csv_export_marker": false,
+  "frontend_patient_search": true
+}

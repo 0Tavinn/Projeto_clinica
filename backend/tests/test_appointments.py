@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from app.appointments.models import Appointment, AppointmentStatus
 from app.dentists.models import Dentist
 from app.patients.models import Patient
+from app.records.access_models import ClinicalAccessGrant
 from app.security.roles import Role
 from app.users.models import Clinic
 from tests.conftest import _make_user, auth_headers
@@ -249,30 +250,52 @@ def test_completion_permissions_and_start_time(
         dentist,
         scheduled_at=_when(days=-1),
     )
-    admin_headers = auth_headers(client, administrator_user.email)
+    future = _appointment(
+        db_session,
+        clinic,
+        patient,
+        dentist,
+        scheduled_at=_when(days=4),
+    )
+
+    receptionist_headers = auth_headers(client, receptionist_user.email)
+    for appointment in (past, future):
+        confirmed = client.patch(
+            f"/api/v1/appointments/{appointment.id}/status",
+            json={"status": "CONFIRMED"},
+            headers=receptionist_headers,
+        )
+        assert confirmed.status_code == 200, confirmed.text
+
+    care_occurred_at = _when(days=0) - datetime.timedelta(minutes=5)
+    completion = {
+        "status": "COMPLETED",
+        "care_occurred_at": care_occurred_at.isoformat(),
+    }
+
+    for user in (administrator_user, receptionist_user):
+        forbidden = client.patch(
+            f"/api/v1/appointments/{past.id}/status",
+            json=completion,
+            headers=auth_headers(client, user.email),
+        )
+        assert forbidden.status_code == 403, forbidden.text
+
+    dentist_headers = auth_headers(client, dentist_user.email)
+    too_soon = client.patch(
+        f"/api/v1/appointments/{future.id}/status",
+        json=completion,
+        headers=dentist_headers,
+    )
+    assert too_soon.status_code == 422, too_soon.text
 
     completed = client.patch(
         f"/api/v1/appointments/{past.id}/status",
-        json={"status": "COMPLETED"},
-        headers=admin_headers,
+        json=completion,
+        headers=dentist_headers,
     )
-    assert completed.status_code == 200
-
-    future = _appointment(db_session, clinic, patient, dentist, scheduled_at=_when(days=4))
-    too_soon = client.patch(
-        f"/api/v1/appointments/{future.id}/status",
-        json={"status": "COMPLETED"},
-        headers=admin_headers,
-    )
-    assert too_soon.status_code == 422
-
-    receptionist_headers = auth_headers(client, receptionist_user.email)
-    forbidden = client.patch(
-        f"/api/v1/appointments/{future.id}/status",
-        json={"status": "COMPLETED"},
-        headers=receptionist_headers,
-    )
-    assert forbidden.status_code == 403
+    assert completed.status_code == 200, completed.text
+    assert completed.json()["status"] == "COMPLETED"
 
 
 def test_receptionist_and_dentist_can_register_no_show_after_start(
@@ -349,7 +372,7 @@ def test_dentist_sees_and_changes_only_own_appointments(
     assert (
         client.patch(
             f"/api/v1/appointments/{other.id}/status",
-            json={"status": "COMPLETED"},
+            json={"status": "NO_SHOW"},
             headers=headers,
         ).status_code
         == 404
@@ -357,7 +380,7 @@ def test_dentist_sees_and_changes_only_own_appointments(
 
     completed = client.patch(
         f"/api/v1/appointments/{own.id}/status",
-        json={"status": "COMPLETED"},
+                json={"status": "NO_SHOW"},
         headers=headers,
     )
     assert completed.status_code == 200
@@ -447,6 +470,56 @@ def test_inactive_clinic_patient_and_dentist_are_rejected(
     )
     assert clinic_response.status_code == 422
 
+def test_confirmed_appointment_rejects_participant_change_without_losing_grant(
+    client, db_session, clinic, receptionist_user, dentist_user
+):
+    patient = _patient(db_session, clinic, cpf="12345678916")
+    other_patient = _patient(db_session, clinic, cpf="12345678917")
+    dentist = _dentist(db_session, dentist_user)
+    other_user = _make_user(
+        db_session,
+        clinic,
+        email="dentista.troca@clinica.example.com",
+        cpf="00000000032",
+        role=Role.DENTIST,
+    )
+    other_dentist = _dentist(db_session, other_user, cro="98765")
+    appointment = _appointment(db_session, clinic, patient, dentist)
+    appointment_id = appointment.id
+    original_patient_id = patient.id
+    original_dentist_id = dentist.id
+    headers = auth_headers(client, receptionist_user.email)
+
+    confirmed = client.patch(
+        f"/api/v1/appointments/{appointment_id}/status",
+        json={"status": "CONFIRMED"},
+        headers=headers,
+    )
+    assert confirmed.status_code == 200, confirmed.text
+
+    for change in (
+        {"patient_id": other_patient.id},
+        {"dentist_id": other_dentist.id},
+    ):
+        response = client.patch(
+            f"/api/v1/appointments/{appointment_id}",
+            json=change,
+            headers=headers,
+        )
+        assert response.status_code == 409, response.text
+        assert response.json()["error"]["code"] == "APPOINTMENT_PARTICIPANT_CONFLICT"
+
+        db_session.expire_all()
+        stored = db_session.get(Appointment, appointment_id)
+        grant = db_session.get(ClinicalAccessGrant, appointment_id)
+        assert (stored.patient_id, stored.dentist_id) == (
+            original_patient_id,
+            original_dentist_id,
+        )
+        assert (grant.patient_id, grant.dentist_id) == (
+            original_patient_id,
+            original_dentist_id,
+        )
 
 def test_participants_from_another_clinic_are_rejected(
     client, db_session, clinic, receptionist_user, dentist_user

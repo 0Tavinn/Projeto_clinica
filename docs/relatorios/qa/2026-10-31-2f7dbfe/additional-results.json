@@ -1,0 +1,74 @@
+[
+  {
+    "id": "HTTP-cross-patient-appointment",
+    "requirement": "RF-024-CA02",
+    "layer": "HTTP",
+    "expected": "404 por vínculo incompatível",
+    "observed": "HTTP 404",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "HTTP-cross-clinic-appointment",
+    "requirement": "RF-024-CA02",
+    "layer": "HTTP",
+    "expected": "404 por consulta de outra clínica",
+    "observed": "HTTP 404",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "HTTP-combined-filters",
+    "requirement": "RF-017",
+    "layer": "HTTP",
+    "expected": "apenas shared_d1 concluída",
+    "observed": "HTTP 200, IDs [1]",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "HTTP-inactive-existing-token",
+    "requirement": "segurança",
+    "layer": "HTTP",
+    "expected": "401 após inativação",
+    "observed": "HTTP 401",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "HTTP-inactive-refresh",
+    "requirement": "segurança",
+    "layer": "HTTP",
+    "expected": "401 após inativação",
+    "observed": "HTTP 401",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "HTTP-no-show-with-continuity",
+    "requirement": "RN-031",
+    "layer": "HTTP",
+    "expected": "200 confirmado, 200 ausência, 200 leitura mantida",
+    "observed": "HTTP 200/200/200",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "SPRINT-audit-events",
+    "requirement": "RN-034/Sprint 7",
+    "layer": "SQL/HTTP",
+    "expected": "eventos registrados para operações essenciais",
+    "observed": "audit_logs=0 após operações de Agenda e prontuário",
+    "result": "reprovado",
+    "note": "A tabela existe no esquema; nenhuma rota de auditoria no OpenAPI"
+  },
+  {
+    "id": "PG-confirm-care-evidence",
+    "requirement": "RN-031",
+    "layer": "SQL",
+    "expected": "quatro campos de procedência presentes",
+    "observed": "1|1|1|1",
+    "result": "aprovado",
+    "note": ""
+  }
+]

@@ -1,0 +1,74 @@
+{
+  "fixture_utc": "2026-10-31T13:41:46.902413+00:00",
+  "clinics": {
+    "a": 1,
+    "b": 2
+  },
+  "users": {
+    "admin": {
+      "id": 1,
+      "email": "admin.qa31@example.test"
+    },
+    "reception": {
+      "id": 2,
+      "email": "reception.qa31@example.test"
+    },
+    "dentist1": {
+      "id": 3,
+      "email": "dentist1.qa31@example.test"
+    },
+    "dentist2": {
+      "id": 4,
+      "email": "dentist2.qa31@example.test"
+    },
+    "no_profile": {
+      "id": 5,
+      "email": "no_profile.qa31@example.test"
+    },
+    "inactive": {
+      "id": 6,
+      "email": "inactive.qa31@example.test"
+    },
+    "dentist_other_clinic": {
+      "id": 7,
+      "email": "dentist_other_clinic.qa31@example.test"
+    }
+  },
+  "dentists": {
+    "dentist1": 1,
+    "dentist2": 2,
+    "inactive": 3,
+    "dentist_other_clinic": 4
+  },
+  "patients": {
+    "shared": 1,
+    "cancel": 2,
+    "no_show": 3,
+    "alternative": 4,
+    "continuity": 5,
+    "legacy": 6,
+    "rollback": 7,
+    "race_edit": 8,
+    "race_finalize": 9,
+    "double_edit": 10,
+    "open": 11,
+    "other_clinic": 12
+  },
+  "appointments": {
+    "shared_d1": 1,
+    "shared_d2": 2,
+    "cancel_only": 3,
+    "no_show_only": 4,
+    "alt_one": 5,
+    "alt_two": 6,
+    "continuity_past": 7,
+    "continuity_later": 8,
+    "legacy_confirmed": 9,
+    "rollback": 10,
+    "race_edit": 11,
+    "race_finalize": 12,
+    "double_edit": 13,
+    "open": 14,
+    "other_clinic": 15
+  }
+}

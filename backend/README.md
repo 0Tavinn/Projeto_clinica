@@ -326,7 +326,22 @@ FROM patients
 ORDER BY id;
 ```
 
-## Observação sobre Alembic e Docker
+## Docker Compose
+
+A execução integrada recomendada está no `docker-compose.yml` da raiz do
+repositório:
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+O Compose executa PostgreSQL, API e frontend. O schema inicial é montado em
+`/docker-entrypoint-initdb.d` e só é aplicado quando o volume PostgreSQL é
+criado. Consulte o README da raiz para portas, variáveis, healthchecks,
+persistência e deploy em nuvem.
+
+## Observação sobre Alembic
 
 O arquivo de migração Alembic existente pertence à estrutura inicial baseada em MySQL. Não execute:
 
@@ -336,4 +351,5 @@ alembic upgrade head
 
 na versão atual do projeto, pois o banco PostgreSQL já é criado a partir de `database/schema.sql`.
 
-A execução local oficial desta fase utiliza WSL, PostgreSQL e Uvicorn. A configuração Docker será revisada em uma etapa posterior para refletir a arquitetura PostgreSQL atual.
+A execução Docker atual utiliza PostgreSQL e não executa Alembic automaticamente,
+pois a estratégia de migrações ainda precisa ser alinhada ao schema PostgreSQL.

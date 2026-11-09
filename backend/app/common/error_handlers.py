@@ -84,17 +84,29 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def validation_error_handler(
         request: Request, exc: RequestValidationError
     ) -> JSONResponse:
-        # Erros de validação do Pydantic (schema/entrada). Não logamos o
-        # corpo cru da requisição para evitar vazar dados sensíveis em logs.
+        # O Pydantic inclui valores de entrada e contexto nos erros.
+        # Mantemos a localização e o tipo, sem devolver ou registrar o conteúdo.
+        issues = exc.errors()
         validation_details = jsonable_encoder(
-            exc.errors(),
-            custom_encoder={Exception: str},
+            [
+                {
+                    "loc": issue.get("loc", ()),
+                    "type": issue.get("type", "value_error"),
+                    "msg": "Valor inválido.",
+                    **(
+                        {"ctx": {"error": "Valor inválido."}}
+                        if "ctx" in issue
+                        else {}
+                    ),
+                }
+                for issue in issues
+            ]
         )
         logger.info(
-            "validation_error path=%s method=%s errors=%s",
+            "validation_error path=%s method=%s count=%s",
             request.url.path,
             request.method,
-            validation_details,
+            len(issues),
         )
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -121,9 +133,13 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def unhandled_exception_handler(
         request: Request, exc: Exception
     ) -> JSONResponse:
-        # Falha inesperada: nunca vaza detalhes internos para o client.
-        logger.exception(
-            "unhandled_exception path=%s method=%s", request.url.path, request.method
+        # A exceção pode conter parâmetros SQL e texto clínico; logamos
+        # somente sua classe e metadados da requisição.
+        logger.error(
+            "unhandled_exception path=%s method=%s type=%s",
+            request.url.path,
+            request.method,
+            type(exc).__name__,
         )
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "PG-open-simultaneous",
+    "requirement": "RF-023-CA01",
+    "layer": "PostgreSQL/HTTP",
+    "expected": "dois HTTP 200, um prontuário",
+    "observed": "HTTP [200, 200], IDs [7, 7], linhas 1",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "PG-loss-access-edit",
+    "requirement": "RN-031/RF-024",
+    "layer": "PostgreSQL/HTTP",
+    "expected": "mutação negada após revogação; rascunho intacto",
+    "observed": "espera=1, cancel HTTP 200, mutação HTTP 200, estado DRAFT|Edição após perda do último acesso, leitura posterior HTTP 403",
+    "result": "reprovado",
+    "note": "Conexões independentes; bloqueio de linha garantiu a ordem"
+  },
+  {
+    "id": "PG-loss-access-finalize",
+    "requirement": "RN-031/RF-024",
+    "layer": "PostgreSQL/HTTP",
+    "expected": "mutação negada após revogação; rascunho intacto",
+    "observed": "espera=1, cancel HTTP 200, mutação HTTP 200, estado FINALIZED|Rascunho QA race_finalize, leitura posterior HTTP 403",
+    "result": "reprovado",
+    "note": "Conexões independentes; bloqueio de linha garantiu a ordem"
+  },
+  {
+    "id": "PG-two-edits",
+    "requirement": "RF-024-CA10",
+    "layer": "PostgreSQL/HTTP",
+    "expected": "conflito explícito; nenhuma sobrescrita silenciosa",
+    "observed": "esperas 1/2, HTTP 200/200, final Edição B",
+    "result": "reprovado",
+    "note": "Ambas as requisições partiram enquanto a linha estava bloqueada"
+  }
+]

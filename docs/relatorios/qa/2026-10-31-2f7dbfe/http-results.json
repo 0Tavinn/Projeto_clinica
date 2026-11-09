@@ -1,0 +1,773 @@
+{
+  "base": "http://127.0.0.1:18128",
+  "care_occurred_at_fixture": "2026-10-31T10:41:12.256331-03:00",
+  "cases": [
+    {
+      "id": "AUTH-admin",
+      "requirement": "autenticação",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-reception",
+      "requirement": "autenticação",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-dentist1",
+      "requirement": "autenticação",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-refresh",
+      "requirement": "sessão",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-dentist2",
+      "requirement": "autenticação",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-no_profile",
+      "requirement": "autenticação",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-configured-limit",
+      "requirement": "configuração de sessão",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 429",
+      "result": "reprovado",
+      "note": "LOGIN_RATE_LIMIT=100/minute no contêiner, mas o limitador fixa 5/minute"
+    },
+    {
+      "id": "AUTH-inactive",
+      "requirement": "autenticação",
+      "layer": "HTTP",
+      "expected": "HTTP 401",
+      "observed": "HTTP 401",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-dentist_other_clinic",
+      "requirement": "autenticação",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AUTH-no-token",
+      "requirement": "RF-023",
+      "layer": "HTTP",
+      "expected": "HTTP 401",
+      "observed": "HTTP 401",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-list-admin",
+      "requirement": "RF-017",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-list-own",
+      "requirement": "RF-017",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-own-filter",
+      "requirement": "RF-017",
+      "layer": "HTTP",
+      "expected": "somente consultas do dentista1",
+      "observed": "13 consultas",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-filter-status",
+      "requirement": "RF-017",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-other-dentist-detail",
+      "requirement": "RF-017",
+      "layer": "HTTP",
+      "expected": "HTTP 404",
+      "observed": "HTTP 404",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-invalid-period",
+      "requirement": "RF-017",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CLINICAL-admin",
+      "requirement": "RF-023-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CLINICAL-reception",
+      "requirement": "RF-023-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CLINICAL-no-profile",
+      "requirement": "RF-023",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CLINICAL-other-clinic",
+      "requirement": "RF-023-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CLINICAL-no-origin",
+      "requirement": "RF-023",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CLINICAL-legacy-no-proof",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-direct-completion",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-confirm-shared_d1",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200, status=CONFIRMED",
+      "observed": "HTTP 200, status=CONFIRMED",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-confirm-shared_d2",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200, status=CONFIRMED",
+      "observed": "HTTP 200, status=CONFIRMED",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-repeat-confirm",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-complete-admin",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-complete-reception",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-complete-other-dentist",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 404",
+      "observed": "HTTP 404",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-complete-no-time",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-complete-no-zone",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-complete-future",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-complete-status",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200, status=COMPLETED",
+      "observed": "HTTP 200, status=COMPLETED",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "AGENDA-repeat-complete",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "RECORD-general-notes",
+      "requirement": "RF-023-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 200, general_notes=Observação geral fictícia QA",
+      "observed": "HTTP 200, general_notes=Observação geral fictícia QA",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "RECORD-admin-after-proof",
+      "requirement": "RF-023-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "RECORD-reception-after-proof",
+      "requirement": "RF-023-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-own-create",
+      "requirement": "RF-024-CA01",
+      "layer": "HTTP",
+      "expected": "HTTP 201, status=DRAFT",
+      "observed": "HTTP 201, status=DRAFT",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-other-author-create",
+      "requirement": "RF-024-CA01",
+      "layer": "HTTP",
+      "expected": "HTTP 201, status=DRAFT",
+      "observed": "HTTP 201, status=DRAFT",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-duplicate-appointment",
+      "requirement": "RF-024-CA09",
+      "layer": "HTTP",
+      "expected": "HTTP 409",
+      "observed": "HTTP 409",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-wrong-dentist",
+      "requirement": "RF-024-CA02",
+      "layer": "HTTP",
+      "expected": "HTTP 404",
+      "observed": "HTTP 404",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-wrong-patient",
+      "requirement": "RF-024-CA02",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-other-clinic",
+      "requirement": "RF-024-CA07",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-admin",
+      "requirement": "RF-024-CA07",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-reception",
+      "requirement": "RF-024-CA07",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "HISTORY-d1-draft-private",
+      "requirement": "RF-023-CA05",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "HISTORY-d1-excludes-d2",
+      "requirement": "RF-023-CA05",
+      "layer": "HTTP",
+      "expected": "D1 vê apenas seu rascunho",
+      "observed": "IDs [1]",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-other-author-edit",
+      "requirement": "RF-024-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-other-author-finalize",
+      "requirement": "RF-024-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-own-edit",
+      "requirement": "RF-024-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 200, description=Texto fictício D1 revisado",
+      "observed": "HTTP 200, description=Texto fictício D1 revisado",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "DRAFT-own-finalize",
+      "requirement": "RF-024-CA03",
+      "layer": "HTTP",
+      "expected": "HTTP 200, status=FINALIZED",
+      "observed": "HTTP 200, status=FINALIZED",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "HISTORY-shared-finalized",
+      "requirement": "RF-023-CA05",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "HISTORY-d2-final-and-own-draft",
+      "requirement": "RF-023-CA05",
+      "layer": "HTTP",
+      "expected": "D2 vê finalizada D1 e rascunho D2",
+      "observed": "IDs [2, 1]",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "FINALIZED-no-edit",
+      "requirement": "RF-024-CA05",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "FINALIZED-no-refinalize",
+      "requirement": "RF-024-CA05",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CANCEL-confirm",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CANCEL-access-before",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CANCEL-operation",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200, status=CANCELED",
+      "observed": "HTTP 200, status=CANCELED",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CANCEL-access-after",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "NOSHOW-confirm",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "NOSHOW-access-before",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "NOSHOW-operation",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200, status=NO_SHOW",
+      "observed": "HTTP 200, status=NO_SHOW",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "NOSHOW-access-after",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ALT-confirm-alt_one",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ALT-confirm-alt_two",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ALT-cancel-one",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ALT-access-remains",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ALT-cancel-last",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ALT-access-revoked",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 403",
+      "observed": "HTTP 403",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CONT-confirm-past",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CONT-complete-generic",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200, status=COMPLETED",
+      "observed": "HTTP 200, status=COMPLETED",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CONT-confirm-later",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CONT-cancel-later",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "CONT-access-after-cancel",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "OPEN-confirm",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "OPEN-list-before",
+      "requirement": "RF-023",
+      "layer": "HTTP",
+      "expected": "HTTP 404",
+      "observed": "HTTP 404",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "OPEN-GET-creates",
+      "requirement": "D02 aberto",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "OPEN-GET-reuses",
+      "requirement": "RF-023-CA01",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "OPEN-single-record",
+      "requirement": "RF-023-CA01",
+      "layer": "HTTP",
+      "expected": "mesmo ID após repetição",
+      "observed": "6/6",
+      "result": "aprovado",
+      "note": "GET com efeito de escrita é contrato atual; D02 aberto"
+    },
+    {
+      "id": "ERROR-clinical-text-absent",
+      "requirement": "RF-024",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ERROR-no-leak",
+      "requirement": "RF-024",
+      "layer": "HTTP",
+      "expected": "sentinela ausente no erro",
+      "observed": "ausente",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ROLLBACK-confirm",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 200",
+      "observed": "HTTP 200",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ROLLBACK-wrong-link",
+      "requirement": "RF-024-CA02",
+      "layer": "HTTP",
+      "expected": "HTTP 404",
+      "observed": "HTTP 404",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "ROLLBACK-no-record",
+      "requirement": "RF-024-CA06",
+      "layer": "HTTP",
+      "expected": "HTTP 404",
+      "observed": "HTTP 404",
+      "result": "aprovado",
+      "note": ""
+    },
+    {
+      "id": "UI-contract-completion-body",
+      "requirement": "RN-031",
+      "layer": "HTTP",
+      "expected": "HTTP 422",
+      "observed": "HTTP 422",
+      "result": "aprovado",
+      "note": ""
+    }
+  ],
+  "shared_record_id": 1,
+  "finalized_evolution_id": 1
+}

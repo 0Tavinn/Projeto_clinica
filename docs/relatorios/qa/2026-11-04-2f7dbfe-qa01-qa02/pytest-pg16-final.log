@@ -1,0 +1,33 @@
+Ensaio de API em lumina_clinical_api_1793816887_11940 / PostgreSQL 16.15
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0 -- /home/paulinho/Work/Projeto_clinica/backend/.venv/bin/python
+rootdir: /home/paulinho/Work/Projeto_clinica
+collecting ... collected 10 items
+
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_http_flow_persists_after_api_restart PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_parallel_confirmation_and_completion_keep_one_evidence PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_edit_waits_for_finalization_lock PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_edit-edit-None] QA01 lock_wait=True scenario=qa_edit action=edit
+QA01 scenario=qa_edit http=403 cancellation=200
+QA01 stored_status=DRAFT stored_version=1 finalized=False
+PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_finalize-finalize-None] QA01 lock_wait=True scenario=qa_finalize action=finalize
+QA01 scenario=qa_finalize http=403 cancellation=200
+QA01 stored_status=DRAFT stored_version=1 finalized=False
+PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_other-edit-confirmed] QA01 lock_wait=True scenario=qa_other action=edit
+QA01 scenario=qa_other http=200 cancellation=200
+QA01 stored_status=DRAFT stored_version=2 finalized=False
+PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_care-finalize-completed] QA01 lock_wait=True scenario=qa_care action=finalize
+QA01 scenario=qa_care http=200 cancellation=200
+QA01 stored_status=FINALIZED stored_version=2 finalized=True
+PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_draft_version_rejects_concurrent_and_stale_edits QA02 concurrent_lock_waiters=2
+QA02 concurrent_http=[200, 409]
+PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_draft_rechecks_origin_after_appointment_lock PASSED
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_record_opening_rolls_back_if_draft_fails PASSED
+
+======================== 10 passed, 9 warnings in 7.76s ========================
+Ensaio concluído; o contêiner e o volume exclusivos serão removidos.

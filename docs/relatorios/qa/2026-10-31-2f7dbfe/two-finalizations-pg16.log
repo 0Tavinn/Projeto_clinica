@@ -1,0 +1,5 @@
+QA duas finalizações: lumina_qa_two_finalize_1793455277_29623 / PostgreSQL 16.15
+two_finalizations_http [200, 422] stored_status FINALIZED
+.
+1 passed, 8 warnings in 1.09s
+QA duas finalizações: recursos exclusivos removidos pelo trap.

@@ -1,0 +1,89 @@
+Ensaio de API em lumina_clinical_api_1793816763_8815 / PostgreSQL 16.15
+...FFFFFFF                                                               [100%]
+=================================== FAILURES ===================================
+____ test_mutation_rechecks_access_after_evolution_lock[qa_edit-edit-None] _____
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:390: in test_mutation_rechecks_access_after_evolution_lock
+    dentist = _headers(client, dentist_email)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:141: in _headers
+    assert response.status_code == 200, response.text
+E   AssertionError: {"error":{"code":"RATELIMITEXCEEDEDERROR","message":"Muitas tentativas. Tente novamente em instantes.","details":null}}
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  dental_clinic_api.errors:error_handlers.py:66 app_error path=/api/v1/auth/login method=POST type=RateLimitExceededError status=429
+_ test_mutation_rechecks_access_after_evolution_lock[qa_finalize-finalize-None] _
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:389: in test_mutation_rechecks_access_after_evolution_lock
+    receptionist = _headers(client, receptionist_email)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:141: in _headers
+    assert response.status_code == 200, response.text
+E   AssertionError: {"error":{"code":"RATELIMITEXCEEDEDERROR","message":"Muitas tentativas. Tente novamente em instantes.","details":null}}
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  dental_clinic_api.errors:error_handlers.py:66 app_error path=/api/v1/auth/login method=POST type=RateLimitExceededError status=429
+_ test_mutation_rechecks_access_after_evolution_lock[qa_other-edit-confirmed] __
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:389: in test_mutation_rechecks_access_after_evolution_lock
+    receptionist = _headers(client, receptionist_email)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:141: in _headers
+    assert response.status_code == 200, response.text
+E   AssertionError: {"error":{"code":"RATELIMITEXCEEDEDERROR","message":"Muitas tentativas. Tente novamente em instantes.","details":null}}
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  dental_clinic_api.errors:error_handlers.py:66 app_error path=/api/v1/auth/login method=POST type=RateLimitExceededError status=429
+_ test_mutation_rechecks_access_after_evolution_lock[qa_care-finalize-completed] _
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:389: in test_mutation_rechecks_access_after_evolution_lock
+    receptionist = _headers(client, receptionist_email)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:141: in _headers
+    assert response.status_code == 200, response.text
+E   AssertionError: {"error":{"code":"RATELIMITEXCEEDEDERROR","message":"Muitas tentativas. Tente novamente em instantes.","details":null}}
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  dental_clinic_api.errors:error_handlers.py:66 app_error path=/api/v1/auth/login method=POST type=RateLimitExceededError status=429
+____________ test_draft_version_rejects_concurrent_and_stale_edits _____________
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:507: in test_draft_version_rejects_concurrent_and_stale_edits
+    receptionist = _headers(client, receptionist_email)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:141: in _headers
+    assert response.status_code == 200, response.text
+E   AssertionError: {"error":{"code":"RATELIMITEXCEEDEDERROR","message":"Muitas tentativas. Tente novamente em instantes.","details":null}}
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  dental_clinic_api.errors:error_handlers.py:66 app_error path=/api/v1/auth/login method=POST type=RateLimitExceededError status=429
+______________ test_draft_rechecks_origin_after_appointment_lock _______________
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:654: in test_draft_rechecks_origin_after_appointment_lock
+    receptionist = _headers(client, receptionist_email)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:141: in _headers
+    assert response.status_code == 200, response.text
+E   AssertionError: {"error":{"code":"RATELIMITEXCEEDEDERROR","message":"Muitas tentativas. Tente novamente em instantes.","details":null}}
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  dental_clinic_api.errors:error_handlers.py:66 app_error path=/api/v1/auth/login method=POST type=RateLimitExceededError status=429
+________________ test_record_opening_rolls_back_if_draft_fails _________________
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:713: in test_record_opening_rolls_back_if_draft_fails
+    receptionist = _headers(client, receptionist_email)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py:141: in _headers
+    assert response.status_code == 200, response.text
+E   AssertionError: {"error":{"code":"RATELIMITEXCEEDEDERROR","message":"Muitas tentativas. Tente novamente em instantes.","details":null}}
+E   assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  dental_clinic_api.errors:error_handlers.py:66 app_error path=/api/v1/auth/login method=POST type=RateLimitExceededError status=429
+=========================== short test summary info ============================
+FAILED ../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_edit-edit-None]
+FAILED ../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_finalize-finalize-None]
+FAILED ../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_other-edit-confirmed]
+FAILED ../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_mutation_rechecks_access_after_evolution_lock[qa_care-finalize-completed]
+FAILED ../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_draft_version_rejects_concurrent_and_stale_edits
+FAILED ../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_draft_rechecks_origin_after_appointment_lock
+FAILED ../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/test_clinical_pg16_qa.py::test_record_opening_rolls_back_if_draft_fails
+7 failed, 3 passed, 8 warnings in 6.06s

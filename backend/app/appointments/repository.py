@@ -3,10 +3,13 @@ import datetime
 
 from sqlalchemy import Select, select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, lazyload
 
 from app.appointments.models import Appointment, AppointmentStatus
-from app.common.exceptions import AppointmentTimeConflictError
+from app.common.exceptions import (
+    AppointmentParticipantConflictError,
+    AppointmentTimeConflictError,
+)
 from app.dentists.models import Dentist
 
 
@@ -53,11 +56,19 @@ class AppointmentRepository:
         ).scalar_one_or_none()
 
     def get_for_update(self, appointment_id: int, clinic_id: int) -> Appointment | None:
-        return self.db.execute(
+        # Bloqueia apenas a consulta. Os relacionamentos são carregados depois,
+        # evitando FOR UPDATE sobre os JOINs gerados pelo mapeamento padrão.
+        statement = (
             self._base_query(clinic_id)
             .where(Appointment.id == appointment_id)
-            .with_for_update()
-        ).scalar_one_or_none()
+            .options(
+                lazyload(Appointment.patient),
+                lazyload(Appointment.dentist),
+            )
+            .execution_options(populate_existing=True)
+            .with_for_update(of=Appointment)
+        )
+        return self.db.execute(statement).scalar_one_or_none()
 
     def has_conflict(
         self,
@@ -104,7 +115,18 @@ class AppointmentRepository:
         except IntegrityError as error:
             self.db.rollback()
             original = error.orig
-            sqlstate = getattr(original, "sqlstate", None) or getattr(original, "pgcode", None)
+            sqlstate = getattr(original, "sqlstate", None) or getattr(
+                original, "pgcode", None
+            )
             if sqlstate == "23P01":
                 raise AppointmentTimeConflictError() from error
+
+            diagnostic = getattr(original, "diag", None)
+            constraint_name = getattr(diagnostic, "constraint_name", None)
+            if (
+                sqlstate == "23503"
+                and constraint_name == "fk_clinical_access_grants_origin"
+            ):
+                # A FK preserva a origem da evidência até haver regra de correção.
+                raise AppointmentParticipantConflictError() from error
             raise

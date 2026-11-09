@@ -1,0 +1,21 @@
+ M backend/app/appointments/README.md
+ M backend/app/records/README.md
+ M backend/app/records/access_repository.py
+ M backend/app/records/models.py
+ M backend/app/records/schemas.py
+ M backend/app/records/service.py
+ M backend/database/schema.sql
+ M backend/tests/test_clinical_pg16.py
+ M backend/tests/test_clinical_writes.py
+ M docs/business-rules.md
+ M docs/regras-de-negocio/README.md
+ M docs/regras-de-negocio/RN-031-RF-023-acesso-ao-prontuario.md
+ M docs/regras-de-negocio/RN-032-RF-024-preservacao-do-historico-clinico.md
+ M docs/requirements.md
+ M docs/requisitos/README.md
+ M docs/requisitos/RF-023-prontuario-do-paciente.md
+ M docs/requisitos/RF-024-evolucoes-clinicas.md
+?? backend/database/checks/run_20261031_evolution_version_pg16.sh
+?? backend/database/migrations/20261031_add_clinical_evolution_version.sql
+?? docs/especificacoes/
+?? docs/relatorios/

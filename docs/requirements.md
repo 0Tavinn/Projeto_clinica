@@ -2,12 +2,14 @@
 
 ## 1. Identificação e referência
 
-- **Versão:** 1.1 — requisitos funcionais e não funcionais.
-- **Data:** 27/09/2026.
+- **Versão:** 1.2 — consolidação documental de Agenda e prontuário.
+- **Data da consolidação:** 09/11/2026. A referência original da Sprint 04 é preservada nas seções correspondentes.
 - **Referência principal:** funcionalidades consolidadas na Sprint 04.
 - **Situação do documento:** versão para revisão da equipe.
 
 Este documento descreve os requisitos funcionais e não funcionais do Lumina Odonto e identifica a situação de cada funcionalidade. O relatório da Sprint 04 tem prioridade sobre os documentos anteriores quando houver divergências. Os testes relatados pela equipe na conclusão da Sprint 04 complementam essa referência.
+
+As atualizações de Agenda e prontuário abaixo usam o código consolidado em `8eeddd5` e o [QA de 04/11](./relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/relatorio.md), cujas evidências foram publicadas em `4c352b2`. As novas decisões de produto estão na [especificação v0.4](./especificacoes/fluxo-atendimento-mvp-2026-11-02.md). Relatórios datados de sprints anteriores são referências históricas.
 
 ### 1.1 Situações utilizadas
 
@@ -120,6 +122,8 @@ O sistema deve apresentar um painel inicial após a autenticação, com resumos 
 
 **Situação:** implementado — Sprint 04, conforme a demonstração relatada pela equipe.
 
+**Refinamento proposto em 23/10/2026:** painel do dentista com consultas do dia e acesso ao atendimento; não implementado no dashboard atual. Ver [impactos clínicos](./requisitos/README.md).
+
 ### RF-013 — Validar cadastros e impedir duplicidades
 
 O sistema deve validar os campos obrigatórios e os formatos aceitos nos formulários de usuários e pacientes. Deve impedir duplicidade de e-mail e CPF de usuários e de CPF e número de prontuário de pacientes dentro da mesma clínica.
@@ -142,7 +146,7 @@ O sistema deve atualizar as informações apresentadas após cadastros, alteraç
 
 ## 4. Requisitos planejados para a Sprint 05 — Agenda
 
-Os requisitos desta seção são uma proposta de implementação. As permissões, situações, campos e regras de horário devem ser revisados pela equipe e confrontados com a estrutura de `appointments` antes da aprovação final.
+Esta seção reúne o planejamento da Agenda e a decisão de 25/10/2026 sobre **Concluir atendimento** em RF-022. As demais permissões, situações, campos e regras de horário devem ser avaliados conforme suas decisões próprias; o texto aprovado não comprova implementação.
 
 ### RF-016 — Disponibilizar dentistas para agendamento
 
@@ -154,7 +158,7 @@ O sistema deve permitir identificar os dentistas da clínica elegíveis para rec
 
 O sistema deve apresentar os agendamentos da clínica por data ou período, permitindo filtrar por dentista, paciente e situação. O dentista deve conseguir consultar seus atendimentos agendados.
 
-**Situação:** planejado — Sprint 05.
+**Situação em 09/11/2026:** implementado na API da Agenda. A integração e o aceite do fluxo completo devem ser conferidos por cenário na versão utilizada.
 
 ### RF-018 — Cadastrar agendamentos
 
@@ -162,55 +166,57 @@ O sistema deve permitir ao administrador e à recepcionista registrar consultas 
 
 O cadastro deve verificar atividade dos envolvidos e disponibilidade de horário. Essas verificações devem ser detalhadas no documento de regras de negócio.
 
-**Situação:** planejado — Sprint 05.
+**Situação em 09/11/2026:** implementado na API da Agenda. A integração e o aceite do fluxo completo devem ser conferidos por cenário na versão utilizada.
 
 ### RF-019 — Consultar detalhes de um agendamento
 
 O sistema deve permitir visualizar paciente, dentista, data, horário, duração, situação e observações de uma consulta, respeitando as permissões do usuário.
 
-**Situação:** planejado — Sprint 05.
+**Situação em 09/11/2026:** implementado na API da Agenda. A integração e o aceite do fluxo completo devem ser conferidos por cenário na versão utilizada.
 
 ### RF-020 — Atualizar e reagendar consultas
 
 O sistema deve permitir ao administrador e à recepcionista atualizar informações ou remarcar consultas, validando novamente a disponibilidade do dentista antes de salvar o novo horário.
 
-**Situação:** planejado — Sprint 05.
+**Situação em 09/11/2026:** implementado na API da Agenda. A integração e o aceite do fluxo completo devem ser conferidos por cenário na versão utilizada.
 
 ### RF-021 — Cancelar consultas
 
 O sistema deve permitir ao administrador e à recepcionista cancelar um agendamento por alteração de sua situação, preservando o registro da consulta no banco.
 
-**Situação:** planejado — Sprint 05.
+**Situação em 09/11/2026:** implementado na API da Agenda. A integração e o aceite do fluxo completo devem ser conferidos por cenário na versão utilizada.
 
 ### RF-022 — Atualizar a situação do atendimento
 
 O sistema deve permitir registrar as situações necessárias ao acompanhamento de consultas, incluindo conclusão e ausência do paciente. O dentista deve poder atualizar os atendimentos sob sua responsabilidade conforme as regras aprovadas.
 
-Os estados e as transições permitidas serão definidos com a equipe; a lista proposta anteriormente não deve ser tratada como enumeração definitiva do banco.
+**Decisão aprovada por Paulo em 25/10/2026:** somente o dentista responsável pode executar **Concluir atendimento** quando a consulta estiver `CONFIRMED` com confirmação confiável registrada. A mesma operação grava `COMPLETED` e evidência da realização — responsável pelo registro, instante do registro e horário informado da realização — atomicamente. PATCH genérico e rota específica devem cumprir a mesma regra. Administrador e recepção não concluem atendimentos; a recepção mantém suas operações autorizadas de confirmação, cancelamento e ausência. A passagem direta de `SCHEDULED` para `COMPLETED` fica vedada nas novas operações.
 
-**Situação:** planejado — Sprint 05.
+A conclusão com evidência está implementada na API e foi exercitada nas regressões PostgreSQL. A interface ainda precisa enviar `care_occurred_at` com fuso. Correção de conclusão indevida segue pendente.
 
-## 5. Requisitos planejados para etapas futuras
+**Situação em 09/11:** conclusão com evidência implementada na API. A exigência posterior de evolução salva e itens/Sem cobrança, aprovada em 02/11, pertence à próxima implementação.
+
+## 5. Prontuário, evolução e extensões planejadas
 
 ### RF-023 — Consultar prontuários clínicos
 
-O sistema deve permitir ao dentista consultar o prontuário e o histórico clínico de pacientes autorizados. A existência de um número de prontuário no cadastro atual não significa que esse módulo clínico esteja implementado.
+O sistema deve permitir ao dentista autorizado consultar o prontuário do paciente, preservado entre atendimentos por profissionais diferentes, sem vínculo exclusivo permanente paciente–dentista. A política revisada por Paulo em 25/10/2026 distingue preparação por consulta atualmente `CONFIRMED`, com confirmação confiável, e continuidade por atendimento concluído com evidência válida. Cancelamento ou ausência retiram a preparação apenas quando não houver atendimento válido nem outra confirmação ativa para a dupla. O contrato de abertura continua pendente em D02.
 
-**Situação:** planejado — etapa futura.
+**Situação em 09/11/2026:** preparação e continuidade implementadas na API e SQL. Legado, correções excepcionais, abertura explícita, frontend e banco de destino mantêm pendências. Ver [RF-023](./requisitos/RF-023-prontuario-do-paciente.md).
 
 ### RF-024 — Registrar evoluções clínicas
 
-O sistema deve permitir ao dentista registrar observações e procedimentos relacionados ao atendimento no prontuário do paciente, identificando o profissional responsável e a data do registro. As regras de rascunho, finalização e alterações posteriores devem ser validadas antes da implementação.
+O sistema deve registrar cada evolução no prontuário com autoria individual obtida da sessão, dados do atendimento, rascunho e finalização. Diferentes dentistas podem acrescentar seus registros ao mesmo prontuário, preservando os anteriores.
 
-**Situação:** planejado — etapa futura.
+A leitura definida em RN-031 e a ação **Concluir atendimento** não autorizam, por si sós, criar ou finalizar uma evolução; essas condições permanecem em D03 e D04.
+
+**Situação em 09/11/2026:** autoria, privacidade e proteções QA-01/QA-02 implementadas e revalidadas no recorte PostgreSQL. Permanecem conteúdo mínimo, identificação histórica, retificação e integração do consumidor. Ver [RF-024](./requisitos/RF-024-evolucoes-clinicas.md) e [decisões pendentes](./requisitos/README.md).
 
 ### RF-025 — Disponibilizar resumos de apoio ao dentista por IA
 
-O sistema deve disponibilizar ao dentista resumos ou informações de apoio gerados a partir dos dados clínicos autorizados do paciente. A funcionalidade deve ser identificada como apoio ao profissional e depender da disponibilidade do prontuário e de suas evoluções.
+O sistema poderá apresentar resumo do histórico autorizado junto à tela de atendimento, com fontes e momento da geração, preservando acesso ao original e revisão humana.
 
-O processamento noturno, a preparação em lote e o uso de GPU/OpenCL descritos nos documentos anteriores permanecem propostas técnicas. Não há entrega funcional confirmada desses recursos na Sprint 04.
-
-**Situação:** planejado — etapa futura.
+**Situação em 23/10/2026:** proposta sem implementação; escopo, dados e processamento dependem de aprovação. Ver [RF-025](./requisitos/RF-025-resumo-clinico-por-ia.md). Não se presume processamento noturno, OpenCL ou inclusão automática na entrega de sábado.
 
 ### RF-026 — Consultar registros de auditoria
 
