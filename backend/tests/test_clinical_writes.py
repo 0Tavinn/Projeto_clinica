@@ -222,7 +222,7 @@ def test_only_author_mutates_draft_and_finalized_text_stays_unchanged(
 
     denied_edit = client.patch(
         f"/api/v1/patients/evolutions/{evolution_id}/draft",
-        json={"description": "Tentativa indevida"},
+        json={"version": created.json()["version"], "description": "Tentativa indevida"},
         headers=other_headers,
     )
     denied_finalize = client.post(
@@ -242,7 +242,7 @@ def test_only_author_mutates_draft_and_finalized_text_stays_unchanged(
 
     immutable = client.patch(
         f"/api/v1/patients/evolutions/{evolution_id}/draft",
-        json={"description": "Alteração após finalização"},
+        json={"version": finalized.json()["version"], "description": "Alteração após finalização"},
         headers=own_headers,
     )
     assert immutable.status_code == 422, immutable.text
@@ -271,19 +271,19 @@ def test_mutation_rechecks_active_user_professional_and_clinic(
 
     dentist_user.is_active = False
     db_session.commit()
-    inactive = client.patch(url, json={"description": "Mudança indevida"}, headers=headers)
+    inactive = client.patch(url, json={"version": 1, "description": "Mudança indevida"}, headers=headers)
     assert inactive.status_code == 401, inactive.text
 
     dentist_user.is_active = True
     dentist.cro_number = "  "
     db_session.commit()
-    no_profile = client.patch(url, json={"description": "Mudança indevida"}, headers=headers)
+    no_profile = client.patch(url, json={"version": 1, "description": "Mudança indevida"}, headers=headers)
     assert no_profile.status_code == 403, no_profile.text
 
     dentist.cro_number = "12345"
     clinic.is_active = False
     db_session.commit()
-    inactive_clinic = client.patch(url, json={"description": "Mudança indevida"}, headers=headers)
+    inactive_clinic = client.patch(url, json={"version": 1, "description": "Mudança indevida"}, headers=headers)
     assert inactive_clinic.status_code == 403, inactive_clinic.text
 
     db_session.expire_all()

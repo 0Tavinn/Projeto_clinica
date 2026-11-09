@@ -446,6 +446,9 @@ CREATE TABLE clinical_evolutions (
     -- Situação da evolução: rascunho ou finalizada.
     status VARCHAR(20) NOT NULL DEFAULT 'DRAFT',
 
+    -- Versão para impedir que uma edição antiga sobrescreva outra.
+    version INTEGER NOT NULL DEFAULT 1,
+
     -- Descrição da condição e da evolução clínica do paciente.
     description TEXT NOT NULL,
 
@@ -494,6 +497,9 @@ CREATE TABLE clinical_evolutions (
     -- Limita os estados possíveis de uma evolução clínica.
     CONSTRAINT ck_clinical_evolutions_status
         CHECK (status IN ('DRAFT', 'FINALIZED')),
+
+    CONSTRAINT ck_clinical_evolutions_version
+        CHECK (version >= 1),
 
     -- Garante que uma evolução finalizada possua data de finalização
     -- e que um rascunho ainda não possua essa data.

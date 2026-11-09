@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -43,6 +43,9 @@ class ClinicalEvolution(Base):
     """Mapeia a tabela `clinical_evolutions` do PostgreSQL."""
     
     __tablename__ = "clinical_evolutions"
+    __table_args__ = (
+        CheckConstraint("version >= 1", name="ck_clinical_evolutions_version"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     medical_record_id: Mapped[int] = mapped_column(
@@ -67,6 +70,7 @@ class ClinicalEvolution(Base):
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="DRAFT"
     )  # DRAFT ou FINALIZED
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
     description: Mapped[str] = mapped_column(Text, nullable=False)
     procedure_performed: Mapped[str | None] = mapped_column(Text, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)

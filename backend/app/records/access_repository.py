@@ -33,6 +33,30 @@ class ClinicalAccessGrantRepository:
         # O serviço grava consulta e evidência em um único commit.
         self.db.add(grant)
 
+    def lock_origin_appointments(
+        self, *, clinic_id: int, patient_id: int, dentist_id: int
+    ) -> None:
+        """Estabiliza as consultas da dupla até o commit da mutação clínica.
+
+        Bloqueia todas as origens, inclusive as já canceladas, em ordem fixa.
+        A elegibilidade é consultada em outra instrução, após eventuais esperas.
+        """
+        statement = (
+            select(Appointment.id)
+            .join(
+                ClinicalAccessGrant,
+                ClinicalAccessGrant.appointment_id == Appointment.id,
+            )
+            .where(
+                ClinicalAccessGrant.clinic_id == clinic_id,
+                ClinicalAccessGrant.patient_id == patient_id,
+                ClinicalAccessGrant.dentist_id == dentist_id,
+            )
+            .order_by(Appointment.id)
+            .with_for_update(of=Appointment)
+        )
+        self.db.execute(statement).all()
+
     def has_valid_origin(
         self, *, clinic_id: int, patient_id: int, dentist_id: int
     ) -> bool:

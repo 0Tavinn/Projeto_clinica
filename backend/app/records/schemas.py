@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StrictInt
 from typing import Optional, List
 from datetime import datetime
 
@@ -41,6 +41,8 @@ class ClinicalEvolutionDraftCreate(ClinicalEvolutionBase):
     patient_id: int
 
 class ClinicalEvolutionUpdate(BaseModel):
+    # A versão lida é obrigatória: omiti-la contornaria o controle concorrente.
+    version: StrictInt = Field(ge=1)
     description: Optional[str] = None
     procedure_performed: Optional[str] = None
     notes: Optional[str] = None
@@ -49,6 +51,7 @@ class ClinicalEvolutionResponse(ClinicalEvolutionBase):
     id: int
     medical_record_id: int
     status: str
+    version: int
     recorded_at: datetime
     finalized_at: Optional[datetime]
     created_at: datetime

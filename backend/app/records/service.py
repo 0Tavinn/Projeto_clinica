@@ -12,6 +12,7 @@ from app.common.exceptions import (
 from app.dentists.models import Dentist
 from app.patients.models import Patient
 from app.records.access import require_clinical_access
+from app.records.access_repository import ClinicalAccessGrantRepository
 from app.records.models import ClinicalEvolution, MedicalRecord
 from app.records.repository import RecordRepository
 from app.records.schemas import ClinicalEvolutionDraftCreate, ClinicalEvolutionUpdate
@@ -148,6 +149,15 @@ class RecordService:
             or evolution.dentist_id != author_id
         ):
             raise NotFoundError("Evolução clínica não encontrada.")
+        # A consulta pode ter sido cancelada enquanto aguardávamos a evolução.
+        # Bloquear as origens impede nova mudança de situação até o commit;
+        # a consulta de acesso seguinte usa um snapshot PostgreSQL atualizado.
+        ClinicalAccessGrantRepository(self.db).lock_origin_appointments(
+            clinic_id=self.current_user.clinic_id,
+            patient_id=patient_id,
+            dentist_id=dentist.id,
+        )
+        self._verify_patient_access(patient_id)
         return evolution
 
     def update_draft(self, evolution_id: int, data: ClinicalEvolutionUpdate):
@@ -155,12 +165,15 @@ class RecordService:
             evolution = self._get_owned_evolution_for_update(evolution_id)
             if evolution.status != "DRAFT":
                 raise InvalidTransitionError("Evoluções finalizadas não podem ser editadas.")
+            if evolution.version != data.version:
+                raise ConflictError("O rascunho foi alterado. Recarregue antes de editar novamente.")
             if data.description is not None:
                 evolution.description = data.description
             if data.procedure_performed is not None:
                 evolution.procedure_performed = data.procedure_performed
             if data.notes is not None:
                 evolution.notes = data.notes
+            evolution.version += 1
             return self.repo.update_evolution(evolution)
         except Exception:
             self.db.rollback()
@@ -173,6 +186,7 @@ class RecordService:
                 raise InvalidTransitionError("Esta evolução já está finalizada.")
             evolution.status = "FINALIZED"
             evolution.finalized_at = datetime.now(timezone.utc)
+            evolution.version += 1
             return self.repo.update_evolution(evolution)
         except Exception:
             self.db.rollback()

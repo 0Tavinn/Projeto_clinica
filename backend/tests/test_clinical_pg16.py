@@ -30,6 +30,7 @@ from app.patients.models import Patient
 from app.records.access_models import ClinicalAccessGrant
 from app.records.models import ClinicalEvolution, MedicalRecord
 from app.records.repository import RecordRepository
+from app.security.auth import create_access_token
 from app.security.hashing import hash_password
 from app.security.roles import Role
 from app.users.models import Clinic, User
@@ -103,6 +104,11 @@ def _appointment(pg_engine, identities, *, suffix: str) -> tuple[int, int]:
                 "lock": "12345678903",
                 "cancel": "12345678904",
                 "rollback": "12345678905",
+            "qa_edit": "12345678906",
+            "qa_finalize": "12345678907",
+            "qa_other": "12345678908",
+            "qa_care": "12345678909",
+            "qa_version": "12345678910",
             }[suffix],
             medical_record_number=f"PG16-{suffix.upper()}",
             birth_date=datetime.date(1990, 1, 1),
@@ -115,7 +121,9 @@ def _appointment(pg_engine, identities, *, suffix: str) -> tuple[int, int]:
             dentist_id=dentist_id,
             scheduled_at=datetime.datetime.now(datetime.timezone.utc)
             - datetime.timedelta(
-                hours={"rollback": 10, "cancel": 8, "flow": 6, "confirm": 4, "lock": 2}[suffix]
+                hours={"rollback": 10, "cancel": 8, "flow": 6, "confirm": 4,
+                       "lock": 2, "qa_edit": 12, "qa_finalize": 14,
+                       "qa_other": 16, "qa_care": 18, "qa_version": 20}[suffix]
             ),
             duration_minutes=30,
             status=AppointmentStatus.SCHEDULED,
@@ -348,7 +356,7 @@ def test_edit_waits_for_finalization_lock(pg_engine, identities):
                     future = pool.submit(
                         client.patch,
                         f"/api/v1/patients/evolutions/{evolution_id}/draft",
-                        json={"description": "Sobrescrita indevida"},
+                        json={"version": draft.json()["version"], "description": "Sobrescrita indevida"},
                         headers=dentist,
                     )
                     assert reached_lock.wait(timeout=5)
@@ -360,6 +368,283 @@ def test_edit_waits_for_finalization_lock(pg_engine, identities):
         stored = db.get(ClinicalEvolution, evolution_id)
         assert stored.status == "FINALIZED"
         assert stored.description == "Texto antes da finalização"
+
+
+@pytest.mark.parametrize(
+    "suffix,action,other_origin",
+    [
+        ("qa_edit", "edit", None),
+        ("qa_finalize", "finalize", None),
+        ("qa_other", "edit", "confirmed"),
+        ("qa_care", "finalize", "completed"),
+    ],
+)
+def test_mutation_rechecks_access_after_evolution_lock(
+    pg_engine, identities, suffix, action, other_origin
+):
+    """Uma espera real não pode conservar autorização já revogada."""
+    clinic_id, receptionist_email, dentist_email, dentist_id = identities
+    patient_id, appointment_id = _appointment(pg_engine, identities, suffix=suffix)
+    with TestClient(app) as client:
+        receptionist = _headers(client, receptionist_email)
+        dentist = _headers(client, dentist_email)
+        assert client.patch(
+            f"/api/v1/appointments/{appointment_id}/status",
+            json={"status": "CONFIRMED"}, headers=receptionist,
+        ).status_code == 200
+        draft = client.post(
+            "/api/v1/patients/evolutions",
+            json={"patient_id": patient_id, "appointment_id": appointment_id,
+                  "description": "Texto original"},
+            headers=dentist,
+        )
+        assert draft.status_code == 201, draft.text
+        evolution_id = draft.json()["id"]
+
+        if other_origin is not None:
+            now = datetime.datetime.now(datetime.timezone.utc)
+            with Session(pg_engine) as db:
+                receptionist_id = db.scalar(
+                    select(User.id).where(User.email == receptionist_email)
+                )
+                dentist_user_id = db.scalar(
+                    select(User.id).where(User.email == dentist_email)
+                )
+                second = Appointment(
+                    clinic_id=clinic_id, patient_id=patient_id, dentist_id=dentist_id,
+                    scheduled_at=now - datetime.timedelta(days=3),
+                    duration_minutes=30,
+                    status=(AppointmentStatus.CONFIRMED if other_origin == "confirmed"
+                            else AppointmentStatus.COMPLETED),
+                )
+                db.add(second)
+                db.flush()
+                db.add(ClinicalAccessGrant(
+                    appointment_id=second.id, clinic_id=clinic_id,
+                    patient_id=patient_id, dentist_id=dentist_id,
+                    granted_at=now, confirmed_by_user_id=receptionist_id,
+                    care_occurred_at=(now - datetime.timedelta(days=3)
+                                      if other_origin == "completed" else None),
+                    care_recorded_at=(now if other_origin == "completed" else None),
+                    care_recorded_by_user_id=(dentist_user_id
+                                              if other_origin == "completed" else None),
+                ))
+                db.commit()
+
+        reached_lock = Event()
+        original = RecordRepository.get_evolution_for_update
+
+        def observe_lock(repository, requested_id):
+            reached_lock.set()
+            return original(repository, requested_id)
+
+        with Session(pg_engine) as holder:
+            holder.execute(
+                select(ClinicalEvolution.id)
+                .where(ClinicalEvolution.id == evolution_id)
+                .with_for_update(of=ClinicalEvolution)
+            ).scalar_one()
+            with patch.object(RecordRepository, "get_evolution_for_update", observe_lock):
+                with ThreadPoolExecutor(max_workers=1) as pool:
+                    if action == "edit":
+                        future = pool.submit(
+                            client.patch,
+                            f"/api/v1/patients/evolutions/{evolution_id}/draft",
+                            json={"version": draft.json()["version"], "description": "Texto alterado"}, headers=dentist,
+                        )
+                    else:
+                        future = pool.submit(
+                            client.post,
+                            f"/api/v1/patients/evolutions/{evolution_id}/finalize",
+                            headers=dentist,
+                        )
+                    assert reached_lock.wait(timeout=5)
+                    # O sinal marca a chegada ao SELECT; o servidor confirma
+                    # que a requisição realmente está esperando a linha.
+                    deadline = time.monotonic() + 5
+                    waiting = False
+                    while time.monotonic() < deadline:
+                        with pg_engine.connect() as connection:
+                            waiting = connection.scalar(text(
+                                "SELECT count(*) FROM pg_stat_activity "
+                                "WHERE wait_event_type = 'Lock' "
+                                "AND query ILIKE '%clinical_evolutions%' "
+                                "AND pid <> pg_backend_pid()"
+                            )) >= 1
+                        if waiting:
+                            break
+                        time.sleep(0.05)
+                    assert waiting, "A mutação não aguardou o bloqueio PostgreSQL"
+                    canceled = client.post(
+                        f"/api/v1/appointments/{appointment_id}/cancel",
+                        headers=receptionist,
+                    )
+                    assert canceled.status_code == 200, canceled.text
+                    holder.commit()
+                    response = future.result(timeout=10)
+
+        assert response.status_code == (200 if other_origin else 403), response.text
+        if not other_origin:
+            assert response.json()["error"]["code"] == "FORBIDDENERROR"
+        with Session(pg_engine) as db:
+            stored = db.get(ClinicalEvolution, evolution_id)
+            assert stored.description == (
+                "Texto alterado" if other_origin and action == "edit" else "Texto original"
+            )
+            assert stored.status == (
+                "FINALIZED" if other_origin and action == "finalize" else "DRAFT"
+            )
+            assert (stored.finalized_at is not None) == (
+                other_origin == "completed" and action == "finalize"
+            )
+
+
+def test_draft_version_rejects_concurrent_and_stale_edits(pg_engine, identities):
+    """Duas conexões com a mesma versão não podem gravar duas edições."""
+    _, receptionist_email, dentist_email, _ = identities
+    patient_id, appointment_id = _appointment(pg_engine, identities, suffix="qa_version")
+    with TestClient(app) as client:
+        receptionist = _headers(client, receptionist_email)
+        dentist = _headers(client, dentist_email)
+        assert client.patch(
+            f"/api/v1/appointments/{appointment_id}/status",
+            json={"status": "CONFIRMED"}, headers=receptionist,
+        ).status_code == 200
+        draft = client.post(
+            "/api/v1/patients/evolutions",
+            json={"patient_id": patient_id, "appointment_id": appointment_id,
+                  "description": "Texto inicial"}, headers=dentist,
+        )
+        assert draft.status_code == 201, draft.text
+        evolution_id = draft.json()["id"]
+        assert draft.json()["version"] == 1
+        url = f"/api/v1/patients/evolutions/{evolution_id}/draft"
+
+        with Session(pg_engine) as holder:
+            holder.execute(
+                select(ClinicalEvolution.id)
+                .where(ClinicalEvolution.id == evolution_id)
+                .with_for_update(of=ClinicalEvolution)
+            ).scalar_one()
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                futures = [pool.submit(
+                    client.patch, url,
+                    json={"version": 1, "description": description}, headers=dentist,
+                ) for description in ("Edição A", "Edição B")]
+                deadline = time.monotonic() + 5
+                waiting = 0
+                while time.monotonic() < deadline:
+                    with pg_engine.connect() as connection:
+                        waiting = connection.scalar(text(
+                            "SELECT count(*) FROM pg_stat_activity "
+                            "WHERE wait_event_type = 'Lock' "
+                            "AND query ILIKE '%clinical_evolutions%' "
+                            "AND pid <> pg_backend_pid()"
+                        ))
+                    if waiting >= 2:
+                        break
+                    time.sleep(0.05)
+                assert waiting >= 2, "As duas edições não aguardaram o lock"
+                holder.commit()
+                responses = [future.result(timeout=10) for future in futures]
+
+        assert sorted(response.status_code for response in responses) == [200, 409]
+        winner = next(response for response in responses if response.status_code == 200)
+        loser = next(response for response in responses if response.status_code == 409)
+        assert winner.json()["version"] == 2
+        assert loser.json()["error"]["code"] == "CONFLICTERROR"
+        assert "Edição A" not in loser.text and "Edição B" not in loser.text
+
+        stale = client.patch(url, json={"version": 1, "notes": "Antiga"}, headers=dentist)
+        assert stale.status_code == 409
+        for invalid in ({"description": "Sem versão"}, {"version": 0},
+                        {"version": "1"}, {"version": None}):
+            response = client.patch(url, json=invalid, headers=dentist)
+            assert response.status_code == 422, response.text
+            assert response.json()["error"]["code"] == "VALIDATION_ERROR"
+
+        current = client.patch(
+            url, json={"version": 2, "notes": "Nota atual"}, headers=dentist,
+        )
+        assert current.status_code == 200, current.text
+        assert current.json()["version"] == 3
+        assert current.json()["description"] == winner.json()["description"]
+
+        with patch.object(RecordRepository, "update_evolution", side_effect=RuntimeError):
+            with pytest.raises(RuntimeError):
+                client.patch(url, json={"version": 3, "notes": "Falha parcial"}, headers=dentist)
+        with Session(pg_engine) as db:
+            stored = db.get(ClinicalEvolution, evolution_id)
+            assert stored.version == 3
+            assert stored.notes == "Nota atual"
+            assert stored.description == winner.json()["description"]
+
+        # Outro autor com vínculo e outro dentista em clínica diferente
+        # continuam sem poder usar a versão correta para alterar o registro.
+        with Session(pg_engine, expire_on_commit=False) as db:
+            second_user = User(
+                clinic_id=identities[0], full_name="Segundo dentista",
+                email="segundo.version@example.test", password_hash="hash-ficticio",
+                cpf="00000000011", role=Role.DENTIST,
+            )
+            foreign_clinic = Clinic(
+                name="Clínica externa", cnpj="00000000000292",
+                email="externa.version@example.test",
+            )
+            db.add_all([second_user, foreign_clinic])
+            db.flush()
+            foreign_user = User(
+                clinic_id=foreign_clinic.id, full_name="Dentista externo",
+                email="externo.version@example.test", password_hash="hash-ficticio",
+                cpf="00000000012", role=Role.DENTIST,
+            )
+            db.add(foreign_user)
+            db.flush()
+            second_dentist = Dentist(
+                user_id=second_user.id, cro_number="54321", cro_state="PE",
+            )
+            db.add(second_dentist)
+            db.flush()
+            second_appointment = Appointment(
+                clinic_id=identities[0], patient_id=patient_id,
+                dentist_id=second_dentist.id,
+                scheduled_at=datetime.datetime.now(datetime.timezone.utc)
+                + datetime.timedelta(days=2),
+                duration_minutes=30, status=AppointmentStatus.CONFIRMED,
+            )
+            db.add(second_appointment)
+            db.flush()
+            receptionist_id = db.scalar(
+                select(User.id).where(User.email == receptionist_email)
+            )
+            db.add(ClinicalAccessGrant(
+                appointment_id=second_appointment.id, clinic_id=identities[0],
+                patient_id=patient_id, dentist_id=second_dentist.id,
+                granted_at=datetime.datetime.now(datetime.timezone.utc),
+                confirmed_by_user_id=receptionist_id,
+            ))
+            db.commit()
+            second_headers = {"Authorization": f"Bearer {create_access_token(second_user)}"}
+            foreign_headers = {"Authorization": f"Bearer {create_access_token(foreign_user)}"}
+        for headers in (second_headers, foreign_headers):
+            denied = client.patch(
+                url, json={"version": 3, "description": "Sem autoria"}, headers=headers,
+            )
+            assert denied.status_code == 403, denied.text
+
+        finalized = client.post(
+            f"/api/v1/patients/evolutions/{evolution_id}/finalize", headers=dentist,
+        )
+        assert finalized.status_code == 200, finalized.text
+        assert finalized.json()["version"] == 4
+        immutable = client.patch(
+            url, json={"version": 4, "description": "Indevida"}, headers=dentist,
+        )
+        assert immutable.status_code == 422
+        with Session(pg_engine) as db:
+            stored = db.get(ClinicalEvolution, evolution_id)
+            assert stored.status == "FINALIZED"
+            assert stored.version == 4
 
 
 def test_draft_rechecks_origin_after_appointment_lock(pg_engine, identities):
