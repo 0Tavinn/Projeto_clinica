@@ -1,0 +1,38 @@
+[
+  {
+    "id": "CLINIC-B-confirm-real",
+    "requirement": "RF-023-CA03",
+    "layer": "HTTP",
+    "expected": "200 pela recepção B",
+    "observed": "HTTP 200",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "CLINIC-B-own-record",
+    "requirement": "RF-023-CA03",
+    "layer": "HTTP",
+    "expected": "200 no paciente B após confirmação",
+    "observed": "HTTP 200",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "CLINIC-B-denied-A",
+    "requirement": "RF-023-CA03",
+    "layer": "HTTP",
+    "expected": "403 no paciente A mesmo com origem B válida",
+    "observed": "HTTP 403",
+    "result": "aprovado",
+    "note": ""
+  },
+  {
+    "id": "CLINIC-B-own-agenda",
+    "requirement": "RF-023-CA03",
+    "layer": "HTTP",
+    "expected": "somente consultas da clínica B",
+    "observed": "HTTP 200; clínicas [2]",
+    "result": "aprovado",
+    "note": ""
+  }
+]

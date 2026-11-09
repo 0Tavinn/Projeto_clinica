@@ -1,0 +1,38 @@
+{
+  "executor": "Agente de QA a pedido de Paulo Sérgio; execução não atribuída a João",
+  "branch": "chore/sprint-07-docker-integration",
+  "head": "2f7dbfe6d0d7a747f57dbeeede3a716938adc5fa",
+  "remote_branch_and_pr16_head_at_start": "2f7dbfe6d0d7a747f57dbeeede3a716938adc5fa",
+  "started_utc": "2026-10-31T13:36:49Z",
+  "ended_utc": "2026-10-31T14:01:48Z",
+  "duration": "24m59s",
+  "docker_client_server": "29.9.2 / 29.9.2",
+  "compose": "v5.6.1",
+  "postgresql": "16.15 (postgres:16-alpine)",
+  "python_host_venv": "3.12.14",
+  "timezones": {
+    "host": "America/Sao_Paulo (-03:00)",
+    "postgresql": "UTC",
+    "api_container": "UTC",
+    "care_occurred_at_example_offset": "-03:00",
+    "care_occurred_at_utc_equivalence_verified": true
+  },
+  "qa_compose_project": "lumina_qa_20261031_2f7dbfe",
+  "qa_database": "lumina_qa_20261031_2f7dbfe_db",
+  "qa_volume": "lumina_qa_20261031_2f7dbfe_pg16_data",
+  "qa_network": "lumina_qa_20261031_2f7dbfe_network",
+  "qa_ports_loopback": {"api": 18128, "frontend": 18129},
+  "executed_image_ids": {
+    "postgresql": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+    "api": "sha256:e2cde74d469a3426f2506291488f646b0e5db7333eb9719486c4e7f68f63f019",
+    "frontend": "sha256:6e0a2200186ba35e5f32cdebb9a8bd6bc2b766469fe4cc71bca416c09ddc6d0e"
+  },
+  "local_changes_before_qa": "8 arquivos de documentação de requisitos/regras modificados; 4 relatórios de 29/10 não rastreados; nenhum código funcional modificado",
+  "browser_available": false,
+  "qa_resources_removed": true,
+  "preexisting_resources_untouched": [
+    "lumina_execucao_20261029_postgres_data",
+    "lumina_s07_docker_review_20261023",
+    "contêineres e redes dos projetos lumina_execucao_20261029 e lumina_s07_review_20261023"
+  ]
+}

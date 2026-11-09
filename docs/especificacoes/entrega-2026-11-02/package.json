@@ -1,0 +1,13 @@
+{
+  "name": "lumina-fluxo-atendimento-mvp-v04",
+  "private": true,
+  "version": "0.4.0",
+  "description": "Renderização local dos fluxogramas Mermaid da especificação funcional",
+  "devDependencies": {
+    "mermaid": "12.2.0",
+    "playwright": "1.62.1"
+  },
+  "scripts": {
+    "diagramas": "node renderizar-diagramas.cjs"
+  }
+}

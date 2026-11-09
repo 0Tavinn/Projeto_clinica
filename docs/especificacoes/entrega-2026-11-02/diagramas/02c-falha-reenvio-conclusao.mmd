@@ -1,0 +1,9 @@
+flowchart TD
+    A["Dentista solicita conclusão e encaminhamento propostos"] --> B{"Resultado da operação?"}
+    B -->|Erro antes do commit| C["RECOMENDAÇÃO: reverter conclusão, realização e encaminhamento dessa operação"]
+    C --> D["Informar consulta não concluída; permitir correção segura"]
+    B -->|Resposta perdida| E["Consultar estado persistido antes de repetir"]
+    E --> F{"Já concluído e encaminhado pela mesma operação?"}
+    F -->|Sim| G["Recuperar resultado sem segunda cobrança"]
+    F -->|Não ou pedido diferente| H["Informar conflito ou reenvio seguro conforme contrato PENDENTE"]
+    B -->|Sucesso confirmado| I["Mostrar conclusão; não finalizar evolução nem registrar pagamento"]

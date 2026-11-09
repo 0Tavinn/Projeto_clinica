@@ -1,0 +1,12 @@
+flowchart TD
+    A["Paciente solicita consulta fora da plataforma"] --> B["Recepção agenda e confirma pela operação autorizada"]
+    B --> C["ATUAL/LOCAL: sistema grava CONFIRMED e evidência da confirmação"]
+    C --> D["Dentista seleciona consulta própria"]
+    D --> E{"Conta, perfil, clínica, cadastro profissional e fundamento válidos?"}
+    E -->|Não| F["Negar sem expor conteúdo clínico"]
+    E -->|Sim| G{"Liberação clínica pela segunda senha válida?"}
+    G -->|Não| H["NOVO APROVADO: executar desbloqueio do fluxo 2A"]
+    G -->|Sim| I["Abrir histórico autorizado"]
+    H -->|Somente após liberação e vínculo válidos| I
+    I --> J["Dentista realiza atendimento"]
+    J --> K["Continuar no fluxo 1B: evolução, serviços e conclusão"]

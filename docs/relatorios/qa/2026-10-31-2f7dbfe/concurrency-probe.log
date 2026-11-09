@@ -1,0 +1,5 @@
+PostgreSQL concurrency cases=4 approved=1 failed=3
+PG-open-simultaneous HTTP [200, 200], IDs [7, 7], linhas 1 aprovado
+PG-loss-access-edit espera=1, cancel HTTP 200, mutação HTTP 200, estado DRAFT|Edição após perda do último acesso, leitura posterior HTTP 403 reprovado
+PG-loss-access-finalize espera=1, cancel HTTP 200, mutação HTTP 200, estado FINALIZED|Rascunho QA race_finalize, leitura posterior HTTP 403 reprovado
+PG-two-edits esperas 1/2, HTTP 200/200, final Edição B reprovado

@@ -1,103 +1,120 @@
 # RF-023 — Consultar prontuários clínicos
 
-**Revisão:** 24/10/2026.
+**Revisão documental:** 09/11/2026. **Decisão de acesso:** 25/10/2026, preservada.
 **Regra principal:** RN-031.
 **Relacionados:** RF-012, RF-022 e RF-024.
-**Situação:** concessão e permanência aprovadas por Paulo Sérgio; implementação parcial.
+**Situação:** política de preparação e continuidade aprovada; implementação parcial.
 
 ## 1. Objetivo
 
-Permitir ao dentista autorizado consultar o prontuário do paciente para preparar e acompanhar seu atendimento.
+Permitir ao dentista autorizado consultar o prontuário do paciente para preparar o atendimento e acompanhar cuidados já realizados.
 
-O paciente mantém um prontuário na clínica, compartilhado entre os profissionais autorizados. A autoria de cada evolução permanece individual.
+O prontuário é único para o paciente na clínica. Diferentes dentistas podem receber autorização, sem propriedade exclusiva e sem alteração da autoria dos registros existentes.
 
-## 2. Ator e autorização
+## 2. Fundamentos de autorização
 
-O ator é o dentista autenticado, ativo e com cadastro profissional elegível.
+O sistema deve distinguir:
 
-A autorização é concedida quando uma consulta entre aquele paciente e dentista é confirmada pela operação autorizada da Agenda.
+- **Preparação:** acesso sustentado por consulta atualmente `CONFIRMED`, com confirmação confiável registrada para aquele paciente e dentista.
+- **Continuidade:** acesso sustentado por atendimento registrado pela ação **Concluir atendimento**, com evidência válida, conforme RN-031.
 
-Uma consulta apenas agendada não concede acesso.
+Consulta apenas agendada, pertencimento à clínica e autoria antiga não concedem acesso isoladamente.
 
-A autorização permanece após conclusão, ausência ou cancelamento posteriores à confirmação, conforme RN-031.
+A realização do atendimento não deve ser presumida apenas pela confirmação, pelo horário agendado ou pela passagem do tempo. Somente o dentista responsável conclui uma consulta previamente confirmada; `COMPLETED` e a evidência da realização são gravados atomicamente.
 
-## 3. Funcionalidade
+## 3. Conteúdo disponível
 
-O sistema deve permitir ao dentista autorizado:
-
-1. Localizar e consultar o prontuário do paciente.
-2. Consultar suas observações gerais.
-3. Consultar as evoluções finalizadas de todos os autores.
-4. Identificar autoria e horários apresentados nos registros.
+O dentista autorizado pode:
+1. Localizar e consultar o prontuário.
+2. Consultar observações gerais.
+3. Consultar evoluções finalizadas de todos os autores.
+4. Identificar autoria e horários dos registros apresentados.
 5. Consultar seus próprios rascunhos.
-6. Retornar ao prontuário posteriormente para acompanhamento.
+6. Retornar ao histórico enquanto houver fundamento válido de acesso.
 
-A apresentação de uma lista de prontuários autorizados deve ser alinhada ao painel do dentista em RF-012. Essa lista não deve ser confundida com o cadastro geral de pacientes da clínica.
+Rascunhos de terceiros não devem ser retornados.
 
-Rascunhos de outros autores não devem ser disponibilizados.
+A lista de prontuários acessíveis deve considerar preparação e continuidade. Sua apresentação no painel será alinhada com RF-012 e não substitui o cadastro administrativo de pacientes.
 
-## 4. Verificações em cada consulta
+## 4. Reavaliação do acesso
 
-A API deve validar usuário ativo, perfil profissional, clínica e autorização persistida.
+Após ausência ou cancelamento, o sistema deve avaliar todas as origens daquele paciente e dentista na clínica.
 
-A existência do paciente no cadastro, uma URL conhecida ou um botão na interface não substitui essas verificações.
+- Atendimento anterior válido mantém a continuidade.
+- Outra consulta confirmada mantém a preparação.
+- Sem atendimento válido e sem outra consulta confirmada, o acesso de preparação deixa de ser permitido.
 
-Administrador, recepção e outra clínica não devem obter conteúdo clínico por rotas alternativas, inclusive pelo campo de observações gerais.
+A recepção registra a situação na Agenda. A API calcula a autorização sem exigir uma operação manual de desvinculação.
 
-## 5. Abertura do prontuário
+A reavaliação não deve apagar as evidências históricas de confirmação ou atendimento.
 
-A consulta e a abertura do prontuário são operações distintas no comportamento proposto.
+## 5. Segurança e limites
 
-A proposta é:
+Cada rota que exponha conteúdo deve verificar autenticação, usuário ativo, perfil/cadastro profissional, clínica e autorização válida.
+
+Administrador, recepção e outra clínica não recebem conteúdo clínico, inclusive observações gerais.
+
+Leitura autorizada não permite alterar registros de terceiros nem escrever em qualquer situação. As condições de registro e finalização pertencem a RF-024.
+
+O acesso destina-se ao acompanhamento assistencial, sem autorização implícita para aula, publicação ou pesquisa.
+
+## 6. Abertura do prontuário
+
+A proposta continua sendo separar consulta e abertura:
 
 - GET consulta sem criar dados.
 - Operação explícita abre o prontuário quando autorizada.
-- Tentativas repetidas ou concorrentes não criam prontuários duplicados.
+- Repetição ou concorrência não cria duplicidade.
 
-Essa alteração depende da decisão D02 e do contrato coordenado entre backend e frontend. A política de acesso aprovada não representa aprovação automática desse contrato.
+O contrato permanece pendente em D02 e exige ajuste coordenado entre backend e frontend.
 
-## 6. Critérios de aceite
+A existência da autorização não exige prontuário previamente aberto.
 
-Os IDs anteriores foram preservados. Os critérios representam o comportamento esperado; não são resultados de testes já aprovados.
+## 7. Critérios de aceite
+
+Os IDs existentes foram preservados. O conteúdo dos critérios de permanência foi atualizado para a decisão de 25/10.
+
+Critérios dependentes de decisões abertas continuam condicionais e não representam testes já aprovados.
 
 | ID | Resultado esperado |
 |---|---|
 | RF-023-CA01 | Dentista autorizado consulta prontuário existente sem criar duplicidade. |
 | RF-023-CA02 | Após aprovação de D02, consultar prontuário inexistente não escreve no banco; abertura explícita gera no máximo um prontuário, inclusive sob concorrência. |
-| RF-023-CA03 | Administrador, recepção e outra clínica não obtêm conteúdo clínico por telas ou rotas alternativas. |
-| RF-023-CA04 | A API verifica a concessão definida em RN-031 em toda leitura clínica. |
-| RF-023-CA05 | Dentista autorizado recebe evoluções finalizadas de todos os autores e somente seus próprios rascunhos. |
-| RF-023-CA06 | Dentistas autorizados utilizam o mesmo prontuário, preservando autoria; as operações de escrita seguem RF-024. |
+| RF-023-CA03 | Administrador, recepção e outra clínica não obtêm conteúdo por telas ou rotas alternativas. |
+| RF-023-CA04 | Toda leitura clínica verifica fundamento válido de preparação ou continuidade conforme RN-031. |
+| RF-023-CA05 | Dentista autorizado recebe finalizadas de todos os autores e somente seus próprios rascunhos. |
+| RF-023-CA06 | Dentistas autorizados utilizam o mesmo prontuário, preservando autoria; escrita segue RF-024. |
 | RF-023-CA07 | Acesso negado, prontuário inexistente e falha de conexão recebem tratamento distinto, sem exposição indevida. |
-| RF-023-CA08 | Após confirmação e conclusão da consulta, a autorização permanece para acompanhamento. |
-| RF-023-CA09 | Dentista sem autorização não recebe conteúdo apenas por pertencer à clínica ou ter autoria antiga. |
-| RF-023-CA10 | Consulta somente agendada, sem autorização anterior, não libera acesso; confirmação concede ao paciente e dentista corretos. |
-| RF-023-CA11 | Cancelamento ou ausência posteriores à confirmação mantêm o acesso, inclusive quando aquela era a única consulta entre os participantes. |
-| RF-023-CA12 | Repetição ou concorrência na confirmação não produz concessões inconsistentes; falha da operação não deixa autorização indevida. |
-| RF-023-CA13 | Confirmar consulta de outro paciente ou dentista não concede acesso ao profissional errado. |
-| RF-023-CA14 | A autorização permanece verificável após reiniciar API e PostgreSQL. |
-| RF-023-CA15 | Usuário inativo ou fora da clínica autorizada não consegue utilizar a concessão para acessar conteúdo. |
-| RF-023-CA16 | Registros antigos seguem tratamento explícito, sem presumir confirmação somente pelo estado atual da consulta. |
+| RF-023-CA08 | Atendimento concluído pelo dentista responsável a partir de `CONFIRMED`, com evidência válida da realização, sustenta acompanhamento futuro, mesmo com cancelamento ou ausência em consultas posteriores. |
+| RF-023-CA09 | Perfil, clínica comum ou autoria antiga não concedem acesso sem fundamento válido. |
+| RF-023-CA10 | Consulta apenas agendada não concede preparação; confirmação confiável com consulta atualmente `CONFIRMED` sustenta acesso para o paciente e dentista corretos. |
+| RF-023-CA11 | Cancelamento ou ausência retiram a preparação somente quando não houver atendimento válido nem outra consulta confirmada que sustente acesso. |
+| RF-023-CA12 | Repetição, concorrência e falhas parciais na confirmação ou na conclusão atômica de atendimento não geram autorização indevida. |
+| RF-023-CA13 | Eventos de outro paciente ou dentista não concedem nem transferem acesso ao profissional errado. |
+| RF-023-CA14 | Após reiniciar API e PostgreSQL, evidências e avaliação de preparação/continuidade permanecem consistentes. |
+| RF-023-CA15 | Usuário inativo ou fora da clínica autorizada não consegue utilizar evidências históricas para acessar conteúdo. |
+| RF-023-CA16 | Registros antigos seguem procedimento explícito, sem presumir confirmação ou atendimento somente pelo estado atual da consulta. |
 
-## 7. Escopo futuro e pendências
+## 8. Escopo futuro e pendências
 
-A revogação individual pelo administrador fica fora do MVP.
+A revogação individual pelo administrador fica fora do escopo obrigatório do MVP e deve permanecer registrada como melhoria futura.
 
 Continuam pendentes:
+- Dados antigos, correção de confirmação indevida e alterações dos participantes — parte aberta de D01. A persistência e a consulta das evidências já estão implementadas na API e no SQL.
+- Abertura explícita — D02.
+- Correção de realização indevida, estados de rascunho/finalização da evolução e atendimento avulso — parte aberta de D03.
+- Conteúdo mínimo — D04.
+- CRO histórico e retificação — D05.
+- Paciente inativo — D06.
 
-- Abertura explícita e contrato HTTP — D02.
-- Condições para escrever e finalizar — D03/D04.
-- Tratamento de paciente inativo — D06.
-- Migração das autorizações antigas e alteração posterior dos participantes — D01.
+## 9. Implementação e impacto
 
-A leitura autorizada não permite editar registros de terceiros nem registrar atendimento em qualquer situação.
+A API registra evidências de confirmação e realização e calcula preparação ou continuidade. As rotas clínicas aplicam a elegibilidade do profissional, a clínica e o fundamento assistencial. A consulta inicial de prontuário ainda pode criá-lo, conforme contrato atual e pendência D02.
 
-## 8. Implementação encontrada
+A entrega inicial `01a0157` foi complementada por `be7c2f2` no SQL e `ac180a7` na aplicação. O commit `8eeddd5` consolida QA-01 e QA-02. O commit `4c352b2` publica os contratos e as evidências de revalidação.
 
-Na referência `9b26c81`, o GET cria prontuário ausente, e a autorização utiliza basicamente perfil e clínica. A listagem pode incluir rascunhos de outros autores.
+O [QA de 04/11](../relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/relatorio.md) exercitou o código então local em PostgreSQL 16.15 descartável, com 10 testes aprovados. Os hashes dos oito arquivos foram reconferidos em 09/11 e correspondem aos arquivos consolidados. O ensaio usou TestClient conectado ao PostgreSQL e uma sondagem de migração em outro banco descartável.
 
-Esse comportamento ainda não atende à política de RN-031.
+Permanecem a implantação em imagem da API, a adaptação do frontend e a atualização do banco existente. O cliente deve enviar `version` ao editar evolução e `care_occurred_at` com fuso ao concluir consulta. A migração do banco existente depende de inventário e plano de recuperação do DBA.
 
-Alterações ou testes realizados em outros checkouts não devem ser apresentados como integrados nesta pasta sem conferência.
-
-A implementação deverá envolver autorização clínica, confirmação da Agenda, persistência, interface e testes no PostgreSQL utilizado pelo projeto.
+As decisões adicionais de 02/11 sobre segunda senha, evolução salva antes de concluir, itens ou Sem cobrança, encaminhamento, pagamento externo e correção administrativa estão na [especificação v0.4](../especificacoes/fluxo-atendimento-mvp-2026-11-02.md). Sua implementação terá etapa própria, com os limites e pendências indicados nessa fonte.

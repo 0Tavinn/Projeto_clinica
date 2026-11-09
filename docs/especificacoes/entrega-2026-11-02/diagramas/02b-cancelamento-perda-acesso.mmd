@@ -1,0 +1,8 @@
+flowchart TD
+    A["Recepção registra cancelamento ou ausência permitida"] --> B["Sistema preserva evidência histórica"]
+    B --> C["Reavaliar origens da dupla paciente-dentista na clínica"]
+    C --> D{"Outra confirmação confiável ativa ou atendimento comprovado?"}
+    D -->|Sim| E["Manter fundamento; exigir também liberação clínica válida"]
+    D -->|Não| F["Retirar preparação e negar conteúdo"]
+    F --> G["Interromper gravação que perdeu autorização"]
+    E --> H["Segunda senha não cria concessão por si só"]

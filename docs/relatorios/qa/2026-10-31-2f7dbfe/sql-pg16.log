@@ -1,0 +1,10 @@
+Destino descartável: lumina_acl25_new_1793453690_5347 / lumina_acl25_new_1793453690_5347 / lumina_acl25_new / PostgreSQL 16.15
+PASSOU: new
+Destino descartável: lumina_acl25_upgrade_1793453690_5347 / lumina_acl25_upgrade_1793453690_5347 / lumina_acl25_upgrade / PostgreSQL 16.15
+PASSOU: reaplicação da migração recusada
+PASSOU: upgrade
+Destino descartável: lumina_acl25_base_1793453690_5347 / lumina_acl25_base_1793453690_5347 / lumina_acl25_base / PostgreSQL 16.15
+PASSOU: base
+PASSOU: catálogo da concessão equivalente nos três caminhos
+PASSOU: concorrência, uma concessão por origem
+Todos os recursos exclusivos serão removidos pelo trap de saída.

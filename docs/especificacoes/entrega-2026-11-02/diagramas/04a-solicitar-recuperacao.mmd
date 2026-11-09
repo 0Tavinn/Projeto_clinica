@@ -1,0 +1,10 @@
+flowchart TD
+    A["Dentista solicita recuperação da senha clínica"] --> B["Administrador autentica-se e verifica solicitante e clínica"]
+    B --> C{"Solicitação autorizada?"}
+    C -->|Não ou outra clínica| D["Recusar sem alterar credenciais"]
+    C -->|Sim| E["NOVO APROVADO: emitir credencial temporária de uso único e validade"]
+    E --> F["Registrar emissão sem segredo em logs"]
+    F --> G["PENDENTE: canal de entrega e verificação de identidade"]
+    G --> H{"Entrega ocorreu?"}
+    H -->|Não| I["Registrar falha; reemissão depende de política PENDENTE"]
+    H -->|Sim| J["Dentista segue no fluxo 4B; administrador não vê senha definitiva"]

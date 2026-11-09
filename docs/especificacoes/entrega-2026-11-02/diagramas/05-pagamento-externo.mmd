@@ -1,0 +1,21 @@
+flowchart TD
+    A["Recepção abre o encaminhamento administrativo"] --> B{"Perfil e clínica permitem acesso?"}
+    B -->|Não| C["Negar sem expor dados de outra clínica"]
+    B -->|Sim| D["Exibir consulta, paciente, profissional, itens e total"]
+    D --> E{"Atendimento sem cobrança?"}
+    E -->|Sim| F["Identificar Sem cobrança sem criar recebimento fictício"]
+    E -->|Não| G{"Pagamento externo foi recebido e verificado?"}
+    G -->|Não| H["Manter pendente sem desfazer atendimento concluído"]
+    G -->|Sim| I["Recepção solicita Confirmar pagamento"]
+    I --> J["Sistema reconfere clínica, encaminhamento e situação atual"]
+    J --> K{"Confirmação válida?"}
+    K -->|Não| L["Informar impedimento sem marcar pago"]
+    K -->|Já confirmada| M["Recuperar registro existente sem duplicar"]
+    K -->|Sim| N["Gravar confirmação, responsável e instante"]
+    N --> O{"Gravação confirmada?"}
+    O -->|Sim| P["Exibir pagamento confirmado"]
+    O -->|Falha confirmada| Q["Informar falha sem afirmar sucesso"]
+    O -->|Resposta perdida| R["Consultar resultado persistido antes de repetir"]
+    D -.-> S["Não exibir evolução ou anotações clínicas"]
+    I -.-> T["Pagamento ocorre fora do sistema: sem integração com maquineta ou novos campos obrigatórios de valor e forma"]
+    K -.-> U["PENDENTE: quitação integral e correção de confirmação indevida"]

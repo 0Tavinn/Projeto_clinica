@@ -1,0 +1,5 @@
+second clinic cases=4 approved=4 failed=0
+CLINIC-B-confirm-real HTTP 200 aprovado
+CLINIC-B-own-record HTTP 200 aprovado
+CLINIC-B-denied-A HTTP 403 aprovado
+CLINIC-B-own-agenda HTTP 200; clínicas [2] aprovado

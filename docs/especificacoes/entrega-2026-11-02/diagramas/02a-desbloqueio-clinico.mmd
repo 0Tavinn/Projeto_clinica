@@ -1,0 +1,15 @@
+flowchart TD
+    A["Dentista autenticado pela senha principal"] --> B{"Liberação clínica válida?"}
+    B -->|Sim| C["Sistema ainda verifica vínculo, perfil e clínica"]
+    B -->|Não| D["Solicitar segunda senha clínica pessoal"]
+    D -->|Esqueci a senha| H["Ir à recuperação; fluxo 4"]
+    D --> E{"Senha correta e serviço disponível?"}
+    E -->|Senha incorreta| F["Negar sem conteúdo; tentativas são PENDENTES de definição"]
+    E -->|Falha de conexão| G["Informar indisponibilidade, não senha errada"]
+    E -->|Sim| I["NOVO APROVADO: emitir liberação segundo contrato futuro"]
+    I --> C
+    C --> J{"Fundamento assistencial continua válido?"}
+    J -->|Não| K["Negar conteúdo; senha não amplia pacientes autorizados"]
+    J -->|Sim| L["Permitir apenas conteúdo clínico autorizado"]
+    L --> M["Se expirar durante edição, bloquear gravação e orientar retomada segura"]
+    M --> N["PENDENTE: duração, preservação segura, logout e invalidação"]

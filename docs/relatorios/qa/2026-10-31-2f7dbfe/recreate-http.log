@@ -1,0 +1,3 @@
+login_http 200
+record_http 200 same_id True
+history_http 200 finalized_visible True
