@@ -165,6 +165,6 @@ Outros códigos específicos: `APPOINTMENT_PARTICIPANT_CONFLICT` (`409`) e `VALI
 
 **Regra aprovada:** a conclusão pertence ao dentista responsável, parte de `CONFIRMED` com confirmação confiável e registra situação e realização juntas. **Comportamento implementado:** as rotas e transições descritas acima aplicam essa regra na Agenda. **Pendente:** a interface ainda não envia o horário exigido; abertura do prontuário, condições de escrita da evolução e correções históricas seguem as decisões D02–D06.
 
-**Limite conhecido:** a autorização clínica pode ser perdida enquanto uma mutação clínica aguarda bloqueio; a proteção concorrente desse fluxo ainda precisa de correção e teste. A Agenda não deve ser apresentada como garantia de proteção concorrente integral do prontuário.
+**Concorrência clínica:** edição e finalização bloqueiam as consultas de origem e reconferem o acesso após a espera pela evolução (QA-01). A edição de rascunho exige a versão lida pelo cliente e recusa versões antigas com `409` (QA-02). O [QA revalidou as duas correções](../../../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/relatorio.md) em PostgreSQL 16 descartável e as considerou prontas **com ressalvas para os cenários exercitados na versão local**. O parecer não valida a interface, o banco da equipe nem a Sprint 7 completa.
 
 Ver também [repasse técnico clínico](../../../docs/clinical-api-technical-handoff.md) e [índice de decisões e requisitos](../../../docs/requisitos/README.md).
