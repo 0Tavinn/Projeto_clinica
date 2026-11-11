@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, StrictInt
+from pydantic import BaseModel, Field, StrictInt, field_validator
 from typing import Optional, List
 from datetime import datetime
 
@@ -39,6 +39,15 @@ class ClinicalEvolutionBase(BaseModel):
 # ✅ Recebe o patient_id em vez do medical_record_id
 class ClinicalEvolutionDraftCreate(ClinicalEvolutionBase):
     patient_id: int
+    appointment_id: int = Field(gt=0)
+
+    @field_validator("description")
+    @classmethod
+    def require_description(cls, value: str) -> str:
+        """Texto composto somente por espaços não descreve o atendimento."""
+        if not value.strip():
+            raise ValueError("Informe a descrição clínica.")
+        return value
 
 class ClinicalEvolutionUpdate(BaseModel):
     # A versão lida é obrigatória: omiti-la contornaria o controle concorrente.
@@ -46,6 +55,13 @@ class ClinicalEvolutionUpdate(BaseModel):
     description: Optional[str] = None
     procedure_performed: Optional[str] = None
     notes: Optional[str] = None
+
+    @field_validator("description")
+    @classmethod
+    def validate_description(cls, value: str | None) -> str | None:
+        if value is not None and not value.strip():
+            raise ValueError("Informe a descrição clínica.")
+        return value
 
 class ClinicalEvolutionResponse(ClinicalEvolutionBase):
     id: int

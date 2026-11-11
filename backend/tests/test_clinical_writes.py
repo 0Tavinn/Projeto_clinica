@@ -64,7 +64,23 @@ def _draft_payload(patient_id: int, appointment_id: int) -> dict:
     }
 
 
-def test_opening_and_draft_rollback_together(
+def _open_record(client, patient_id: int, headers: dict) -> None:
+    response = client.post(f"/api/v1/patients/{patient_id}/record", headers=headers)
+    assert response.status_code == 201, response.text
+
+
+def _complete_case(db_session, appointment) -> None:
+    """Prepara realização comprovada para testes de finalização clínica."""
+    now = datetime.datetime.now(datetime.timezone.utc)
+    grant = db_session.get(ClinicalAccessGrant, appointment.id)
+    appointment.status = AppointmentStatus.COMPLETED
+    grant.care_occurred_at = now
+    grant.care_recorded_at = now
+    grant.care_recorded_by_user_id = grant.confirmed_by_user_id
+    db_session.commit()
+
+
+def test_opening_survives_later_draft_rollback(
     client, db_session, clinic, dentist_user, receptionist_user
 ):
     patient, _, appointment = _confirmed_case(
@@ -72,7 +88,8 @@ def test_opening_and_draft_rollback_together(
     )
     headers = auth_headers(client, dentist_user.email)
 
-    # A falha vem depois do INSERT do prontuário e antes do commit da evolução.
+    _open_record(client, patient.id, headers)
+    # A abertura já confirmada sobrevive à falha posterior do rascunho.
     with patch.object(
         RecordRepository,
         "add_evolution",
@@ -86,11 +103,11 @@ def test_opening_and_draft_rollback_together(
     assert response.status_code == 422, response.text
 
     db_session.expire_all()
-    assert db_session.query(MedicalRecord).filter_by(patient_id=patient.id).count() == 0
+    assert db_session.query(MedicalRecord).filter_by(patient_id=patient.id).count() == 1
     assert db_session.query(ClinicalEvolution).count() == 0
 
 
-def test_draft_opens_record_once_and_duplicate_appointment_returns_conflict(
+def test_draft_uses_open_record_and_duplicate_appointment_returns_conflict(
     client, db_session, clinic, dentist_user, receptionist_user
 ):
     patient, dentist, appointment = _confirmed_case(
@@ -98,6 +115,7 @@ def test_draft_opens_record_once_and_duplicate_appointment_returns_conflict(
     )
     headers = auth_headers(client, dentist_user.email)
     payload = _draft_payload(patient.id, appointment.id)
+    _open_record(client, patient.id, headers)
     payload["dentist_id"] = 99999  # O cliente não escolhe a autoria.
 
     created = client.post("/api/v1/patients/evolutions", json=payload, headers=headers)
@@ -111,6 +129,96 @@ def test_draft_opens_record_once_and_duplicate_appointment_returns_conflict(
     db_session.expire_all()
     assert db_session.query(MedicalRecord).filter_by(patient_id=patient.id).count() == 1
     assert db_session.query(ClinicalEvolution).filter_by(appointment_id=appointment.id).count() == 1
+
+
+def test_explicit_opening_and_required_clinical_description(
+    client, db_session, clinic, dentist_user, receptionist_user
+):
+    patient, _, appointment = _confirmed_case(
+        db_session, clinic, dentist_user, receptionist_user
+    )
+    headers = auth_headers(client, dentist_user.email)
+    url = f"/api/v1/patients/{patient.id}/record"
+    assert client.get(url, headers=headers).status_code == 404
+    assert db_session.query(MedicalRecord).count() == 0
+    first = client.post(url, headers=headers)
+    assert first.status_code == 201, first.text
+    repeated = client.post(url, headers=headers)
+    assert repeated.status_code == 200, repeated.text
+    assert repeated.json()["id"] == first.json()["id"]
+    for description in ("", "   "):
+        invalid = client.post(
+            "/api/v1/patients/evolutions",
+            json={**_draft_payload(patient.id, appointment.id),
+                  "description": description}, headers=headers,
+        )
+        assert invalid.status_code == 422, invalid.text
+        assert "Observação clínica reservada" not in invalid.text
+    missing = client.post(
+        "/api/v1/patients/evolutions",
+        json={"patient_id": patient.id, "description": "Texto"}, headers=headers,
+    )
+    assert missing.status_code == 422
+    assert db_session.query(ClinicalEvolution).count() == 0
+
+    created = client.post(
+        "/api/v1/patients/evolutions",
+        json=_draft_payload(patient.id, appointment.id), headers=headers,
+    )
+    assert created.status_code == 201, created.text
+    evolution_id = created.json()["id"]
+    for description in ("", "  "):
+        invalid = client.patch(
+            f"/api/v1/patients/evolutions/{evolution_id}/draft",
+            json={"version": 1, "description": description}, headers=headers,
+        )
+        assert invalid.status_code == 422
+    db_session.expire_all()
+    stored = db_session.get(ClinicalEvolution, evolution_id)
+    assert stored.description == "Observação clínica reservada"
+    assert stored.version == 1
+
+
+def test_linked_state_and_legacy_restrictions(
+    client, db_session, clinic, dentist_user, receptionist_user
+):
+    patient, dentist, appointment = _confirmed_case(
+        db_session, clinic, dentist_user, receptionist_user
+    )
+    headers = auth_headers(client, dentist_user.email)
+    _open_record(client, patient.id, headers)
+    created = client.post(
+        "/api/v1/patients/evolutions",
+        json=_draft_payload(patient.id, appointment.id), headers=headers,
+    )
+    assert created.status_code == 201, created.text
+    evolution_id = created.json()["id"]
+    premature = client.post(
+        f"/api/v1/patients/evolutions/{evolution_id}/finalize", headers=headers,
+    )
+    assert premature.status_code == 422
+
+    legacy = ClinicalEvolution(
+        medical_record_id=created.json()["medical_record_id"],
+        dentist_id=dentist.id, appointment_id=None,
+        description="Registro anterior sem consulta", status="DRAFT",
+    )
+    db_session.add(legacy)
+    db_session.commit()
+    denied = client.patch(
+        f"/api/v1/patients/evolutions/{legacy.id}/draft",
+        json={"version": 1, "notes": "Alteração"}, headers=headers,
+    )
+    assert denied.status_code == 422
+    db_session.expire_all()
+    assert db_session.get(ClinicalEvolution, legacy.id).notes is None
+
+    _complete_case(db_session, appointment)
+    finalized = client.post(
+        f"/api/v1/patients/evolutions/{evolution_id}/finalize", headers=headers,
+    )
+    assert finalized.status_code == 200, finalized.text
+    assert finalized.json()["version"] == 2
 
 
 def test_draft_rejects_appointment_with_other_patient_or_dentist(
@@ -211,6 +319,7 @@ def test_only_author_mutates_draft_and_finalized_text_stays_unchanged(
     db_session.commit()
 
     own_headers = auth_headers(client, dentist_user.email)
+    _open_record(client, patient.id, own_headers)
     created = client.post(
         "/api/v1/patients/evolutions",
         json=_draft_payload(patient.id, appointment.id),
@@ -233,6 +342,7 @@ def test_only_author_mutates_draft_and_finalized_text_stays_unchanged(
         assert response.status_code == 403, response.text
         assert "Observação clínica reservada" not in response.text
 
+    _complete_case(db_session, appointment)
     finalized = client.post(
         f"/api/v1/patients/evolutions/{evolution_id}/finalize",
         headers=own_headers,
@@ -260,6 +370,7 @@ def test_mutation_rechecks_active_user_professional_and_clinic(
         db_session, clinic, dentist_user, receptionist_user
     )
     headers = auth_headers(client, dentist_user.email)
+    _open_record(client, patient.id, headers)
     created = client.post(
         "/api/v1/patients/evolutions",
         json=_draft_payload(patient.id, appointment.id),
@@ -299,8 +410,8 @@ def test_other_clinic_cannot_read_or_write_clinical_content(
         db_session, clinic, dentist_user, receptionist_user
     )
     own_headers = auth_headers(client, dentist_user.email)
-    opened = client.get(f"/api/v1/patients/{patient.id}/record", headers=own_headers)
-    assert opened.status_code == 200, opened.text
+    opened = client.post(f"/api/v1/patients/{patient.id}/record", headers=own_headers)
+    assert opened.status_code == 201, opened.text
     record = db_session.get(MedicalRecord, opened.json()["id"])
     record.general_notes = "SIGILO_ENTRE_CLINICAS"
     db_session.commit()

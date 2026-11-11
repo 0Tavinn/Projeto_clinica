@@ -224,6 +224,8 @@ def _apply_status_transition(
     if requested_status is AppointmentStatus.COMPLETED:
         if care_occurred_at is None:
             raise ValidationAppError("Informe o horário da realização do atendimento.")
+        if not AppointmentRepository(db).has_saved_evolution_for_completion(appointment):
+            raise ValidationAppError("Salve uma evolução com descrição antes de concluir.")
         # A evidência e COMPLETED serão gravados no mesmo commit do chamador.
         register_care(
             db,

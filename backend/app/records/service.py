@@ -3,11 +3,13 @@ from datetime import datetime, timezone
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.appointments.models import AppointmentStatus
 from app.common.exceptions import (
     ConflictError,
     ForbiddenError,
     InvalidTransitionError,
     NotFoundError,
+    ValidationAppError,
 )
 from app.dentists.models import Dentist
 from app.patients.models import Patient
@@ -37,27 +39,35 @@ class RecordService:
             patient_id=patient_id,
         )
 
-    def get_or_create_medical_record(
-        self, patient_id: int, general_notes: str | None = None
-    ) -> MedicalRecord:
-        """Preserva o GET atual; D02 ainda definirá seu efeito de escrita."""
+    def get_medical_record(self, patient_id: int) -> MedicalRecord:
+        """Consulta sem criar; 404 permite oferecer abertura ao dentista."""
         self._verify_patient_access(patient_id)
         record = self.repo.get_medical_record_by_patient(patient_id)
-        if record is not None:
-            return record
+        if record is None:
+            raise NotFoundError("Prontuário ainda não foi aberto para este paciente.")
+        return record
 
+    def open_medical_record(self, patient_id: int) -> tuple[MedicalRecord, bool]:
+        """Serializa aberturas e conserva o registro já confirmado."""
+        _, dentist = self._verify_patient_access(patient_id)
         try:
-            # O bloqueio do paciente serializa aberturas concorrentes.
             if not self.repo.lock_patient(patient_id):
                 raise NotFoundError("Paciente não encontrado no sistema.")
-            # A confirmação pode ter sido cancelada enquanto aguardávamos o bloqueio.
+            # Mantém estáveis as origens até o commit da abertura.
+            ClinicalAccessGrantRepository(self.db).lock_origin_appointments(
+                clinic_id=self.current_user.clinic_id,
+                patient_id=patient_id,
+                dentist_id=dentist.id,
+            )
+            # A autorização pode ter mudado enquanto aguardávamos os bloqueios.
             self._verify_patient_access(patient_id)
             record = self.repo.get_medical_record_by_patient(patient_id)
+            created = record is None
             if record is None:
-                record = self.repo.add_medical_record(patient_id, general_notes)
+                record = self.repo.add_medical_record(patient_id)
             self.db.commit()
             self.db.refresh(record)
-            return record
+            return record, created
         except Exception:
             self.db.rollback()
             raise
@@ -77,31 +87,15 @@ class RecordService:
     ) -> ClinicalEvolution:
         _, dentist = self._verify_patient_access(data.patient_id)
         try:
-            if data.appointment_id is not None:
-                # A situação permitida para escrita segue pendente em D03.
-                appointment = self.repo.get_appointment_for_update(
-                    data.appointment_id, self.current_user.clinic_id
-                )
-                if (
-                    appointment is None
-                    or appointment.patient_id != data.patient_id
-                    or appointment.dentist_id != dentist.id
-                ):
-                    raise NotFoundError("Consulta vinculada não encontrada para este atendimento.")
-                # O estado da consulta pode mudar durante a espera pelo bloqueio.
-                self._verify_patient_access(data.patient_id)
-                if self.repo.get_evolution_id_for_appointment(data.appointment_id) is not None:
-                    raise ConflictError("A consulta já possui evolução clínica.")
+            self._require_writable_appointment(
+                data.appointment_id, data.patient_id, dentist.id, finalizing=False
+            )
+            if self.repo.get_evolution_id_for_appointment(data.appointment_id) is not None:
+                raise ConflictError("A consulta já possui evolução clínica.")
 
             record = self.repo.get_medical_record_by_patient(data.patient_id)
             if record is None:
-                # A abertura e o rascunho compartilham o mesmo commit.
-                if not self.repo.lock_patient(data.patient_id):
-                    raise NotFoundError("Paciente não encontrado no sistema.")
-                self._verify_patient_access(data.patient_id)
-                record = self.repo.get_medical_record_by_patient(data.patient_id)
-                if record is None:
-                    record = self.repo.add_medical_record(data.patient_id)
+                raise NotFoundError("Abra o prontuário antes de registrar a evolução.")
 
             evolution = ClinicalEvolution(
                 medical_record_id=record.id,
@@ -160,13 +154,46 @@ class RecordService:
         self._verify_patient_access(patient_id)
         return evolution
 
+    def _require_writable_appointment(
+        self, appointment_id: int | None, patient_id: int,
+        dentist_id: int, *, finalizing: bool,
+    ) -> None:
+        """O vínculo da evolução, e não outra origem, define o estado de escrita."""
+        if appointment_id is None:
+            raise InvalidTransitionError("Evolução sem consulta vinculada exige regularização.")
+        # A criação também estabiliza todas as origens. Nas mutações de uma
+        # evolução existente, este bloqueio já foi obtido antes de chegar aqui.
+        ClinicalAccessGrantRepository(self.db).lock_origin_appointments(
+            clinic_id=self.current_user.clinic_id,
+            patient_id=patient_id,
+            dentist_id=dentist_id,
+        )
+        appointment = self.repo.get_appointment_for_update(
+            appointment_id, self.current_user.clinic_id
+        )
+        if (appointment is None or appointment.patient_id != patient_id
+                or appointment.dentist_id != dentist_id):
+            raise NotFoundError("Consulta vinculada não encontrada para este atendimento.")
+        # Esperar a consulta pode ter invalidado o último fundamento de acesso.
+        self._verify_patient_access(patient_id)
+        allowed = ({AppointmentStatus.COMPLETED} if finalizing else
+                   {AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED})
+        if appointment.status not in allowed:
+            raise InvalidTransitionError("Situação da consulta não permite esta escrita clínica.")
+
     def update_draft(self, evolution_id: int, data: ClinicalEvolutionUpdate):
         try:
             evolution = self._get_owned_evolution_for_update(evolution_id)
             if evolution.status != "DRAFT":
                 raise InvalidTransitionError("Evoluções finalizadas não podem ser editadas.")
+            patient_id = self.repo.get_patient_id_for_evolution(evolution_id)
+            self._require_writable_appointment(
+                evolution.appointment_id, patient_id, evolution.dentist_id, finalizing=False
+            )
             if evolution.version != data.version:
                 raise ConflictError("O rascunho foi alterado. Recarregue antes de editar novamente.")
+            if not (data.description if data.description is not None else evolution.description).strip():
+                raise ValidationAppError("Informe a descrição clínica.")
             if data.description is not None:
                 evolution.description = data.description
             if data.procedure_performed is not None:
@@ -184,6 +211,12 @@ class RecordService:
             evolution = self._get_owned_evolution_for_update(evolution_id)
             if evolution.status != "DRAFT":
                 raise InvalidTransitionError("Esta evolução já está finalizada.")
+            patient_id = self.repo.get_patient_id_for_evolution(evolution_id)
+            self._require_writable_appointment(
+                evolution.appointment_id, patient_id, evolution.dentist_id, finalizing=True
+            )
+            if not evolution.description.strip():
+                raise ValidationAppError("Informe a descrição clínica.")
             evolution.status = "FINALIZED"
             evolution.finalized_at = datetime.now(timezone.utc)
             evolution.version += 1

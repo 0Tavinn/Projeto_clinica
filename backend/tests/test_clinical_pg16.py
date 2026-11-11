@@ -27,6 +27,7 @@ from app.core.database import engine as app_engine
 from app.dentists.models import Dentist
 from app.main import app
 from app.patients.models import Patient
+from app.records.access_repository import ClinicalAccessGrantRepository
 from app.records.access_models import ClinicalAccessGrant
 from app.records.models import ClinicalEvolution, MedicalRecord
 from app.records.repository import RecordRepository
@@ -109,6 +110,7 @@ def _appointment(pg_engine, identities, *, suffix: str) -> tuple[int, int]:
             "qa_other": "12345678908",
             "qa_care": "12345678909",
             "qa_version": "12345678910",
+            "d02d03d04": "12345678911",
             }[suffix],
             medical_record_number=f"PG16-{suffix.upper()}",
             birth_date=datetime.date(1990, 1, 1),
@@ -123,7 +125,8 @@ def _appointment(pg_engine, identities, *, suffix: str) -> tuple[int, int]:
             - datetime.timedelta(
                 hours={"rollback": 10, "cancel": 8, "flow": 6, "confirm": 4,
                        "lock": 2, "qa_edit": 12, "qa_finalize": 14,
-                       "qa_other": 16, "qa_care": 18, "qa_version": 20}[suffix]
+                       "qa_other": 16, "qa_care": 18, "qa_version": 20,
+                       "d02d03d04": 22}[suffix]
             ),
             duration_minutes=30,
             status=AppointmentStatus.SCHEDULED,
@@ -140,6 +143,15 @@ def _headers(client, email: str) -> dict[str, str]:
     )
     assert response.status_code == 200, response.text
     return {"Authorization": f"Bearer {response.json()['access_token']}"}
+
+
+def _open_record(client, patient_id: int, headers: dict[str, str]) -> int:
+    """Exercita a abertura explícita após a confirmação da consulta."""
+    absent = client.get(f"/api/v1/patients/{patient_id}/record", headers=headers)
+    assert absent.status_code == 404, absent.text
+    opened = client.post(f"/api/v1/patients/{patient_id}/record", headers=headers)
+    assert opened.status_code == 201, opened.text
+    return opened.json()["id"]
 
 
 def _free_local_port() -> int:
@@ -210,16 +222,7 @@ def test_http_flow_persists_after_api_restart(pg_engine, identities):
             occurred_at = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
                 minutes=5
             )
-            completed = client.patch(
-                f"/api/v1/appointments/{appointment_id}/status",
-                json={"status": "COMPLETED", "care_occurred_at": occurred_at.isoformat()},
-                headers=dentist,
-            )
-            assert completed.status_code == 200, completed.text
-
-            record = client.get(f"/api/v1/patients/{patient_id}/record", headers=dentist)
-            assert record.status_code == 200, record.text
-            record_id = record.json()["id"]
+            record_id = _open_record(client, patient_id, dentist)
             draft = client.post(
                 "/api/v1/patients/evolutions",
                 json={
@@ -231,6 +234,12 @@ def test_http_flow_persists_after_api_restart(pg_engine, identities):
             )
             assert draft.status_code == 201, draft.text
             evolution_id = draft.json()["id"]
+            completed = client.patch(
+                f"/api/v1/appointments/{appointment_id}/status",
+                json={"status": "COMPLETED", "care_occurred_at": occurred_at.isoformat()},
+                headers=dentist,
+            )
+            assert completed.status_code == 200, completed.text
             finalized = client.post(
                 f"/api/v1/patients/evolutions/{evolution_id}/finalize", headers=dentist
             )
@@ -265,7 +274,7 @@ def test_http_flow_persists_after_api_restart(pg_engine, identities):
 
 def test_parallel_confirmation_and_completion_keep_one_evidence(pg_engine, identities):
     _, receptionist_email, dentist_email, _ = identities
-    _, appointment_id = _appointment(pg_engine, identities, suffix="confirm")
+    patient_id, appointment_id = _appointment(pg_engine, identities, suffix="confirm")
     with TestClient(app) as client:
         headers = _headers(client, receptionist_email)
         url = f"/api/v1/appointments/{appointment_id}/status"
@@ -278,6 +287,13 @@ def test_parallel_confirmation_and_completion_keep_one_evidence(pg_engine, ident
 
         assert sorted(response.status_code for response in responses) == [200, 422]
         dentist = _headers(client, dentist_email)
+        _open_record(client, patient_id, dentist)
+        draft = client.post(
+            "/api/v1/patients/evolutions",
+            json={"patient_id": patient_id, "appointment_id": appointment_id,
+                  "description": "Evolução para conclusão concorrente"}, headers=dentist,
+        )
+        assert draft.status_code == 201, draft.text
         occurred_at = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
             minutes=5
         )
@@ -311,6 +327,70 @@ def test_parallel_confirmation_and_completion_keep_one_evidence(pg_engine, ident
         assert db.get(Appointment, appointment_id).status is AppointmentStatus.COMPLETED
 
 
+def test_explicit_opening_and_completion_require_saved_evolution(pg_engine, identities):
+    """Confere D02–D04 em conexões HTTP e banco PostgreSQL separados."""
+    _, receptionist_email, dentist_email, _ = identities
+    patient_id, appointment_id = _appointment(pg_engine, identities, suffix="d02d03d04")
+    with TestClient(app) as client:
+        receptionist = _headers(client, receptionist_email)
+        dentist = _headers(client, dentist_email)
+        assert client.patch(
+            f"/api/v1/appointments/{appointment_id}/status",
+            json={"status": "CONFIRMED"}, headers=receptionist,
+        ).status_code == 200
+        record_url = f"/api/v1/patients/{patient_id}/record"
+        assert client.get(record_url, headers=dentist).status_code == 404
+        with Session(pg_engine) as db:
+            assert db.scalar(select(func.count()).select_from(MedicalRecord).where(
+                MedicalRecord.patient_id == patient_id
+            )) == 0
+
+        # O bloqueio do paciente deve serializar dois pedidos de abertura.
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            futures = [pool.submit(client.post, record_url, headers=dentist)
+                       for _ in range(2)]
+            opened = [future.result(timeout=10) for future in futures]
+        assert sorted(response.status_code for response in opened) == [200, 201]
+        assert len({response.json()["id"] for response in opened}) == 1
+
+        occurred_at = (datetime.datetime.now(datetime.timezone.utc)
+                       - datetime.timedelta(minutes=5)).isoformat()
+        completion_url = f"/api/v1/appointments/{appointment_id}/status"
+        completion = {"status": "COMPLETED", "care_occurred_at": occurred_at}
+        missing = client.patch(completion_url, json=completion, headers=dentist)
+        assert missing.status_code == 422
+        invalid = client.post(
+            "/api/v1/patients/evolutions",
+            json={"patient_id": patient_id, "appointment_id": appointment_id,
+                  "description": "   "}, headers=dentist,
+        )
+        assert invalid.status_code == 422
+        draft = client.post(
+            "/api/v1/patients/evolutions",
+            json={"patient_id": patient_id, "appointment_id": appointment_id,
+                  "description": "Atendimento fictício registrado"}, headers=dentist,
+        )
+        assert draft.status_code == 201, draft.text
+        premature = client.post(
+            f"/api/v1/patients/evolutions/{draft.json()['id']}/finalize",
+            headers=dentist,
+        )
+        assert premature.status_code == 422
+        completed = client.patch(completion_url, json=completion, headers=dentist)
+        assert completed.status_code == 200, completed.text
+        finalized = client.post(
+            f"/api/v1/patients/evolutions/{draft.json()['id']}/finalize",
+            headers=dentist,
+        )
+        assert finalized.status_code == 200, finalized.text
+        assert finalized.json()["version"] == 2
+
+    with Session(pg_engine) as db:
+        assert db.scalar(select(func.count()).select_from(MedicalRecord).where(
+            MedicalRecord.patient_id == patient_id
+        )) == 1
+
+
 def test_edit_waits_for_finalization_lock(pg_engine, identities):
     _, receptionist_email, dentist_email, _ = identities
     patient_id, appointment_id = _appointment(pg_engine, identities, suffix="lock")
@@ -323,6 +403,7 @@ def test_edit_waits_for_finalization_lock(pg_engine, identities):
             headers=receptionist,
         )
         assert confirmed.status_code == 200, confirmed.text
+        _open_record(client, patient_id, dentist)
         draft = client.post(
             "/api/v1/patients/evolutions",
             json={
@@ -392,6 +473,7 @@ def test_mutation_rechecks_access_after_evolution_lock(
             f"/api/v1/appointments/{appointment_id}/status",
             json={"status": "CONFIRMED"}, headers=receptionist,
         ).status_code == 200
+        _open_record(client, patient_id, dentist)
         draft = client.post(
             "/api/v1/patients/evolutions",
             json={"patient_id": patient_id, "appointment_id": appointment_id,
@@ -483,20 +565,16 @@ def test_mutation_rechecks_access_after_evolution_lock(
                     holder.commit()
                     response = future.result(timeout=10)
 
-        assert response.status_code == (200 if other_origin else 403), response.text
+        # D03 conserva acesso ao histórico por outra origem, mas a consulta
+        # vinculada cancelada já não permite editar nem finalizar.
+        assert response.status_code == (422 if other_origin else 403), response.text
         if not other_origin:
             assert response.json()["error"]["code"] == "FORBIDDENERROR"
         with Session(pg_engine) as db:
             stored = db.get(ClinicalEvolution, evolution_id)
-            assert stored.description == (
-                "Texto alterado" if other_origin and action == "edit" else "Texto original"
-            )
-            assert stored.status == (
-                "FINALIZED" if other_origin and action == "finalize" else "DRAFT"
-            )
-            assert (stored.finalized_at is not None) == (
-                other_origin == "completed" and action == "finalize"
-            )
+            assert stored.description == "Texto original"
+            assert stored.status == "DRAFT"
+            assert stored.finalized_at is None
 
 
 def test_draft_version_rejects_concurrent_and_stale_edits(pg_engine, identities):
@@ -510,6 +588,7 @@ def test_draft_version_rejects_concurrent_and_stale_edits(pg_engine, identities)
             f"/api/v1/appointments/{appointment_id}/status",
             json={"status": "CONFIRMED"}, headers=receptionist,
         ).status_code == 200
+        _open_record(client, patient_id, dentist)
         draft = client.post(
             "/api/v1/patients/evolutions",
             json={"patient_id": patient_id, "appointment_id": appointment_id,
@@ -632,6 +711,14 @@ def test_draft_version_rejects_concurrent_and_stale_edits(pg_engine, identities)
             )
             assert denied.status_code == 403, denied.text
 
+        completed = client.patch(
+            f"/api/v1/appointments/{appointment_id}/status",
+            json={"status": "COMPLETED", "care_occurred_at":
+                  (datetime.datetime.now(datetime.timezone.utc)
+                   - datetime.timedelta(minutes=5)).isoformat()},
+            headers=dentist,
+        )
+        assert completed.status_code == 200, completed.text
         finalized = client.post(
             f"/api/v1/patients/evolutions/{evolution_id}/finalize", headers=dentist,
         )
@@ -659,13 +746,17 @@ def test_draft_rechecks_origin_after_appointment_lock(pg_engine, identities):
             headers=receptionist,
         )
         assert response.status_code == 200, response.text
+        _open_record(client, patient_id, dentist)
 
         reached_lock = Event()
-        original = RecordRepository.get_appointment_for_update
+        original = ClinicalAccessGrantRepository.lock_origin_appointments
 
-        def observe_lock(repository, requested_id, clinic_id):
+        def observe_lock(repository, *, clinic_id, patient_id, dentist_id):
             reached_lock.set()
-            return original(repository, requested_id, clinic_id)
+            return original(
+                repository, clinic_id=clinic_id,
+                patient_id=patient_id, dentist_id=dentist_id,
+            )
 
         with Session(pg_engine) as holder:
             appointment = holder.execute(
@@ -675,7 +766,9 @@ def test_draft_rechecks_origin_after_appointment_lock(pg_engine, identities):
             ).scalar_one()
             appointment.status = AppointmentStatus.CANCELED
 
-            with patch.object(RecordRepository, "get_appointment_for_update", observe_lock):
+            with patch.object(
+                ClinicalAccessGrantRepository, "lock_origin_appointments", observe_lock
+            ):
                 with ThreadPoolExecutor(max_workers=1) as pool:
                     future = pool.submit(
                         client.post,
@@ -687,8 +780,25 @@ def test_draft_rechecks_origin_after_appointment_lock(pg_engine, identities):
                         },
                         headers=dentist,
                     )
-                    assert reached_lock.wait(timeout=5)
-                    holder.commit()
+                    try:
+                        assert reached_lock.wait(timeout=5)
+                        # Confirma a espera real antes de cancelar a origem.
+                        deadline = time.monotonic() + 5
+                        waiting = False
+                        while time.monotonic() < deadline:
+                            with pg_engine.connect() as connection:
+                                waiting = connection.scalar(text(
+                                    "SELECT count(*) FROM pg_stat_activity "
+                                    "WHERE wait_event_type = 'Lock' "
+                                    "AND query ILIKE '%clinical_access_grants%' "
+                                    "AND pid <> pg_backend_pid()"
+                                )) >= 1
+                            if waiting:
+                                break
+                            time.sleep(0.05)
+                        assert waiting, "A criação não aguardou o bloqueio PostgreSQL"
+                    finally:
+                        holder.commit()
                     response = future.result(timeout=10)
 
         assert response.status_code == 403, response.text
@@ -698,7 +808,7 @@ def test_draft_rechecks_origin_after_appointment_lock(pg_engine, identities):
             select(func.count()).select_from(MedicalRecord).where(
                 MedicalRecord.patient_id == patient_id
             )
-        ) == 0
+        ) == 1
         assert db.scalar(
             select(func.count()).select_from(ClinicalEvolution).where(
                 ClinicalEvolution.appointment_id == appointment_id
@@ -718,6 +828,7 @@ def test_record_opening_rolls_back_if_draft_fails(pg_engine, identities):
             headers=receptionist,
         )
         assert response.status_code == 200, response.text
+        _open_record(client, patient_id, dentist)
 
         with patch.object(
             RecordRepository,
@@ -740,7 +851,7 @@ def test_record_opening_rolls_back_if_draft_fails(pg_engine, identities):
             select(func.count()).select_from(MedicalRecord).where(
                 MedicalRecord.patient_id == patient_id
             )
-        ) == 0
+        ) == 1
         assert db.scalar(
             select(func.count()).select_from(ClinicalEvolution).where(
                 ClinicalEvolution.appointment_id == appointment_id

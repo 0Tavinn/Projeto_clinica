@@ -48,7 +48,7 @@ Ao criar ou alterar participantes, eles devem pertencer à clínica e estar ativ
 | `SCHEDULED` | `NO_SHOW` | Administrador, recepção ou dentista responsável. | O horário agendado já deve ter iniciado. |
 | `CONFIRMED` | `CANCELED` | Administrador, recepção. | A evidência anterior não é apagada. |
 | `CONFIRMED` | `NO_SHOW` | Administrador, recepção ou dentista responsável. | O horário agendado já deve ter iniciado. |
-| `CONFIRMED` | `COMPLETED` | **Somente o dentista responsável.** | Exige confirmação confiável, início da consulta e `care_occurred_at` válido. |
+| `CONFIRMED` | `COMPLETED` | **Somente o dentista responsável.** | Exige confirmação confiável, início da consulta, `care_occurred_at` válido e evolução correspondente salva com descrição; ela pode permanecer `DRAFT`. |
 
 `COMPLETED`, `CANCELED` e `NO_SHOW` não têm transições de saída. Repetir a mesma transição ou tentar `SCHEDULED → COMPLETED` retorna `422`. Administrador e recepção não concluem atendimento, inclusive pelo `PATCH` genérico. O dentista não edita participantes, horário, duração ou observações pela Agenda.
 
@@ -143,7 +143,7 @@ As demais mutações bem-sucedidas retornam `200` com o mesmo conjunto de campos
 | `401` | Token ausente, inválido, expirado ou usuário inativo. |
 | `403` | Perfil sem permissão para a ação. |
 | `404` | Consulta não encontrada ou fora do alcance do dentista; participante fora da clínica. |
-| `409` | Horário sobreposto, troca de participantes com evidência ou evidência de confirmação já existente. |
+| `409` | Horário sobreposto, troca de participantes com evidência, evidência de confirmação já existente ou evolução em alteração durante a conclusão. |
 | `422` | Corpo/filtro inválido, clínica ou participante inativo, horário não futuro, transição inválida ou conclusão sem evidência/horário válido. |
 | `500` | Falha inesperada. |
 
@@ -163,7 +163,7 @@ Outros códigos específicos: `APPOINTMENT_PARTICIPANT_CONFLICT` (`409`) e `VALI
 
 **Frontend ainda pendente:** `appointmentsApi.updateStatus` em `frontend/src/api.ts` envia somente `{status}`. A interface precisa coletar e enviar `care_occurred_at` com fuso ao concluir; essa alteração **não está implementada**. Exiba apenas ações adequadas ao perfil, à consulta e ao estado, mas sempre trate `403`, `404`, `409` e `422` devolvidos pela API. `GET /health` verifica o processo, não a conexão com o banco.
 
-**Regra aprovada:** a conclusão pertence ao dentista responsável, parte de `CONFIRMED` com confirmação confiável e registra situação e realização juntas. **Comportamento implementado:** as rotas e transições descritas acima aplicam essa regra na Agenda. **Pendente:** a interface ainda não envia o horário exigido; abertura do prontuário, condições de escrita da evolução e correções históricas seguem as decisões D02–D06.
+**Regra aprovada e implementada nesta branch:** a conclusão pertence ao dentista responsável, parte de `CONFIRMED` com confirmação confiável, exige evolução correspondente salva com descrição e registra situação e realização juntas. A evolução pode permanecer rascunho. A verificação bloqueia a evolução durante a conclusão; se outra escrita a estiver alterando, a API responde `409` para evitar espera circular entre consulta e evolução. **Pendente:** o frontend ainda não envia o horário exigido nem segue a abertura explícita; os serviços administrativos serão integrados em etapa própria. Correções históricas, D05 e D06 seguem pendentes.
 
 **Concorrência clínica:** edição e finalização bloqueiam as consultas de origem e reconferem o acesso após a espera pela evolução (QA-01). A edição de rascunho exige a versão lida pelo cliente e recusa versões antigas com `409` (QA-02). O [QA revalidou as duas correções](../../../docs/relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/relatorio.md) em PostgreSQL 16 descartável e as considerou prontas **com ressalvas para os cenários exercitados na versão local**. O parecer não valida a interface, o banco da equipe nem a Sprint 7 completa.
 

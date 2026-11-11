@@ -289,6 +289,18 @@ def test_completion_permissions_and_start_time(
     )
     assert too_soon.status_code == 422, too_soon.text
 
+    opened = client.post(
+        f"/api/v1/patients/{patient.id}/record", headers=dentist_headers
+    )
+    assert opened.status_code == 201, opened.text
+    draft = client.post(
+        "/api/v1/patients/evolutions",
+        json={"patient_id": patient.id, "appointment_id": past.id,
+              "description": "Atendimento registrado para conclusão"},
+        headers=dentist_headers,
+    )
+    assert draft.status_code == 201, draft.text
+
     completed = client.patch(
         f"/api/v1/appointments/{past.id}/status",
         json=completion,

@@ -2,15 +2,17 @@
 import datetime
 
 from sqlalchemy import Select, select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm import Session, lazyload
 
 from app.appointments.models import Appointment, AppointmentStatus
 from app.common.exceptions import (
     AppointmentParticipantConflictError,
     AppointmentTimeConflictError,
+    ConflictError,
 )
 from app.dentists.models import Dentist
+from app.records.models import ClinicalEvolution, MedicalRecord
 
 
 class AppointmentRepository:
@@ -69,6 +71,31 @@ class AppointmentRepository:
             .with_for_update(of=Appointment)
         )
         return self.db.execute(statement).scalar_one_or_none()
+
+    def has_saved_evolution_for_completion(self, appointment: Appointment) -> bool:
+        """Confere conteúdo salvo e estabiliza a evolução até concluir.
+
+        NOWAIT evita ciclo de bloqueios: a escrita clínica pode segurar a
+        evolução enquanto espera a consulta já bloqueada pela Agenda.
+        """
+        statement = (
+            select(ClinicalEvolution.id, ClinicalEvolution.description)
+            .join(MedicalRecord, MedicalRecord.id == ClinicalEvolution.medical_record_id)
+            .where(
+                ClinicalEvolution.appointment_id == appointment.id,
+                ClinicalEvolution.dentist_id == appointment.dentist_id,
+                MedicalRecord.patient_id == appointment.patient_id,
+            )
+            .with_for_update(read=True, nowait=True, of=ClinicalEvolution)
+        )
+        try:
+            row = self.db.execute(statement).one_or_none()
+        except OperationalError as error:
+            original = error.orig
+            if getattr(original, "sqlstate", None) == "55P03":
+                raise ConflictError("Evolução clínica em alteração; tente novamente.") from error
+            raise
+        return row is not None and bool(row.description.strip())
 
     def has_conflict(
         self,

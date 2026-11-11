@@ -261,7 +261,7 @@ def test_administration_and_reception_cannot_read_clinical_content(
             assert "SIGILO_EVOLUCAO_POR_PERFIL" not in response.text
 
 
-def test_confirmed_dentist_get_opens_record_once_under_current_contract(
+def test_confirmed_dentist_opens_record_once_explicitly(
     client, db_session, clinic, dentist_user, receptionist_user
 ):
     now = datetime.datetime.now(datetime.timezone.utc)
@@ -307,8 +307,10 @@ def test_confirmed_dentist_get_opens_record_once_under_current_contract(
 
     url = f"/api/v1/patients/{patient.id}/record"
     dentist_headers = auth_headers(client, dentist_user.email)
-    first = client.get(url, headers=dentist_headers)
-    assert first.status_code == 200, first.text
+    absent = client.get(url, headers=dentist_headers)
+    assert absent.status_code == 404, absent.text
+    first = client.post(url, headers=dentist_headers)
+    assert first.status_code == 201, first.text
     assert first.json()["patient_id"] == patient.id
     assert first.json()["general_notes"] is None
     record_id = first.json()["id"]

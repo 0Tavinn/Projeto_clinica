@@ -58,6 +58,7 @@ def test_confirmation_persists_and_survives_cancel(
         headers=headers,
     )
     assert confirmed.status_code == 200, confirmed.text
+
     assert confirmed.json()["status"] == "CONFIRMED"
 
     db_session.expire_all()
@@ -164,17 +165,40 @@ def test_responsible_dentist_completes_with_care_evidence(
     )
     assert confirmed.status_code == 200, confirmed.text
 
+    dentist_headers = auth_headers(client, dentist_user.email)
     occurred_at = (
         datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         - datetime.timedelta(minutes=5)
     )
+    missing = client.patch(
+        f"/api/v1/appointments/{appointment_id}{route_suffix}",
+        json={"status": "COMPLETED", "care_occurred_at": occurred_at.isoformat()},
+        headers=dentist_headers,
+    )
+    assert missing.status_code == 422, missing.text
+    db_session.expire_all()
+    assert db_session.get(Appointment, appointment_id).status is AppointmentStatus.CONFIRMED
+    assert db_session.get(ClinicalAccessGrant, appointment_id).care_occurred_at is None
+
+    opened = client.post(
+        f"/api/v1/patients/{appointment.patient_id}/record", headers=dentist_headers
+    )
+    assert opened.status_code == 201, opened.text
+    draft = client.post(
+        "/api/v1/patients/evolutions",
+        json={"patient_id": appointment.patient_id, "appointment_id": appointment_id,
+              "description": "Atendimento registrado para conclusão"},
+        headers=dentist_headers,
+    )
+    assert draft.status_code == 201, draft.text
+
     completed = client.patch(
         f"/api/v1/appointments/{appointment_id}{route_suffix}",
         json={
             "status": "COMPLETED",
             "care_occurred_at": occurred_at.isoformat(),
         },
-        headers=auth_headers(client, dentist_user.email),
+        headers=dentist_headers,
     )
     assert completed.status_code == 200, completed.text
     assert completed.json()["status"] == "COMPLETED"
