@@ -1,0 +1,2 @@
+HTTP cases=85 approved=84 failed=1
+AUTH-configured-limit HTTP 200 HTTP 429

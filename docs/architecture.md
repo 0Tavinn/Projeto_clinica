@@ -44,7 +44,8 @@ Suas principais responsabilidades são:
 - Exibir mensagens de sucesso, erro e falta de permissão;
 - Controlar a navegação conforme o perfil do usuário.
 
-O front-end está em fase de integração durante a Sprint 4.
+O front-end é compilado com Vite e servido como arquivos estáticos pelo Nginx
+na imagem `frontend/Dockerfile`.
 
 ### 3.2 API
 
@@ -136,6 +137,10 @@ Na Sprint 4, as funcionalidades implementadas concentram-se principalmente nas e
 | Testes | Pytest |
 | Versionamento | Git e GitHub |
 | Containerização | Docker e Docker Compose |
+
+O ambiente local usa três serviços no `docker-compose.yml`: PostgreSQL, API
+FastAPI e Nginx para o frontend. O banco possui volume persistente e os
+serviços compartilham a rede interna `lumina_odonto_network`.
 
 ## 5. Comunicação entre os componentes
 
@@ -245,7 +250,7 @@ Projeto_clinica/
 │   ├── scripts/
 │   ├── tests/
 │   ├── Dockerfile
-│   ├── compose.yaml
+│   ├── Dockerfile
 │   ├── pyproject.toml
 │   └── README.md
 ├── docs/
@@ -254,6 +259,7 @@ Projeto_clinica/
 │   ├── api-integration.md
 │   ├── development.md
 │   └── sprint/
+├── docker-compose.yml
 └── frontend/
 ```
 

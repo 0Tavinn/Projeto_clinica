@@ -1,0 +1,9 @@
+additional cases=8 approved=7 failed=1
+HTTP-cross-patient-appointment HTTP 404 aprovado
+HTTP-cross-clinic-appointment HTTP 404 aprovado
+HTTP-combined-filters HTTP 200, IDs [1] aprovado
+HTTP-inactive-existing-token HTTP 401 aprovado
+HTTP-inactive-refresh HTTP 401 aprovado
+HTTP-no-show-with-continuity HTTP 200/200/200 aprovado
+SPRINT-audit-events audit_logs=0 após operações de Agenda e prontuário reprovado
+PG-confirm-care-evidence 1|1|1|1 aprovado

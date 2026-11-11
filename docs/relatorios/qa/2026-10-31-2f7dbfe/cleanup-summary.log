@@ -1,0 +1,6 @@
+ Container lumina_qa_20261031_2f7dbfe-frontend-1 Removed
+ Container lumina_qa_20261031_2f7dbfe-api-1 Removed
+ Container lumina_qa_20261031_2f7dbfe-db-1 Removed
+ Network lumina_qa_20261031_2f7dbfe_network Removed
+Volume lumina_qa_20261031_2f7dbfe_pg16_data removed
+QA API/frontend images removed

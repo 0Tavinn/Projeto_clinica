@@ -1,0 +1,7 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0 -- /home/paulinho/Work/Projeto_clinica/backend/.venv/bin/python
+rootdir: /home/paulinho/Work/Projeto_clinica/backend
+configfile: pyproject.toml
+collecting ... collected 3 items
+
+backend/tests/test_health.py::test_health_check_returns_ok

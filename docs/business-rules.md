@@ -2,8 +2,8 @@
 
 ## 1. Identificação e referência
 
-- **Versão:** 1.0.
-- **Data:** 27/09/2026.
+- **Versão:** 1.1 — consolidação documental clínica.
+- **Data da consolidação:** 09/11/2026. A referência histórica da Sprint 04 permanece identificada.
 - **Referência principal:** funcionalidades consolidadas na Sprint 04.
 - **Referência complementar:** [Requisitos do sistema](./requirements.md).
 - **Situação:** regras atuais documentadas e propostas para revisão da equipe.
@@ -11,9 +11,9 @@
 
 Este documento descreve as condições que orientam as operações do Lumina Odonto. O relatório da Sprint 04 e os testes relatados pela equipe têm prioridade sobre propostas anteriores quando houver divergências.
 
-As regras identificadas como atuais representam o comportamento documentado ou demonstrado na Sprint 04. Esta elaboração não inclui uma nova inspeção do código, das migrações ou das restrições completas de `appointments`.
+As seções iniciais preservam o contexto da Sprint 04. A consolidação clínica de 09/11 usa o código de `8eeddd5` e o [QA de 04/11](./relatorios/qa/2026-11-04-2f7dbfe-qa01-qa02/relatorio.md), publicado em `4c352b2`. A evidência registra API/TestClient e PostgreSQL descartável, com implantação e integração de interface ainda sujeitas a validação.
 
-As regras da Agenda são propostas para a Sprint 05. Devem ser revisadas por Tarcísio e João, alinhadas com Caio e Otávio e registradas como aprovadas antes de serem utilizadas como contrato definitivo de implementação.
+A seção de Agenda reúne propostas históricas da Sprint 05 e atualizações posteriores identificadas em cada regra. O [contrato HTTP](../backend/app/appointments/README.md) descreve as rotas atuais. A [especificação de 02/11](./especificacoes/fluxo-atendimento-mvp-2026-11-02.md) orienta os contratos da próxima implementação, preservando suas pendências.
 
 ### 1.1 Situações das regras
 
@@ -42,17 +42,19 @@ Os identificadores `RN-001` e seguintes pertencem a este catálogo. Alterações
 
 O acesso do dentista aos pacientes da clínica não equivale, na versão atual, a uma regra de acesso apenas aos pacientes atendidos por ele. Essa restrição adicional dependeria de decisão e implementação próprias.
 
-### 2.2 Permissões propostas para Agenda
+### 2.2 Permissões da Agenda e decisão de conclusão
 
 | Operação | Administrador | Recepcionista | Dentista |
 |---|---|---|---|
 | Consultar agenda e detalhes | Agenda da clínica | Agenda da clínica | Próprios atendimentos |
 | Criar consulta | Permitido | Permitido | Negado |
 | Editar ou reagendar consulta | Permitido | Permitido | Negado |
+| Confirmar consulta | Permitido | Permitido | Negado |
 | Cancelar consulta | Permitido | Permitido | Negado |
-| Registrar conclusão ou ausência | A definir | A definir | Próprios atendimentos |
+| Concluir atendimento | Negado | Negado | Somente consulta própria `CONFIRMED`, com confirmação confiável e evidência da realização |
+| Registrar ausência | Permissão atual da Agenda | Permissão atual da Agenda | Próprios atendimentos, conforme regra da Agenda |
 
-Esta segunda matriz é uma proposta. As permissões da Agenda não devem ser deduzidas das permissões do CRUD de pacientes. A equipe deve decidir expressamente quem poderá registrar conclusão e ausência além do dentista responsável.
+A linha de conclusão registra a decisão de Paulo em 25/10/2026 e seu comportamento já implementado na API. As demais permissões conservam seus escopos e pendências próprios. Permissões da Agenda não decorrem do CRUD de pacientes, e operar a Agenda não concede leitura clínica.
 
 ## 3. Clínica, usuários e autenticação
 
@@ -167,7 +169,7 @@ O campo `medical_record_number` identifica o cadastro do paciente e, na versão 
 
 ## 5. Agenda e consultas — proposta para Sprint 05
 
-Antes da implementação, a equipe deve conferir campos, tipos, restrições, valores de status e relacionamentos da tabela `appointments`. As regras abaixo descrevem o comportamento recomendado e não declaram que a Agenda já esteja funcionando.
+A seção reúne regras da Agenda e a decisão de 25/10/2026 sobre conclusão do atendimento. Campos, tipos, restrições e relacionamentos de `appointments` devem ser conferidos para implementar a decisão. As demais propostas conservam suas pendências; a aprovação da conclusão não comprova implementação.
 
 ### RN-016 — Dentista elegível para agendamento
 
@@ -241,27 +243,30 @@ A obrigatoriedade de motivo e eventual prazo mínimo de cancelamento dependem de
 
 ### RN-024 — Estados e transições da consulta
 
-A equipe deve aprovar os estados aceitos e as mudanças possíveis antes da implementação. Como proposta mínima, a consulta inicia como agendada e pode passar para concluída, cancelada ou ausência.
+A decisão de Paulo em 25/10/2026 fecha a transição de conclusão: **Concluir atendimento** exige consulta `CONFIRMED` com confirmação confiável registrada e só pode ser executada pelo dentista responsável. A operação grava `COMPLETED` e a evidência da realização atomicamente, incluindo responsável pelo registro, instante do registro e horário informado da realização. O PATCH genérico e a rota específica aplicam a mesma regra. `SCHEDULED` não passa diretamente a `COMPLETED` nas novas operações; horário agendado ou passagem do tempo não comprovam realização.
 
-| Origem proposta | Destino proposto | Condição |
+As demais transições e a correção de conclusão indevida conservam as decisões próprias. A recepção mantém suas operações autorizadas de confirmação, cancelamento e ausência.
+
+| Origem | Destino | Condição |
 |---|---|---|
-| Agendada | Concluída | Atendimento realizado e ação de um perfil autorizado. |
-| Agendada | Cancelada | Cancelamento realizado pelo administrador ou pela recepcionista. |
-| Agendada | Ausência | Horário já iniciado e ausência registrada por perfil autorizado. |
+| Agendada (`SCHEDULED`) | Confirmada (`CONFIRMED`) | Confirmação pela operação autorizada da Agenda; não comprova realização. |
+| Confirmada (`CONFIRMED`) | Concluída (`COMPLETED`) | Somente o dentista responsável executa **Concluir atendimento**, com confirmação confiável e evidência atômica da realização. |
+| Agendada ou confirmada | Cancelada | Cancelamento realizado pelo administrador ou pela recepcionista, conforme permissão atual da Agenda. |
+| Agendada ou confirmada | Ausência | Horário já iniciado e ausência registrada por perfil autorizado, incluindo a recepção. |
 | Concluída, cancelada ou ausência | Outro estado | Bloqueado no fluxo comum; eventual correção precisa de regra própria. |
 
-Os nomes acima são conceitos de negócio. Os identificadores enviados pela API devem ser definidos após conferir a restrição de status do PostgreSQL. Um estado de confirmação, se necessário, deve ser acrescentado com suas transições e permissões.
+As linhas de cancelamento, ausência e correção não são aprovadas por extensão da decisão de conclusão. As permissões existentes da recepção para confirmação, cancelamento e ausência são preservadas. Os identificadores `SCHEDULED`, `CONFIRMED` e `COMPLETED` constam do modelo e a conclusão com evidência está implementada na API, com regressões em PostgreSQL descartável.
 
-**Situação:** proposta — Sprint 05.
+**Situação em 09/11:** conclusão aprovada em 25/10 e implementada na API. Novos pré-requisitos de 02/11 estão descritos na especificação para implementação posterior.
 **Requisitos relacionados:** RF-018 a RF-022.
 
 ### RN-025 — Atuação do dentista no próprio atendimento
 
-O dentista pode registrar conclusão ou ausência somente nas consultas sob sua responsabilidade, conforme os estados aprovados. Não pode utilizar a atualização de status para trocar paciente, dentista, data ou duração, nem para cancelar consultas.
+Somente o dentista responsável pode registrar a conclusão da sua consulta, pela ação **Concluir atendimento**, a partir de `CONFIRMED` com confirmação confiável. Não pode utilizar a atualização de status para trocar paciente, dentista, data ou duração, nem para cancelar consultas. A ausência segue suas permissões próprias da Agenda.
 
-As permissões do administrador e da recepcionista para conclusão e ausência permanecem pendentes de decisão.
+Administrador e recepção não registram conclusão. A recepção mantém suas operações autorizadas de confirmação, cancelamento e ausência. PATCH genérico e rota específica devem rejeitar conclusão por perfil não autorizado.
 
-**Situação:** proposta — Sprint 05.
+**Situação em 09/11:** regra de conclusão implementada na API; correções excepcionais e integração da interface seguem suas pendências.
 **Requisito relacionado:** RF-022.
 
 ### RN-026 — Referência de tempo consistente
@@ -305,30 +310,25 @@ Como exemplo sujeito à aprovação, pode ser utilizado `LO-001-2026-000001`. A 
 **Situação:** melhoria proposta.
 **Requisito relacionado:** RF-033.
 
-## 7. Prontuário, auditoria e IA — etapas futuras
+## 7. Prontuário, auditoria e IA — implementação e propostas
 
 ### RN-031 — Acesso e responsabilidade pelos registros clínicos
 
-O acesso ao conteúdo clínico e o registro de evoluções devem ser autorizados de forma específica. Como proposta inicial, evoluções são registradas por dentistas autorizados e vinculadas ao paciente, à clínica, ao profissional e à data do atendimento. A permissão para editar dados cadastrais de pacientes não concede automaticamente acesso irrestrito ao prontuário clínico.
+O prontuário acompanha o paciente na clínica; diferentes dentistas podem atendê-lo. Cada evolução identifica seu responsável. Não se exige vínculo exclusivo permanente paciente–dentista. Confirmação confiável e consulta atualmente `CONFIRMED` sustentam preparação; atendimento concluído com evidência válida sustenta continuidade. Cancelamento ou ausência retiram a preparação somente sem atendimento válido e sem outra confirmação ativa para a dupla. Rascunhos de outros autores não são disponibilizados. Abertura e escrita seguem decisões próprias.
 
-**Situação:** planejada — etapa futura. A matriz clínica precisa ser aprovada.
-**Requisitos relacionados:** RF-023 e RF-024.
+**Situação em 09/11/2026:** política de preparação e continuidade aprovada em 25/10 e implementada na API/SQL. `8eeddd5` consolida QA-01/QA-02 e `4c352b2` registra a revalidação. Legado, correções excepcionais, frontend e banco de destino mantêm pendências. **RF relacionados:** RF-023 e RF-024. Ver [RN-031](./regras-de-negocio/RN-031-RF-023-acesso-ao-prontuario.md).
 
 ### RN-032 — Preservação do histórico clínico
 
-Evoluções finalizadas não devem ser sobrescritas silenciosamente. A equipe deve definir um fluxo de correção ou complementação que preserve autor, data e conteúdo original. As regras de rascunho, finalização e correção devem ser aprovadas antes da implementação.
+Evoluções devem preservar conteúdo, autoria e horários; registros finalizados não recebem edição comum. A privacidade dos rascunhos segue a direção aprovada em RN-031. Identificação profissional histórica e retificação vinculada ao original são refinamentos propostos para aprovação.
 
-**Situação:** planejada — etapa futura.
-**Requisito relacionado:** RF-024.
+**Situação em 09/11/2026:** bloqueio de edição após finalizar e proteção concorrente revalidados no recorte PostgreSQL. Nome/CRO históricos e retificação seguem pendentes. **RF relacionado:** RF-024. Ver [RN-032](./regras-de-negocio/RN-032-RF-024-preservacao-do-historico-clinico.md).
 
 ### RN-033 — IA como apoio ao profissional
 
-Conteúdo gerado por IA deve ser identificado como tal e disponibilizado para revisão do dentista. Uma sugestão não deve se tornar automaticamente diagnóstico, prescrição ou evolução clínica assinada pelo profissional.
+O resumo de apoio deve ser identificado e baseado em histórico autorizado, com fontes conferíveis; não cria nem finaliza evolução automaticamente e depende de revisão profissional.
 
-A equipe deve definir quais dados serão utilizados, como restringir o acesso, quando gerar os resumos e como registrar sua origem. As propostas anteriores de GPU, processamento noturno e lote não constituem decisões finais de implementação.
-
-**Situação:** planejada — etapa futura.
-**Requisito relacionado:** RF-025.
+**Situação em 23/10/2026:** proposta sem implementação; dados e processamento precisam de aprovação. **RF relacionado:** RF-025. Ver [RN-033](./regras-de-negocio/RN-033-RF-025-ia-como-apoio-ao-profissional.md).
 
 ### RN-034 — Operações com rastreabilidade
 
@@ -344,8 +344,8 @@ Portal do paciente, serviços e relatórios financeiros permanecem no escopo con
 | Decisão | Encaminhamento proposto | Responsáveis pela definição |
 |---|---|---|
 | Cadastro profissional do dentista | Definir campos, endpoint e vínculo `users` → `dentists` → `appointments`. | Tarcísio e João, com alinhamento do frontend. |
-| Estados das consultas | Conferir restrições do banco e aprovar transições e nomes da API. | Tarcísio e João, com revisão da equipe. |
-| Conclusão e ausência | Confirmar se administrador e recepcionista também poderão registrar essas situações. | Equipe, com implementação por Tarcísio e João. |
+| Estados das consultas | Implementar a transição de conclusão aprovada em 25/10 e conferir restrições do banco; demais transições e correções seguem decisões próprias. | Backend e DBA propõem o desenho; Paulo aprova decisões ainda abertas. |
+| Conclusão e ausência | Conclusão aprovada por Paulo em 25/10: somente dentista responsável, após `CONFIRMED` confiável, com evidência atômica. Recepção mantém confirmação, cancelamento e ausência; correções indevidas seguem pendentes. | Backend e DBA desenham a implementação; Paulo aprova decisões ainda abertas. |
 | Horários e duração | Definir funcionamento, duração sugerida e limites por consulta. | Paulo com a clínica; equipe valida a proposta. |
 | Tempo e fuso | Conferir `scheduled_at` e padronizar armazenamento e exibição. | Paulo, Tarcísio e João, com alinhamento de Caio. |
 | Conflito do paciente | Decidir se um paciente poderá ter consultas simultâneas com dentistas diferentes. | Equipe. |

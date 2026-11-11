@@ -1,0 +1,16 @@
+flowchart TD
+    A["Dentista salva evolução da consulta com descrição; DRAFT permitido"] --> B{"Salvamento confirmado?"}
+    B -->|Não| C["Tratar falha sem dizer que salvou; ver fluxo 3"]
+    B -->|Sim| D["Dentista informa itens: nome, quantidade e preço OU Sem cobrança"]
+    D --> E["RECOMENDAÇÃO: sistema calcula subtotais e total"]
+    E --> F["Dentista informa horário real com fuso e solicita Concluir atendimento"]
+    F --> G{"CONFIRMED confiável, responsável, horário, evolução salva e itens ou Sem cobrança?"}
+    G -->|Não| H["Informar o ponto de correção sem concluir"]
+    G -->|Sim| I["RECOMENDAÇÃO: gravar COMPLETED, realização e encaminhamento numa operação consistente"]
+    I --> J{"Gravação confirmada?"}
+    J -->|Não ou resposta perdida| K["Tratar falha ou consultar estado persistido; fluxo 2C"]
+    J -->|Sim| L["Recepção recebe somente identificação e itens administrativos"]
+    L --> M{"Sem cobrança?"}
+    M -->|Sim| N["Identificar Sem cobrança sem inventar recebimento"]
+    M -->|Não| O["Seguir para pagamento externo; fluxo 5"]
+    J -->|Sim| P["Dentista consulta realizadas; prontuário exige acesso válido"]

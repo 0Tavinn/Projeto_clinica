@@ -101,6 +101,52 @@ export type PatientPayload = {
   address: string | null
 }
 
+export type MedicalRecord = {
+  id: number
+  patient_id: number
+  general_notes: string | null
+  opened_at: string
+  updated_at: string
+}
+
+export type EvolutionStatus = 'DRAFT' | 'FINALIZED'
+
+export type EvolutionDentist = {
+  id: number
+  full_name: string
+  cro_number: string
+  cro_state: string
+}
+
+export type ClinicalEvolution = {
+  id: number
+  medical_record_id: number
+  status: EvolutionStatus
+  description: string
+  procedure_performed: string | null
+  notes: string | null
+  appointment_id: number | null
+  recorded_at: string
+  finalized_at: string | null
+  created_at: string
+  dentist: EvolutionDentist
+}
+
+export type EvolutionDraftPayload = {
+  patient_id: number
+  description: string
+  procedure_performed: string | null
+  notes: string | null
+  appointment_id: number | null
+}
+
+// A API ignora campos nulos na edição; uma string vazia é o que limpa um campo opcional.
+export type EvolutionUpdatePayload = {
+  description: string
+  procedure_performed: string
+  notes: string
+}
+
 type TokenPair = {
   access_token: string
   refresh_token: string
@@ -366,4 +412,27 @@ export const appointmentsApi = {
       body: JSON.stringify({ status }),
     },
   ),
+}
+
+// Rotas restritas a dentistas. O prontuário é aberto pela API na primeira consulta,
+// e a listagem de evoluções responde 404 enquanto ele não existir.
+export const recordsApi = {
+  getOrOpen: (patientId: number) => apiRequest<MedicalRecord>(`/patients/${patientId}/record`),
+  listEvolutions: (patientId: number) => apiRequest<ClinicalEvolution[]>(
+    `/patients/${patientId}/evolutions`,
+  ),
+  createDraft: (payload: EvolutionDraftPayload) => apiRequest<ClinicalEvolution>('/patients/evolutions', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+  updateDraft: (id: number, payload: EvolutionUpdatePayload) => apiRequest<ClinicalEvolution>(
+    `/patients/evolutions/${id}/draft`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    },
+  ),
+  finalize: (id: number) => apiRequest<ClinicalEvolution>(`/patients/evolutions/${id}/finalize`, {
+    method: 'POST',
+  }),
 }

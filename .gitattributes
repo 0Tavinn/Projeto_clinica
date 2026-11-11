@@ -1,0 +1,3 @@
+# Fontes documentais em texto; PDFs recebem tratamento binário no Git.
+docs/** text=auto
+docs/**/*.pdf binary

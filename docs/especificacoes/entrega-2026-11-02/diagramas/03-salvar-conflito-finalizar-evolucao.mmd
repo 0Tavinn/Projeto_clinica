@@ -1,0 +1,13 @@
+flowchart TD
+    A["Dentista abre rascunho próprio e recebe version"] --> B["Edita e envia campos com a versão lida"]
+    B --> C["ATUAL/LOCAL: verificar autorização, autoria, DRAFT e versão sob bloqueio"]
+    C --> D{"Resultado da validação?"}
+    D -->|Sem autorização| E["Negar sem gravar nem expor conteúdo"]
+    D -->|Já finalizada| F["Bloquear edição comum; retificação é PENDENTE"]
+    D -->|Versão antiga| G["HTTP 409; preservar texto digitado e pedir revisão/recarga"]
+    D -->|Falha técnica| H["Não mostrar sucesso; recuperar estado antes de repetir"]
+    D -->|Versão atual| I["Salvar e incrementar version; só então confirmar"]
+    I --> J{"Dentista decide finalizar evolução?"}
+    J -->|Não| K["Manter DRAFT; conclusão da consulta é ação distinta"]
+    J -->|Sim| L["Finalizar explicitamente: FINALIZED sem edição comum"]
+    L --> M["Não concluir consulta nem registrar pagamento automaticamente"]

@@ -1,0 +1,11 @@
+flowchart TD
+    A["Dentista entra na conta principal"] --> B["Apresenta credencial temporária e nova senha clínica"]
+    B --> C["Sistema verifica alvo, clínica, finalidade, prazo e consumo"]
+    C --> D{"Credencial válida e ainda não usada?"}
+    D -->|Não| E["Negar e orientar nova solicitação"]
+    D -->|Sim| F["Gravar hash, consumir credencial e invalidar liberações anteriores juntos"]
+    F --> G{"Gravação confirmada?"}
+    G -->|Não| H["Informar falha sem declarar recuperação concluída"]
+    G -->|Sim| I["Nova senha desbloqueia; vínculo assistencial segue obrigatório"]
+    C -.-> J["Dois resgates simultâneos não podem usar a mesma credencial"]
+    I -.-> K["Credencial temporária não abre prontuário nem serve para login principal"]

@@ -9,7 +9,9 @@ import {
   ChevronDown,
   CircleAlert,
   CircleUserRound,
+  ClipboardPlus,
   LayoutDashboard,
+  Lock,
   LogOut,
   Menu,
   Pencil,
@@ -25,6 +27,7 @@ import {
   dentistsApi,
   getErrorMessage,
   patientsApi,
+  recordsApi,
   usersApi,
 } from './api'
 import type {
@@ -34,7 +37,10 @@ import type {
   AppointmentStatus,
   AppointmentStatusChange,
   AuthUser,
+  ClinicalEvolution,
   Dentist,
+  EvolutionStatus,
+  MedicalRecord,
   Patient,
   PatientPayload,
   UserCreatePayload,
@@ -52,6 +58,8 @@ type View =
   | 'appointment-form'
   | 'appointment'
   | 'record'
+  | 'evolution-form'
+type RecordTab = 'profile' | 'clinical'
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 type Tone = 'blue' | 'green' | 'gray' | 'red' | 'amber'
 type Toast = { message: string; tone: 'success' | 'error' }
@@ -125,6 +133,16 @@ const STATUS_ACTIONS: Record<AppointmentStatusChange, {
   },
 }
 
+const EVOLUTION_STATUS_LABELS: Record<EvolutionStatus, string> = {
+  DRAFT: 'Rascunho',
+  FINALIZED: 'Finalizada',
+}
+
+const EVOLUTION_STATUS_TONES: Record<EvolutionStatus, Tone> = {
+  DRAFT: 'amber',
+  FINALIZED: 'green',
+}
+
 const ACTIVE_APPOINTMENT_STATUSES: AppointmentStatus[] = ['SCHEDULED', 'CONFIRMED']
 // Conclusão e ausência só podem ser registradas após o início da consulta.
 const STATUSES_AFTER_START: AppointmentStatusChange[] = ['COMPLETED', 'NO_SHOW']
@@ -144,6 +162,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat('pt-BR', {
   year: 'numeric',
 })
 const SHORT_DATE_FORMAT = new Intl.DateTimeFormat('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' })
+const NUMERIC_DATE_FORMAT = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 const TIME_FORMAT = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -240,9 +259,23 @@ function hasInvalidPeriod(filters: AppointmentFilters) {
 }
 
 // Bancos sem fuso (MySQL/SQLite) devolvem horários "naive"; a API os trata como UTC.
-function appointmentStart(appointment: Appointment) {
-  const value = appointment.scheduled_at
+function parseApiDate(value: string) {
   return new Date(/(Z|[+-]\d{2}:?\d{2})$/i.test(value) ? value : `${value}Z`)
+}
+
+function formatDateTime(value: string) {
+  const date = parseApiDate(value)
+  return `${NUMERIC_DATE_FORMAT.format(date)} às ${TIME_FORMAT.format(date)}`
+}
+
+// Datas sem horário (YYYY-MM-DD) são lidas no fuso local para não voltarem um dia.
+function formatDateOnly(value: string) {
+  const date = new Date(`${value}T00:00:00`)
+  return Number.isNaN(date.getTime()) ? value : NUMERIC_DATE_FORMAT.format(date)
+}
+
+function appointmentStart(appointment: Appointment) {
+  return parseApiDate(appointment.scheduled_at)
 }
 
 function formatTimeRange(appointment: Appointment) {
@@ -260,6 +293,13 @@ function availableStatusActions(appointment: Appointment, role: UserRole) {
     STATUS_ACTIONS[status].roles.includes(role)
     && (!STATUSES_AFTER_START.includes(status) || appointmentStart(appointment) <= new Date())
   ))
+}
+
+// A listagem de evoluções exige o prontuário aberto, por isso as chamadas são sequenciais.
+async function fetchClinicalRecord(patientId: number) {
+  const record = await recordsApi.getOrOpen(patientId)
+  const evolutions = await recordsApi.listEvolutions(patientId)
+  return { record, evolutions }
 }
 
 function initials(name: string) {
@@ -288,15 +328,28 @@ export default function App() {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
   const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null)
   const [loadingAppointments, setLoadingAppointments] = useState(false)
+  const [recordTab, setRecordTab] = useState<RecordTab>('profile')
+  const [medicalRecord, setMedicalRecord] = useState<MedicalRecord | null>(null)
+  const [evolutions, setEvolutions] = useState<ClinicalEvolution[]>([])
+  const [loadingRecord, setLoadingRecord] = useState(false)
+  const [recordError, setRecordError] = useState('')
+  const [editingEvolution, setEditingEvolution] = useState<ClinicalEvolution | null>(null)
+  const [evolutionAppointment, setEvolutionAppointment] = useState<Appointment | null>(null)
+  const [completedAppointments, setCompletedAppointments] = useState<Appointment[]>([])
+  const [finalizingEvolutionId, setFinalizingEvolutionId] = useState<number | null>(null)
+  const [registeringEvolution, setRegisteringEvolution] = useState(false)
   const [toast, setToast] = useState<Toast | null>(null)
   const [authError, setAuthError] = useState('')
 
   const isAdministrator = currentUser?.role === 'ADMINISTRATOR'
+  const isDentist = currentUser?.role === 'DENTIST'
   const canDeactivatePatients = currentUser?.role === 'ADMINISTRATOR'
     || currentUser?.role === 'RECEPTIONIST'
   const canManageAppointments = currentUser?.role === 'ADMINISTRATOR'
     || currentUser?.role === 'RECEPTIONIST'
   const inAgenda = view === 'agenda'
+  const inClinicalRecord = view === 'record' && recordTab === 'clinical'
+  const inEvolutionForm = view === 'evolution-form'
 
   function notify(message: string, tone: Toast['tone'] = 'success') {
     setToast({ message, tone })
@@ -316,6 +369,13 @@ export default function App() {
     setAppointmentFilters(defaultAppointmentFilters())
     setSelectedAppointment(null)
     setEditingAppointment(null)
+    setRecordTab('profile')
+    setMedicalRecord(null)
+    setEvolutions([])
+    setRecordError('')
+    setEditingEvolution(null)
+    setEvolutionAppointment(null)
+    setCompletedAppointments([])
     setView('dashboard')
     if (message) setAuthError(message)
   }
@@ -425,6 +485,50 @@ export default function App() {
     }
   }, [currentUser?.id, inAgenda])
 
+  // O prontuário só é aberto quando o dentista entra na aba clínica, não ao ver o cadastro.
+  useEffect(() => {
+    if (!selectedPatient || !isDentist || !inClinicalRecord) return
+    let active = true
+
+    setLoadingRecord(true)
+    setRecordError('')
+    fetchClinicalRecord(selectedPatient.id)
+      .then(({ record, evolutions: items }) => {
+        if (!active) return
+        setMedicalRecord(record)
+        setEvolutions(items)
+      })
+      .catch((error) => {
+        if (active) setRecordError(handleRequestError(error))
+      })
+      .finally(() => {
+        if (active) setLoadingRecord(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [selectedPatient?.id, isDentist, inClinicalRecord])
+
+  // Consultas concluídas do paciente que podem ser vinculadas a uma nova evolução.
+  useEffect(() => {
+    if (!selectedPatient || !isDentist || !inEvolutionForm || editingEvolution) return
+    let active = true
+
+    setCompletedAppointments([])
+    appointmentsApi.list({ patient_id: selectedPatient.id, status: 'COMPLETED' })
+      .then((items) => {
+        if (active) setCompletedAppointments(items)
+      })
+      .catch((error) => {
+        if (active) handleRequestError(error)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [selectedPatient?.id, isDentist, inEvolutionForm, editingEvolution?.id])
+
   async function signIn(email: string, password: string) {
     const user = await authApi.signIn(email, password)
     setAuthError('')
@@ -487,12 +591,110 @@ export default function App() {
     }
   }
 
+  function resetClinicalRecord() {
+    setMedicalRecord(null)
+    setEvolutions([])
+    setRecordError('')
+  }
+
   async function openPatient(id: number) {
     try {
-      setSelectedPatient(await patientsApi.get(id))
+      const patient = await patientsApi.get(id)
+      resetClinicalRecord()
+      setSelectedPatient(patient)
+      setRecordTab('profile')
       setView('record')
     } catch (error) {
       handleRequestError(error)
+    }
+  }
+
+  async function reloadEvolutions() {
+    if (!selectedPatient) return
+    setEvolutions(await recordsApi.listEvolutions(selectedPatient.id))
+  }
+
+  function openEvolutionForm(evolution: ClinicalEvolution | null, appointment: Appointment | null = null) {
+    setEditingEvolution(evolution)
+    setEvolutionAppointment(appointment)
+    navigate('evolution-form')
+  }
+
+  function backToClinicalRecord() {
+    setEditingEvolution(null)
+    setEvolutionAppointment(null)
+    setRecordTab('clinical')
+    setView('record')
+  }
+
+  async function saveEvolution(values: EvolutionFormValues) {
+    if (!selectedPatient) return
+    try {
+      if (editingEvolution) {
+        await recordsApi.updateDraft(editingEvolution.id, {
+          description: values.description,
+          procedure_performed: values.procedure_performed,
+          notes: values.notes,
+        })
+        notify('Rascunho atualizado com sucesso.')
+      } else {
+        await recordsApi.createDraft({
+          patient_id: selectedPatient.id,
+          description: values.description,
+          procedure_performed: values.procedure_performed || null,
+          notes: values.notes || null,
+          appointment_id: values.appointment_id,
+        })
+        notify('Rascunho de evolução registrado com sucesso.')
+      }
+      backToClinicalRecord()
+    } catch (error) {
+      handleRequestError(error)
+      throw error
+    }
+  }
+
+  async function finalizeEvolution(evolution: ClinicalEvolution) {
+    if (finalizingEvolutionId !== null) return
+    if (!window.confirm(
+      'Após finalizar, a evolução não poderá mais ser editada nem excluída. Deseja continuar?',
+    )) return
+
+    setFinalizingEvolutionId(evolution.id)
+    try {
+      await recordsApi.finalize(evolution.id)
+      await reloadEvolutions()
+      notify('Evolução finalizada com sucesso.')
+    } catch (error) {
+      handleRequestError(error)
+    } finally {
+      setFinalizingEvolutionId(null)
+    }
+  }
+
+  // Cada consulta gera no máximo uma evolução; se já houver uma, o dentista vai direto ao prontuário.
+  async function registerEvolutionForAppointment(appointment: Appointment) {
+    if (registeringEvolution) return
+    setRegisteringEvolution(true)
+    try {
+      const patient = await patientsApi.get(appointment.patient_id)
+      const { record, evolutions: items } = await fetchClinicalRecord(patient.id)
+      setSelectedPatient(patient)
+      setMedicalRecord(record)
+      setEvolutions(items)
+      setRecordError('')
+
+      if (items.some((evolution) => evolution.appointment_id === appointment.id)) {
+        setRecordTab('clinical')
+        setView('record')
+        notify('Esta consulta já possui uma evolução registrada no prontuário.', 'error')
+        return
+      }
+      openEvolutionForm(null, appointment)
+    } catch (error) {
+      handleRequestError(error)
+    } finally {
+      setRegisteringEvolution(false)
     }
   }
 
@@ -579,6 +781,10 @@ export default function App() {
     if (nextView === 'appointment-form' && !canManageAppointments) {
       notify('Seu perfil não pode cadastrar ou alterar consultas.', 'error')
       setView('agenda')
+      return
+    }
+    if (nextView === 'evolution-form' && !isDentist) {
+      notify('Somente dentistas podem registrar evoluções clínicas.', 'error')
       return
     }
     setView(nextView)
@@ -689,10 +895,38 @@ export default function App() {
               navigate('appointment-form')
             }}
             onChangeStatus={changeAppointmentStatus}
+            registeringEvolution={registeringEvolution}
+            onRegisterEvolution={registerEvolutionForAppointment}
           />
         )}
         {view === 'record' && selectedPatient && (
-          <PatientDetails patient={selectedPatient} onBack={() => navigate('patients')} />
+          <PatientDetails
+            patient={selectedPatient}
+            showClinical={isDentist}
+            tab={recordTab}
+            record={medicalRecord?.patient_id === selectedPatient.id ? medicalRecord : null}
+            evolutions={evolutions}
+            loadingRecord={loadingRecord}
+            recordError={recordError}
+            finalizingEvolutionId={finalizingEvolutionId}
+            onTabChange={setRecordTab}
+            onBack={() => navigate('patients')}
+            onNewEvolution={() => openEvolutionForm(null)}
+            onEditEvolution={(evolution) => openEvolutionForm(evolution)}
+            onFinalizeEvolution={finalizeEvolution}
+          />
+        )}
+        {view === 'evolution-form' && selectedPatient && isDentist && (
+          <EvolutionForm
+            patient={selectedPatient}
+            initial={editingEvolution}
+            presetAppointment={evolutionAppointment}
+            appointments={completedAppointments.filter((appointment) => (
+              !evolutions.some((evolution) => evolution.appointment_id === appointment.id)
+            ))}
+            onCancel={backToClinicalRecord}
+            onSave={saveEvolution}
+          />
         )}
       </main>
       {toast && (
@@ -749,7 +983,7 @@ function Sidebar({
       <nav>
         {items.map(({ id, label, icon: Icon }) => {
           const active = id === view
-            || (id === 'patients' && ['patient-form', 'record'].includes(view))
+            || (id === 'patients' && ['patient-form', 'record', 'evolution-form'].includes(view))
             || (id === 'users' && view === 'user-form')
             || (id === 'agenda' && ['appointment-form', 'appointment'].includes(view))
           return (
@@ -936,10 +1170,15 @@ function Dashboard({
       <div className="dashboard-grid">
         <section className="panel">
           <div className="panel-heading">
-            <div><span className="eyebrow">ACESSO RÁPIDO</span><h2>Módulos da Sprint 04</h2></div>
+            <div><span className="eyebrow">ACESSO RÁPIDO</span><h2>Módulos da clínica</h2></div>
           </div>
           <div className="module-actions">
-            <Button onClick={() => onNavigate('patients')}><Users size={18} /> Gerenciar pacientes</Button>
+            <Button onClick={() => onNavigate('patients')}>
+              <Users size={18} /> {user.role === 'DENTIST' ? 'Pacientes e prontuários' : 'Gerenciar pacientes'}
+            </Button>
+            <Button variant="secondary" onClick={() => onNavigate('agenda')}>
+              <CalendarDays size={18} /> {user.role === 'DENTIST' ? 'Minha agenda' : 'Abrir agenda'}
+            </Button>
             {isAdmin && (
               <Button variant="secondary" onClick={() => onNavigate('users')}>
                 <CircleUserRound size={18} /> Gerenciar equipe
@@ -1462,7 +1701,41 @@ function FormActions({
   )
 }
 
-function PatientDetails({ patient, onBack }: { patient: Patient; onBack: () => void }) {
+function PatientDetails({
+  patient,
+  showClinical,
+  tab,
+  record,
+  evolutions,
+  loadingRecord,
+  recordError,
+  finalizingEvolutionId,
+  onTabChange,
+  onBack,
+  onNewEvolution,
+  onEditEvolution,
+  onFinalizeEvolution,
+}: {
+  patient: Patient
+  showClinical: boolean
+  tab: RecordTab
+  record: MedicalRecord | null
+  evolutions: ClinicalEvolution[]
+  loadingRecord: boolean
+  recordError: string
+  finalizingEvolutionId: number | null
+  onTabChange: (tab: RecordTab) => void
+  onBack: () => void
+  onNewEvolution: () => void
+  onEditEvolution: (evolution: ClinicalEvolution) => void
+  onFinalizeEvolution: (evolution: ClinicalEvolution) => Promise<void>
+}) {
+  const activeTab: RecordTab = showClinical ? tab : 'profile'
+  const tabs: { id: RecordTab; label: string }[] = [
+    { id: 'profile', label: 'Dados cadastrais' },
+    { id: 'clinical', label: 'Prontuário clínico' },
+  ]
+
   return (
     <>
       <button className="back-link" onClick={onBack}><ArrowLeft size={18} /> Pacientes</button>
@@ -1475,14 +1748,325 @@ function PatientDetails({ patient, onBack }: { patient: Patient; onBack: () => v
         </div>
         <span className="status-pill"><Activity size={15} /> Cadastro ativo</span>
       </section>
-      <section className="panel out-of-scope-card">
-        <span className="eyebrow">DADOS DO PACIENTE</span>
-        <h2>Cadastro integrado</h2>
-        <p>CPF: {formatCpf(patient.cpf)}</p>
-        <p>Data de nascimento: {patient.birth_date}</p>
-        <p>Endereço: {patient.address ?? 'Não informado'}</p>
+      {showClinical && (
+        <div className="tabs" role="tablist" aria-label="Seções do paciente">
+          {tabs.map(({ id, label }) => (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={activeTab === id}
+              className={activeTab === id ? 'active' : ''}
+              onClick={() => onTabChange(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+      {activeTab === 'profile' ? (
+        <section className="panel">
+          <div className="section-title">
+            <span className="section-number"><Users size={16} /></span>
+            <div><h2>Dados cadastrais</h2><p>Identificação e contato do paciente.</p></div>
+          </div>
+          <dl className="details-grid">
+            <div><dt>CPF</dt><dd>{formatCpf(patient.cpf)}</dd></div>
+            <div><dt>Data de nascimento</dt><dd>{formatDateOnly(patient.birth_date)}</dd></div>
+            <div><dt>Telefone</dt><dd>{patient.phone ? formatPhone(patient.phone) : 'Não informado'}</dd></div>
+            <div><dt>E-mail</dt><dd>{patient.email ?? 'Não informado'}</dd></div>
+            <div className="full-field"><dt>Endereço</dt><dd>{patient.address ?? 'Não informado'}</dd></div>
+          </dl>
+          {!showClinical && (
+            <p className="clinical-restricted">
+              <Lock size={15} /> O prontuário clínico é acessível somente aos dentistas da clínica.
+            </p>
+          )}
+        </section>
+      ) : (
+        <ClinicalRecord
+          record={record}
+          evolutions={evolutions}
+          loading={loadingRecord}
+          error={recordError}
+          finalizingId={finalizingEvolutionId}
+          onNew={onNewEvolution}
+          onEdit={onEditEvolution}
+          onFinalize={onFinalizeEvolution}
+        />
+      )}
+    </>
+  )
+}
+
+function pluralize(count: number, singular: string, plural: string) {
+  return `${count} ${count === 1 ? singular : plural}`
+}
+
+function ClinicalRecord({
+  record,
+  evolutions,
+  loading,
+  error,
+  finalizingId,
+  onNew,
+  onEdit,
+  onFinalize,
+}: {
+  record: MedicalRecord | null
+  evolutions: ClinicalEvolution[]
+  loading: boolean
+  error: string
+  finalizingId: number | null
+  onNew: () => void
+  onEdit: (evolution: ClinicalEvolution) => void
+  onFinalize: (evolution: ClinicalEvolution) => Promise<void>
+}) {
+  // Enquanto a lista é atualizada, o histórico já carregado continua visível.
+  if (!record) {
+    return (
+      <section className="panel">
+        <EmptyState message={loading || !error ? 'Carregando prontuário…' : error} />
+      </section>
+    )
+  }
+
+  const draftCount = evolutions.filter((evolution) => evolution.status === 'DRAFT').length
+  const summary = [
+    pluralize(evolutions.length, 'evolução', 'evoluções'),
+    draftCount ? pluralize(draftCount, 'rascunho', 'rascunhos') : '',
+  ].filter(Boolean).join(' · ')
+
+  return (
+    <div className="record-grid">
+      <section className="panel clinical-history">
+        <div className="panel-heading">
+          <div><span className="eyebrow">HISTÓRICO CLÍNICO</span><h2>Evoluções</h2></div>
+          <span className="result-count">{loading ? 'Atualizando…' : summary}</span>
+        </div>
+        {evolutions.length === 0
+          ? <EmptyState message="Nenhuma evolução registrada neste prontuário." />
+          : (
+            <div className="timeline">
+              {evolutions.map((evolution) => (
+                <EvolutionItem
+                  key={evolution.id}
+                  evolution={evolution}
+                  finalizing={finalizingId === evolution.id}
+                  onEdit={onEdit}
+                  onFinalize={onFinalize}
+                />
+              ))}
+            </div>
+          )}
+      </section>
+      <aside className="panel current-care">
+        <span className="eyebrow">PRONTUÁRIO</span>
+        <h2>Aberto em {NUMERIC_DATE_FORMAT.format(parseApiDate(record.opened_at))}</h2>
+        <p className="general-notes">{record.general_notes || 'Nenhuma observação geral registrada.'}</p>
+        <Button onClick={onNew}><ClipboardPlus size={18} /> Nova evolução</Button>
         <hr />
-        <p>Prontuário clínico e evoluções permanecem fora do escopo desta Sprint.</p>
+        <p className="record-rules">
+          Rascunhos podem ser editados pelo dentista que os registrou. Depois de finalizada,
+          a evolução fica bloqueada para alteração e exclusão.
+        </p>
+      </aside>
+    </div>
+  )
+}
+
+// A API ainda não informa se o rascunho pertence ao usuário logado. As ações aparecem em todo
+// rascunho e a API recusa (403) a alteração de registros de outro dentista.
+function EvolutionItem({
+  evolution,
+  finalizing,
+  onEdit,
+  onFinalize,
+}: {
+  evolution: ClinicalEvolution
+  finalizing: boolean
+  onEdit: (evolution: ClinicalEvolution) => void
+  onFinalize: (evolution: ClinicalEvolution) => Promise<void>
+}) {
+  const isDraft = evolution.status === 'DRAFT'
+  const footnote = [
+    evolution.appointment_id ? `Consulta nº ${evolution.appointment_id}` : '',
+    evolution.finalized_at ? `Finalizada em ${formatDateTime(evolution.finalized_at)}` : '',
+  ].filter(Boolean).join(' · ')
+
+  return (
+    <article className="timeline-item">
+      <span className={`timeline-dot ${isDraft ? 'draft' : ''}`} />
+      <div>
+        <div className="timeline-meta">
+          <small>{formatDateTime(evolution.recorded_at)}</small>
+          <span className={`role-pill ${EVOLUTION_STATUS_TONES[evolution.status]}`}>
+            {!isDraft && <Lock size={12} />} {EVOLUTION_STATUS_LABELS[evolution.status]}
+          </span>
+        </div>
+        <h3>{evolution.procedure_performed || 'Evolução clínica'}</h3>
+        <p className="timeline-text">{evolution.description}</p>
+        {evolution.notes && (
+          <p className="timeline-text timeline-notes"><b>Observações:</b> {evolution.notes}</p>
+        )}
+        {footnote && <small className="timeline-footnote">{footnote}</small>}
+        {isDraft && (
+          <div className="table-actions timeline-actions">
+            <button onClick={() => onEdit(evolution)} disabled={finalizing}><Pencil size={14} /> Editar</button>
+            <button onClick={() => void onFinalize(evolution)} disabled={finalizing}>
+              <Lock size={14} /> {finalizing ? 'Finalizando…' : 'Finalizar'}
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="timeline-doctor">
+        <b>{evolution.dentist.full_name}</b>
+        <span>CRO {evolution.dentist.cro_number}/{evolution.dentist.cro_state}</span>
+      </div>
+    </article>
+  )
+}
+
+type EvolutionFormState = {
+  description: string
+  procedure_performed: string
+  notes: string
+  appointment_id: string
+}
+
+type EvolutionFormValues = {
+  description: string
+  procedure_performed: string
+  notes: string
+  appointment_id: number | null
+}
+
+function EvolutionForm({
+  patient,
+  initial,
+  presetAppointment,
+  appointments,
+  onCancel,
+  onSave,
+}: {
+  patient: Patient
+  initial: ClinicalEvolution | null
+  presetAppointment: Appointment | null
+  appointments: Appointment[]
+  onCancel: () => void
+  onSave: (values: EvolutionFormValues) => Promise<void>
+}) {
+  const [form, setForm] = useState<EvolutionFormState>({
+    description: initial?.description ?? '',
+    procedure_performed: initial?.procedure_performed ?? '',
+    notes: initial?.notes ?? '',
+    appointment_id: presetAppointment ? String(presetAppointment.id) : '',
+  })
+  const [errors, setErrors] = useState<Partial<Record<keyof EvolutionFormState, string>>>({})
+  const [formError, setFormError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const appointmentOptions = [...appointments]
+  if (presetAppointment && !appointmentOptions.some((appointment) => appointment.id === presetAppointment.id)) {
+    appointmentOptions.push(presetAppointment)
+  }
+  appointmentOptions.sort((a, b) => appointmentStart(b).getTime() - appointmentStart(a).getTime())
+
+  function update(field: keyof EvolutionFormState, value: string) {
+    setForm((current) => ({ ...current, [field]: value }))
+    setErrors((current) => ({ ...current, [field]: undefined }))
+    setFormError('')
+  }
+
+  function validate(): EvolutionFormValues | null {
+    const description = form.description.trim()
+    if (!description) {
+      setErrors({ description: 'Descreva a evolução clínica do paciente.' })
+      return null
+    }
+    setErrors({})
+    return {
+      description,
+      procedure_performed: form.procedure_performed.trim(),
+      notes: form.notes.trim(),
+      appointment_id: form.appointment_id ? Number(form.appointment_id) : null,
+    }
+  }
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const values = validate()
+    if (!values) return
+
+    setSubmitting(true)
+    setFormError('')
+    try {
+      await onSave(values)
+    } catch (error) {
+      setFormError(getErrorMessage(error))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <button className="back-link" onClick={onCancel}><ArrowLeft size={18} /> Voltar para o prontuário</button>
+      <PageHeader
+        title={initial ? 'Editar rascunho' : 'Nova evolução'}
+        subtitle={`${patient.full_name} · Prontuário nº ${patient.medical_record_number}`}
+      />
+      <section className="panel form-panel">
+        <div className="section-title">
+          <span className="section-number">01</span>
+          <div>
+            <h2>Registro clínico</h2>
+            <p>A evolução é salva como rascunho e só fica bloqueada quando você a finalizar.</p>
+          </div>
+        </div>
+        <form className="form-grid" onSubmit={submit} noValidate>
+          <FormField label="Descrição da evolução" error={errors.description} className="full-field">
+            <textarea
+              value={form.description}
+              onChange={(event) => update('description', event.target.value)}
+              rows={6}
+            />
+          </FormField>
+          <FormField label="Procedimento realizado">
+            <input
+              value={form.procedure_performed}
+              onChange={(event) => update('procedure_performed', event.target.value)}
+            />
+          </FormField>
+          <FormField label="Consulta vinculada">
+            {initial ? (
+              // A API não permite trocar a consulta de uma evolução já registrada.
+              <input
+                value={initial.appointment_id ? `Consulta nº ${initial.appointment_id}` : 'Sem consulta vinculada'}
+                disabled
+              />
+            ) : (
+              <select value={form.appointment_id} onChange={(event) => update('appointment_id', event.target.value)}>
+                <option value="">
+                  {appointmentOptions.length ? 'Sem consulta vinculada' : 'Nenhuma consulta concluída disponível'}
+                </option>
+                {appointmentOptions.map((appointment) => (
+                  <option key={appointment.id} value={appointment.id}>
+                    {DATE_FORMAT.format(appointmentStart(appointment))} · {formatTimeRange(appointment)}
+                  </option>
+                ))}
+              </select>
+            )}
+          </FormField>
+          <FormField label="Observações" className="full-field">
+            <textarea value={form.notes} onChange={(event) => update('notes', event.target.value)} rows={4} />
+          </FormField>
+          {formError && <p className="form-error full-field" role="alert">{formError}</p>}
+          <FormActions
+            cancel={onCancel}
+            label={initial ? 'Salvar alterações' : 'Salvar rascunho'}
+            disabled={submitting}
+          />
+        </form>
       </section>
     </>
   )
@@ -1812,6 +2396,8 @@ function AppointmentDetails({
   onBack,
   onEdit,
   onChangeStatus,
+  registeringEvolution,
+  onRegisterEvolution,
 }: {
   appointment: Appointment
   user: AuthUser
@@ -1819,9 +2405,12 @@ function AppointmentDetails({
   onBack: () => void
   onEdit: (appointment: Appointment) => void
   onChangeStatus: (appointment: Appointment, status: AppointmentStatusChange) => Promise<void>
+  registeringEvolution: boolean
+  onRegisterEvolution: (appointment: Appointment) => Promise<void>
 }) {
   const statusActions = availableStatusActions(appointment, user.role)
   const editable = canManage && isActiveAppointment(appointment)
+  const canRegisterEvolution = user.role === 'DENTIST' && appointment.status === 'COMPLETED'
 
   return (
     <>
@@ -1845,10 +2434,15 @@ function AppointmentDetails({
           <div><dt>Situação</dt><dd>{APPOINTMENT_STATUS_LABELS[appointment.status]}</dd></div>
           <div className="full-field"><dt>Observações</dt><dd>{appointment.notes ?? 'Nenhuma observação registrada.'}</dd></div>
         </dl>
-        {(editable || statusActions.length > 0) && (
+        {(editable || statusActions.length > 0 || canRegisterEvolution) && (
           <div className="form-actions">
             {editable && (
               <Button variant="secondary" onClick={() => onEdit(appointment)}><Pencil size={16} /> Editar</Button>
+            )}
+            {canRegisterEvolution && (
+              <Button onClick={() => void onRegisterEvolution(appointment)} disabled={registeringEvolution}>
+                <ClipboardPlus size={16} /> {registeringEvolution ? 'Abrindo prontuário…' : 'Registrar evolução'}
+              </Button>
             )}
             {statusActions.map((status) => (
               <Button

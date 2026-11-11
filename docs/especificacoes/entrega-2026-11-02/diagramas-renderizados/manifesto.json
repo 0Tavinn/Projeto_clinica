@@ -1,0 +1,640 @@
+[
+  {
+    "source": "diagramas/01a-atendimento-acesso.mmd",
+    "svg": "diagramas-renderizados/01a-atendimento-acesso.svg",
+    "png": "diagramas-renderizados/01a-atendimento-acesso.png",
+    "width": 461,
+    "height": 2187,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 134
+      },
+      {
+        "top": 174,
+        "bottom": 326
+      },
+      {
+        "top": 366,
+        "bottom": 517
+      },
+      {
+        "top": 557,
+        "bottom": 683
+      },
+      {
+        "top": 723,
+        "bottom": 1026
+      },
+      {
+        "top": 1132,
+        "bottom": 1258
+      },
+      {
+        "top": 1132,
+        "bottom": 1384
+      },
+      {
+        "top": 1489,
+        "bottom": 1641
+      },
+      {
+        "top": 1772,
+        "bottom": 1847
+      },
+      {
+        "top": 1887,
+        "bottom": 1987
+      },
+      {
+        "top": 2027,
+        "bottom": 2179
+      }
+    ]
+  },
+  {
+    "source": "diagramas/01b-evolucao-conclusao-encaminhamento.mmd",
+    "svg": "diagramas-renderizados/01b-evolucao-conclusao-encaminhamento.svg",
+    "png": "diagramas-renderizados/01b-evolucao-conclusao-encaminhamento.png",
+    "width": 641,
+    "height": 2741,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 185
+      },
+      {
+        "top": 225,
+        "bottom": 426
+      },
+      {
+        "top": 532,
+        "bottom": 658
+      },
+      {
+        "top": 532,
+        "bottom": 709
+      },
+      {
+        "top": 749,
+        "bottom": 849
+      },
+      {
+        "top": 889,
+        "bottom": 1066
+      },
+      {
+        "top": 1106,
+        "bottom": 1435
+      },
+      {
+        "top": 1540,
+        "bottom": 1666
+      },
+      {
+        "top": 1540,
+        "bottom": 1743
+      },
+      {
+        "top": 1783,
+        "bottom": 1984
+      },
+      {
+        "top": 2109,
+        "bottom": 2261
+      },
+      {
+        "top": 2109,
+        "bottom": 2286
+      },
+      {
+        "top": 2326,
+        "bottom": 2502
+      },
+      {
+        "top": 2607,
+        "bottom": 2733
+      },
+      {
+        "top": 2607,
+        "bottom": 2708
+      },
+      {
+        "top": 2109,
+        "bottom": 2286
+      }
+    ]
+  },
+  {
+    "source": "diagramas/02a-desbloqueio-clinico.mmd",
+    "svg": "diagramas-renderizados/02a-desbloqueio-clinico.svg",
+    "png": "diagramas-renderizados/02a-desbloqueio-clinico.png",
+    "width": 780,
+    "height": 2413,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 134
+      },
+      {
+        "top": 174,
+        "bottom": 375
+      },
+      {
+        "top": 1245,
+        "bottom": 1371
+      },
+      {
+        "top": 481,
+        "bottom": 607
+      },
+      {
+        "top": 913,
+        "bottom": 1014
+      },
+      {
+        "top": 647,
+        "bottom": 873
+      },
+      {
+        "top": 1054,
+        "bottom": 1205
+      },
+      {
+        "top": 1054,
+        "bottom": 1154
+      },
+      {
+        "top": 1054,
+        "bottom": 1205
+      },
+      {
+        "top": 1411,
+        "bottom": 1663
+      },
+      {
+        "top": 1769,
+        "bottom": 1946
+      },
+      {
+        "top": 1781,
+        "bottom": 1933
+      },
+      {
+        "top": 1986,
+        "bottom": 2214
+      },
+      {
+        "top": 2254,
+        "bottom": 2405
+      }
+    ]
+  },
+  {
+    "source": "diagramas/02b-cancelamento-perda-acesso.mmd",
+    "svg": "diagramas-renderizados/02b-cancelamento-perda-acesso.svg",
+    "png": "diagramas-renderizados/02b-cancelamento-perda-acesso.png",
+    "width": 360,
+    "height": 1291,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 160
+      },
+      {
+        "top": 200,
+        "bottom": 326
+      },
+      {
+        "top": 366,
+        "bottom": 517
+      },
+      {
+        "top": 557,
+        "bottom": 860
+      },
+      {
+        "top": 966,
+        "bottom": 1117
+      },
+      {
+        "top": 991,
+        "bottom": 1092
+      },
+      {
+        "top": 1157,
+        "bottom": 1283
+      },
+      {
+        "top": 1157,
+        "bottom": 1283
+      }
+    ]
+  },
+  {
+    "source": "diagramas/02c-falha-reenvio-conclusao.mmd",
+    "svg": "diagramas-renderizados/02c-falha-reenvio-conclusao.svg",
+    "png": "diagramas-renderizados/02c-falha-reenvio-conclusao.png",
+    "width": 621,
+    "height": 1240,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 134
+      },
+      {
+        "top": 174,
+        "bottom": 375
+      },
+      {
+        "top": 493,
+        "bottom": 645
+      },
+      {
+        "top": 698,
+        "bottom": 875
+      },
+      {
+        "top": 506,
+        "bottom": 632
+      },
+      {
+        "top": 698,
+        "bottom": 950
+      },
+      {
+        "top": 1055,
+        "bottom": 1181
+      },
+      {
+        "top": 1055,
+        "bottom": 1232
+      },
+      {
+        "top": 481,
+        "bottom": 658
+      }
+    ]
+  },
+  {
+    "source": "diagramas/03-salvar-conflito-finalizar-evolucao.mmd",
+    "svg": "diagramas-renderizados/03-salvar-conflito-finalizar-evolucao.svg",
+    "png": "diagramas-renderizados/03-salvar-conflito-finalizar-evolucao.png",
+    "width": 1038,
+    "height": 1733,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 134
+      },
+      {
+        "top": 174,
+        "bottom": 275
+      },
+      {
+        "top": 315,
+        "bottom": 492
+      },
+      {
+        "top": 532,
+        "bottom": 733
+      },
+      {
+        "top": 858,
+        "bottom": 959
+      },
+      {
+        "top": 858,
+        "bottom": 984
+      },
+      {
+        "top": 858,
+        "bottom": 1010
+      },
+      {
+        "top": 858,
+        "bottom": 1010
+      },
+      {
+        "top": 871,
+        "bottom": 997
+      },
+      {
+        "top": 1050,
+        "bottom": 1276
+      },
+      {
+        "top": 1382,
+        "bottom": 1533
+      },
+      {
+        "top": 1382,
+        "bottom": 1533
+      },
+      {
+        "top": 1573,
+        "bottom": 1725
+      }
+    ]
+  },
+  {
+    "source": "diagramas/04a-solicitar-recuperacao.mmd",
+    "svg": "diagramas-renderizados/04a-solicitar-recuperacao.svg",
+    "png": "diagramas-renderizados/04a-solicitar-recuperacao.png",
+    "width": 456,
+    "height": 1764,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 160
+      },
+      {
+        "top": 200,
+        "bottom": 351
+      },
+      {
+        "top": 391,
+        "bottom": 592
+      },
+      {
+        "top": 698,
+        "bottom": 798
+      },
+      {
+        "top": 698,
+        "bottom": 900
+      },
+      {
+        "top": 940,
+        "bottom": 1066
+      },
+      {
+        "top": 1106,
+        "bottom": 1258
+      },
+      {
+        "top": 1298,
+        "bottom": 1499
+      },
+      {
+        "top": 1604,
+        "bottom": 1756
+      },
+      {
+        "top": 1604,
+        "bottom": 1756
+      }
+    ]
+  },
+  {
+    "source": "diagramas/04b-resgatar-senha-clinica.mmd",
+    "svg": "diagramas-renderizados/04b-resgatar-senha-clinica.svg",
+    "png": "diagramas-renderizados/04b-resgatar-senha-clinica.png",
+    "width": 494,
+    "height": 1840,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 109
+      },
+      {
+        "top": 149,
+        "bottom": 300
+      },
+      {
+        "top": 340,
+        "bottom": 517
+      },
+      {
+        "top": 557,
+        "bottom": 784
+      },
+      {
+        "top": 889,
+        "bottom": 990
+      },
+      {
+        "top": 889,
+        "bottom": 1092
+      },
+      {
+        "top": 1132,
+        "bottom": 1333
+      },
+      {
+        "top": 1438,
+        "bottom": 1564
+      },
+      {
+        "top": 1438,
+        "bottom": 1615
+      },
+      {
+        "top": 557,
+        "bottom": 709
+      },
+      {
+        "top": 1655,
+        "bottom": 1832
+      }
+    ]
+  },
+  {
+    "source": "diagramas/05-pagamento-externo.mmd",
+    "svg": "diagramas-renderizados/05-pagamento-externo.svg",
+    "png": "diagramas-renderizados/05-pagamento-externo.png",
+    "width": 744,
+    "height": 2880,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 109
+      },
+      {
+        "top": 149,
+        "bottom": 375
+      },
+      {
+        "top": 481,
+        "bottom": 581
+      },
+      {
+        "top": 481,
+        "bottom": 607
+      },
+      {
+        "top": 647,
+        "bottom": 848
+      },
+      {
+        "top": 953,
+        "bottom": 1105
+      },
+      {
+        "top": 953,
+        "bottom": 1205
+      },
+      {
+        "top": 1311,
+        "bottom": 1462
+      },
+      {
+        "top": 1328,
+        "bottom": 1454
+      },
+      {
+        "top": 1566,
+        "bottom": 1692
+      },
+      {
+        "top": 1796,
+        "bottom": 1997
+      },
+      {
+        "top": 2274,
+        "bottom": 2400
+      },
+      {
+        "top": 2274,
+        "bottom": 2400
+      },
+      {
+        "top": 2274,
+        "bottom": 2400
+      },
+      {
+        "top": 2440,
+        "bottom": 2641
+      },
+      {
+        "top": 2746,
+        "bottom": 2847
+      },
+      {
+        "top": 2746,
+        "bottom": 2847
+      },
+      {
+        "top": 2746,
+        "bottom": 2872
+      },
+      {
+        "top": 647,
+        "bottom": 773
+      },
+      {
+        "top": 1502,
+        "bottom": 1756
+      },
+      {
+        "top": 2057,
+        "bottom": 2234
+      }
+    ]
+  },
+  {
+    "source": "diagramas/06-correcao-administrativa-servicos.mmd",
+    "svg": "diagramas-renderizados/06-correcao-administrativa-servicos.svg",
+    "png": "diagramas-renderizados/06-correcao-administrativa-servicos.png",
+    "width": 817,
+    "height": 3730,
+    "nodes": [
+      {
+        "top": 8,
+        "bottom": 134
+      },
+      {
+        "top": 174,
+        "bottom": 375
+      },
+      {
+        "top": 2051,
+        "bottom": 2126
+      },
+      {
+        "top": 481,
+        "bottom": 581
+      },
+      {
+        "top": 621,
+        "bottom": 822
+      },
+      {
+        "top": 928,
+        "bottom": 1130
+      },
+      {
+        "top": 953,
+        "bottom": 1105
+      },
+      {
+        "top": 1170,
+        "bottom": 1271
+      },
+      {
+        "top": 1311,
+        "bottom": 1437
+      },
+      {
+        "top": 1502,
+        "bottom": 1654
+      },
+      {
+        "top": 1719,
+        "bottom": 1946
+      },
+      {
+        "top": 2051,
+        "bottom": 2252
+      },
+      {
+        "top": 2358,
+        "bottom": 2509
+      },
+      {
+        "top": 2370,
+        "bottom": 2496
+      },
+      {
+        "top": 2549,
+        "bottom": 2725
+      },
+      {
+        "top": 2830,
+        "bottom": 2931
+      },
+      {
+        "top": 2830,
+        "bottom": 3084
+      },
+      {
+        "top": 3124,
+        "bottom": 3325
+      },
+      {
+        "top": 3430,
+        "bottom": 3556
+      },
+      {
+        "top": 3430,
+        "bottom": 3556
+      },
+      {
+        "top": 3430,
+        "bottom": 3531
+      },
+      {
+        "top": 3596,
+        "bottom": 3722
+      },
+      {
+        "top": 1477,
+        "bottom": 1679
+      },
+      {
+        "top": 174,
+        "bottom": 351
+      }
+    ]
+  }
+]

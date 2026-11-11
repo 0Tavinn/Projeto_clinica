@@ -34,6 +34,14 @@ class AppointmentTimeConflictError(ConflictError):
     code = "APPOINTMENT_TIME_CONFLICT"
     default_message = "O dentista já possui uma consulta agendada nesse período."
 
+class AppointmentParticipantConflictError(ConflictError):
+    """A evidência clínica impede trocar os participantes da consulta."""
+
+    code = "APPOINTMENT_PARTICIPANT_CONFLICT"
+    default_message = (
+        "A consulta possui evidência clínica; a troca de participantes "
+        "exige correção controlada."
+    )
 
 class ValidationAppError(AppError):
     """Erros de validação de regra de negócio (não de schema/Pydantic)."""

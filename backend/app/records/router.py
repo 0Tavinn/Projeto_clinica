@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -16,14 +16,26 @@ from app.records.service import RecordService
 router = APIRouter(prefix="/patients", tags=["Medical Records & Evolutions"])
 
 @router.get("/{patient_id}/record", response_model=MedicalRecordResponse)
-def get_or_open_medical_record(
+def get_medical_record(
     patient_id: int, 
     current_user: CurrentUser, 
     db: Session = Depends(get_db)
 ):
     # O RecordService faz o bloqueio de Admin/Recepcionista logo ao instanciar
     service = RecordService(db, current_user)
-    return service.get_or_create_medical_record(patient_id)
+    return service.get_medical_record(patient_id)
+
+
+@router.post("/{patient_id}/record", response_model=MedicalRecordResponse)
+def open_medical_record(
+    patient_id: int,
+    response: Response,
+    current_user: CurrentUser,
+    db: Session = Depends(get_db),
+):
+    record, created = RecordService(db, current_user).open_medical_record(patient_id)
+    response.status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+    return record
 
 
 @router.get("/{patient_id}/evolutions", response_model=List[ClinicalEvolutionResponse])

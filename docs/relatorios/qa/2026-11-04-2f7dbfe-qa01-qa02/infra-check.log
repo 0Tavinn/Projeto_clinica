@@ -1,0 +1,7 @@
+Docker version 29.9.2, build a82e528
+Docker Compose version v5.6.1
+
+permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+<3>WSL (198 - ) ERROR: UtilBindVsockAnyPort:309: socket failed 1
+Ver Cluster Port Status Owner  Data directory              Log file
+18  main    5432 down   nobody /var/lib/postgresql/18/main /var/log/postgresql/postgresql-18-main.log
