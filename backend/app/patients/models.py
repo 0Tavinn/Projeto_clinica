@@ -2,7 +2,7 @@
 import datetime
 
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String, Text, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 
@@ -43,4 +43,8 @@ class Patient(Base):
         DateTime(timezone=True),
         nullable=False,
         server_default=func.now(),
+    )
+    medical_record: Mapped["MedicalRecord | None"] = relationship(
+        back_populates="patient",
+        uselist=False,
     )

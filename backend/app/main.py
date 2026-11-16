@@ -10,11 +10,9 @@ estabelecida em `app/users`.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.records.router import router as records_router
-app.include_router(records_router)
-
 from app.common.error_handlers import register_exception_handlers
 from app.core.config import get_settings
+from app.records.router import router as records_router
 from app.users.router import router as users_router
 from app.users.management_router import router as user_management_router
 from app.patients.router import router as patients_router
@@ -35,6 +33,8 @@ app = FastAPI(
         "necessária antes de produção)."
     ),
 )
+
+app.include_router(records_router, prefix=settings.API_V1_PREFIX)
 
 # CORS: origens configuráveis por ambiente via CORS_ORIGINS (.env). Em
 # development, se vazio, nenhuma origem cross-site é liberada por padrão —
@@ -59,4 +59,3 @@ app.include_router(dentists_router, prefix=settings.API_V1_PREFIX)
 def health_check() -> dict:
     """Endpoint simples de liveness, sem dependência de banco (Fase 1)."""
     return {"status": "ok", "app": settings.APP_NAME, "environment": settings.ENVIRONMENT}
-

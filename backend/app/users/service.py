@@ -2,20 +2,21 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.common.exceptions import UnauthorizedError, ValidationAppError
+from app.common.exceptions import ForbiddenError, UnauthorizedError, ValidationAppError
 from app.dentists.models import Dentist
 from app.security.roles import Role
 from app.security.auth import (
     REFRESH_TOKEN_TYPE,
     authenticate_user,
     create_access_token,
+    create_clinical_access_token,
     create_refresh_token,
     decode_token,
 )
-from app.security.hashing import hash_password
+from app.security.hashing import hash_password, verify_password
 from app.users.models import Clinic, User
 from app.users.repository import UserRepository
-from app.users.schemas import Token, UserCreate
+from app.users.schemas import ClinicalAccessToken, Token, UserCreate
 
 
 def list_users_by_clinic(db: Session, clinic_id: int) -> list[User]:
@@ -52,6 +53,26 @@ def refresh_access_token(db: Session, refresh_token: str) -> Token:
     )
 
 
+def unlock_clinical_records(
+    db: Session,
+    *,
+    user: User,
+    clinical_password: str,
+) -> ClinicalAccessToken:
+    if user.role is not Role.DENTIST:
+        raise ForbiddenError("Somente dentistas podem acessar prontuários.")
+    if not user.clinical_password_hash:
+        raise UnauthorizedError("A senha do prontuário ainda não foi configurada.")
+    if not verify_password(clinical_password, user.clinical_password_hash):
+        raise UnauthorizedError("Senha do prontuário inválida.")
+    if user.dentist is None:
+        raise ForbiddenError("O perfil profissional do dentista não foi configurado.")
+
+    expires_in = 15 * 60
+    token = create_clinical_access_token(user)
+    return ClinicalAccessToken(access_token=token, expires_in=expires_in)
+
+
 def create_user(
     db: Session,
     *,
@@ -76,6 +97,11 @@ def create_user(
         full_name=payload.full_name.strip(),
         email=str(payload.email).lower(),
         password_hash=hash_password(payload.password),
+        clinical_password_hash=(
+            hash_password(payload.clinical_password)
+            if payload.role is Role.DENTIST and payload.clinical_password
+            else None
+        ),
         cpf=payload.cpf,
         phone=payload.phone,
         role=payload.role,

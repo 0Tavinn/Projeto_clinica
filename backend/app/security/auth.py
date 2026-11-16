@@ -28,6 +28,7 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 ACCESS_TOKEN_TYPE = "access"
 REFRESH_TOKEN_TYPE = "refresh"
+CLINICAL_ACCESS_TOKEN_TYPE = "clinical_access"
 
 
 def _create_token(*, subject: int, role: Role, clinic_id: int, token_type: str, expires_delta: datetime.timedelta) -> str:
@@ -60,6 +61,16 @@ def create_refresh_token(user: User) -> str:
         clinic_id=user.clinic_id,
         token_type=REFRESH_TOKEN_TYPE,
         expires_delta=datetime.timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES),
+    )
+
+
+def create_clinical_access_token(user: User) -> str:
+    return _create_token(
+        subject=user.id,
+        role=user.role,
+        clinic_id=user.clinic_id,
+        token_type=CLINICAL_ACCESS_TOKEN_TYPE,
+        expires_delta=datetime.timedelta(minutes=15),
     )
 
 
@@ -131,3 +142,31 @@ def get_current_user(
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+clinical_oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_PREFIX}/auth/clinical-access",
+    auto_error=False,
+)
+
+
+def get_clinical_user(
+    db: Annotated[Session, Depends(get_db)],
+    token: Annotated[str | None, Depends(clinical_oauth2_scheme)],
+) -> User:
+    if token is None:
+        raise UnauthorizedError("Confirmação adicional do prontuário não informada.")
+
+    payload = decode_token(token)
+    if payload.get("type") != CLINICAL_ACCESS_TOKEN_TYPE:
+        raise UnauthorizedError("Token de prontuário inválido.")
+
+    user_id = payload.get("sub")
+    user = UserRepository(db).get_by_id(user_id) if user_id else None
+    if user is None or not user.is_active:
+        raise UnauthorizedError("Usuário do prontuário não encontrado.")
+    if user.role is not Role.DENTIST or user.dentist is None:
+        raise UnauthorizedError("Token sem permissão para prontuários.")
+    return user
+
+
+ClinicalUser = Annotated[User, Depends(get_clinical_user)]

@@ -25,6 +25,7 @@ class UserCreate(BaseModel):
     full_name: str = Field(min_length=1, max_length=150)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
+    clinical_password: str | None = Field(default=None, min_length=8, max_length=128)
     cpf: str = Field(
         min_length=11,
         max_length=11,
@@ -47,6 +48,8 @@ class UserCreate(BaseModel):
         if self.role is Role.DENTIST:
             if not self.cro_number or not self.cro_state:
                 raise ValueError("Dentistas devem informar número e UF do CRO.")
+            if not self.clinical_password:
+                raise ValueError("Dentistas devem informar a senha do prontuário.")
         elif any((self.cro_number, self.cro_state, self.specialty)):
             raise ValueError("Dados profissionais são permitidos somente para dentistas.")
         return self
@@ -54,6 +57,16 @@ class UserCreate(BaseModel):
 
 class RefreshRequest(BaseModel):
     refresh_token: str
+
+
+class ClinicalAccessRequest(BaseModel):
+    clinical_password: str = Field(min_length=1, max_length=128)
+
+
+class ClinicalAccessToken(BaseModel):
+    access_token: str
+    token_type: str = "clinical"
+    expires_in: int
 
 
 class Token(BaseModel):
