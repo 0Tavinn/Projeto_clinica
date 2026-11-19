@@ -31,7 +31,7 @@ class Dentist(Base):
     updated_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
-    user: Mapped[User] = relationship(lazy="joined")
+    user: Mapped[User] = relationship(back_populates="dentist", lazy="joined")
 
     @property
     def full_name(self) -> str:

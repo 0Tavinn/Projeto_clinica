@@ -25,6 +25,7 @@ from app.appointments.models import Appointment, AppointmentStatus
 from app.core.database import SessionLocal
 from app.dentists.models import Dentist
 from app.patients.models import Patient
+from app.records import models as record_models  # noqa: F401
 from app.security.hashing import hash_password
 from app.security.roles import Role
 from app.users.models import Clinic, User
@@ -159,6 +160,11 @@ def get_or_create_dentist(
         phone=phone,
         role=Role.DENTIST,
     )
+    if user.clinical_password_hash is None:
+        user.clinical_password_hash = hash_password(
+            os.getenv("SEED_CLINICAL_PASSWORD", "Prontuario@123")
+        )
+        db.commit()
 
     dentist = db.execute(
         select(Dentist).where(Dentist.user_id == user.id)

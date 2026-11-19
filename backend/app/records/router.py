@@ -3,12 +3,12 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.core.database import get_db
-from app.security.auth import CurrentUser
+from app.security.auth import ClinicalUser
 
 from app.records.schemas import (
-    MedicalRecordResponse, 
-    ClinicalEvolutionResponse, 
-    ClinicalEvolutionDraftCreate, 
+    MedicalRecordResponse,
+    ClinicalEvolutionResponse,
+    ClinicalEvolutionDraftCreate,
     ClinicalEvolutionUpdate
 )
 from app.records.service import RecordService
@@ -17,8 +17,8 @@ router = APIRouter(prefix="/patients", tags=["Medical Records & Evolutions"])
 
 @router.get("/{patient_id}/record", response_model=MedicalRecordResponse)
 def get_or_open_medical_record(
-    patient_id: int, 
-    current_user: CurrentUser, 
+    patient_id: int,
+    current_user: ClinicalUser,
     db: Session = Depends(get_db)
 ):
     # O RecordService faz o bloqueio de Admin/Recepcionista logo ao instanciar
@@ -28,8 +28,8 @@ def get_or_open_medical_record(
 
 @router.get("/{patient_id}/evolutions", response_model=List[ClinicalEvolutionResponse])
 def list_clinical_evolutions(
-    patient_id: int, 
-    current_user: CurrentUser, 
+    patient_id: int,
+    current_user: ClinicalUser,
     db: Session = Depends(get_db)
 ):
     service = RecordService(db, current_user)
@@ -38,8 +38,8 @@ def list_clinical_evolutions(
 
 @router.post("/evolutions", response_model=ClinicalEvolutionResponse, status_code=status.HTTP_201_CREATED)
 def create_evolution_draft(
-    data: ClinicalEvolutionDraftCreate, 
-    current_user: CurrentUser, 
+    data: ClinicalEvolutionDraftCreate,
+    current_user: ClinicalUser,
     db: Session = Depends(get_db)
 ):
     service = RecordService(db, current_user)
@@ -49,9 +49,9 @@ def create_evolution_draft(
 
 @router.patch("/evolutions/{evolution_id}/draft", response_model=ClinicalEvolutionResponse)
 def update_evolution_draft(
-    evolution_id: int, 
-    data: ClinicalEvolutionUpdate, 
-    current_user: CurrentUser, 
+    evolution_id: int,
+    data: ClinicalEvolutionUpdate,
+    current_user: ClinicalUser,
     db: Session = Depends(get_db)
 ):
     service = RecordService(db, current_user)
@@ -60,8 +60,8 @@ def update_evolution_draft(
 
 @router.post("/evolutions/{evolution_id}/finalize", response_model=ClinicalEvolutionResponse)
 def finalize_evolution(
-    evolution_id: int, 
-    current_user: CurrentUser, 
+    evolution_id: int,
+    current_user: ClinicalUser,
     db: Session = Depends(get_db)
 ):
     service = RecordService(db, current_user)
