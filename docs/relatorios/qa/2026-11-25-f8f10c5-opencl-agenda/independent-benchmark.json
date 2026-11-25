@@ -1,0 +1,87 @@
+{
+  "runtime": {
+    "platform": "Portable Computing Language",
+    "device": "cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H",
+    "device_type": "ALL | CPU",
+    "driver": "6.0+debian",
+    "opencl": "OpenCL 3.0 PoCL HSTR: cpu-x86_64-pc-linux-gnu-haswell",
+    "pyopencl": "2025.2.7",
+    "numpy": "2.2.6"
+  },
+  "initialization_ns": 1242417980,
+  "scope": "comparador; exclui SQL/HTTP/rede; cache do driver pode existir",
+  "measurements": [
+    {
+      "count": 0,
+      "requested_engine": "sequential",
+      "engine": "sequential",
+      "batch_size": 4096,
+      "total_median_ns": 2886,
+      "kernel_median_ns": 0,
+      "repetitions": 5
+    },
+    {
+      "count": 0,
+      "requested_engine": "auto",
+      "engine": "sequential",
+      "batch_size": 4096,
+      "total_median_ns": 1511,
+      "kernel_median_ns": 0,
+      "repetitions": 5
+    },
+    {
+      "count": 32,
+      "requested_engine": "sequential",
+      "engine": "sequential",
+      "batch_size": 4096,
+      "total_median_ns": 4749,
+      "kernel_median_ns": 0,
+      "repetitions": 5
+    },
+    {
+      "count": 32,
+      "requested_engine": "auto",
+      "engine": "opencl",
+      "batch_size": 4096,
+      "total_median_ns": 914514,
+      "kernel_median_ns": 3604,
+      "repetitions": 5
+    },
+    {
+      "count": 4096,
+      "requested_engine": "sequential",
+      "engine": "sequential",
+      "batch_size": 4096,
+      "total_median_ns": 177614,
+      "kernel_median_ns": 0,
+      "repetitions": 5
+    },
+    {
+      "count": 4096,
+      "requested_engine": "auto",
+      "engine": "opencl",
+      "batch_size": 4096,
+      "total_median_ns": 1921062,
+      "kernel_median_ns": 51549,
+      "repetitions": 5
+    },
+    {
+      "count": 65536,
+      "requested_engine": "sequential",
+      "engine": "sequential",
+      "batch_size": 4096,
+      "total_median_ns": 3342075,
+      "kernel_median_ns": 0,
+      "repetitions": 5
+    },
+    {
+      "count": 65536,
+      "requested_engine": "auto",
+      "engine": "opencl",
+      "batch_size": 4096,
+      "total_median_ns": 43976108,
+      "kernel_median_ns": 1431625,
+      "repetitions": 5
+    }
+  ]
+}

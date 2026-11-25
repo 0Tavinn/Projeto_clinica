@@ -1,0 +1,18 @@
+ .env.example                                       |  10 +
+ .gitignore                                         |   9 +-
+ README.md                                          |  24 +--
+ backend/.dockerignore                              |   9 +
+ backend/Dockerfile                                 |  31 +--
+ backend/scripts/check_database.py                  |  87 ++++++++
+ compose.yml                                        |  57 +++++
+ docs/ambiente-desenvolvimento.md                   | 176 ++++++++++++++++
+ ...6-11-24-organizacao-ambiente-desenvolvimento.md | 233 +++++++++++++++++++++
+ frontend/.dockerignore                             |   4 +
+ frontend/Dockerfile                                |  13 ++
+ frontend/nginx.conf                                |  19 ++
+ scripts/dev.py                                     |  85 ++++++++
+ scripts/dev_backup.py                              | 101 +++++++++
+ scripts/dev_support.py                             | 112 ++++++++++
+ scripts/setup_dev.py                               |  30 +++
+ scripts/verify_dev.py                              | 101 +++++++++
+ 17 files changed, 1066 insertions(+), 35 deletions(-)

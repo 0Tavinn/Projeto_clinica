@@ -1,0 +1,56 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load remote build context
+#1 DONE 0.0s
+
+#2 copy /context /
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.2s
+
+#5 [1/9] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#5 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#5 DONE 0.0s
+
+#6 [3/9] WORKDIR /app
+#6 CACHED
+
+#7 [5/9] COPY app ./app
+#7 CACHED
+
+#8 [2/9] RUN apt-get update && apt-get install -y --no-install-recommends pocl-opencl-icd ocl-icd-libopencl1     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [6/9] COPY alembic ./alembic
+#9 CACHED
+
+#10 [7/9] COPY scripts ./scripts
+#10 CACHED
+
+#11 [8/9] RUN python -m pip install .
+#11 CACHED
+
+#12 [4/9] COPY pyproject.toml README.md alembic.ini ./
+#12 CACHED
+
+#13 [9/9] RUN useradd --create-home appuser
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 exporting manifest sha256:8407394db597c8ae46903766ee49d92cacb15c90074ef7369d7cb7b55619fc9c 0.0s done
+#14 exporting config sha256:141b818f578c86750ef7ecf6659e03a175aaaec4e5f5a5705b9896aeadf6764c 0.0s done
+#14 exporting attestation manifest sha256:82578e6b4841a43f64f24fdf4e3c4eb6c49dcb827d3acc5c71e51a73afdefa8f
+#14 exporting attestation manifest sha256:82578e6b4841a43f64f24fdf4e3c4eb6c49dcb827d3acc5c71e51a73afdefa8f 0.0s done
+#14 exporting manifest list sha256:7c64012a41bb5fc396129d54c4eb528a9ccb25215f7b2349c01e2b5dc6f8d2be 0.0s done
+#14 naming to docker.io/library/lumina-perf-app:perf-b7c5a50f667c done
+#14 unpacking to docker.io/library/lumina-perf-app:perf-b7c5a50f667c
+#14 unpacking to docker.io/library/lumina-perf-app:perf-b7c5a50f667c 5.4s done
+#14 DONE 5.5s

@@ -1,0 +1,224 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load remote build context
+#1 DONE 0.1s
+
+#2 copy /context /
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.2s
+
+#5 [1/9] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#5 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#5 DONE 0.0s
+
+#6 [2/9] RUN apt-get update && apt-get install -y --no-install-recommends pocl-opencl-icd ocl-icd-libopencl1     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [3/9] WORKDIR /app
+#7 CACHED
+
+#8 [4/9] COPY pyproject.toml README.md alembic.ini ./
+#8 CACHED
+
+#9 [5/9] COPY app ./app
+#9 DONE 0.0s
+
+#10 [6/9] COPY alembic ./alembic
+#10 DONE 0.0s
+
+#11 [7/9] COPY scripts ./scripts
+#11 DONE 0.0s
+
+#12 [8/9] RUN python -m pip install .
+#12 2.900 Processing /app
+#12 2.908   Installing build dependencies: started
+#12 6.458   Installing build dependencies: finished with status 'done'
+#12 6.459   Getting requirements to build wheel: started
+#12 7.432   Getting requirements to build wheel: finished with status 'done'
+#12 7.435   Preparing metadata (pyproject.toml): started
+#12 8.280   Preparing metadata (pyproject.toml): finished with status 'done'
+#12 9.184 Collecting numpy==2.2.6 (from dental-clinic-api==0.1.0)
+#12 9.278   Downloading numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (62 kB)
+#12 9.639 Collecting pyopencl==2025.2.7 (from dental-clinic-api==0.1.0)
+#12 9.669   Downloading pyopencl-2025.2.7-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (4.7 kB)
+#12 9.808 Collecting fastapi==0.141.1 (from dental-clinic-api==0.1.0)
+#12 9.831   Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+#12 9.928 Collecting uvicorn==0.52.4 (from uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 9.971   Downloading uvicorn-0.52.4-py3-none-any.whl.metadata (6.6 kB)
+#12 10.77 Collecting sqlalchemy==2.0.52 (from dental-clinic-api==0.1.0)
+#12 10.80   Downloading sqlalchemy-2.0.52-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.6 kB)
+#12 10.89 Collecting alembic==1.19.1 (from dental-clinic-api==0.1.0)
+#12 10.92   Downloading alembic-1.19.1-py3-none-any.whl.metadata (7.3 kB)
+#12 10.97 Collecting psycopg[binary] (from dental-clinic-api==0.1.0)
+#12 10.99   Downloading psycopg-3.3.9-py3-none-any.whl.metadata (4.4 kB)
+#12 11.04 Collecting passlib==1.7.4 (from passlib[argon2]==1.7.4->dental-clinic-api==0.1.0)
+#12 11.07   Downloading passlib-1.7.4-py2.py3-none-any.whl.metadata (1.7 kB)
+#12 11.16 Collecting argon2-cffi==25.1.0 (from dental-clinic-api==0.1.0)
+#12 11.18   Downloading argon2_cffi-25.1.0-py3-none-any.whl.metadata (4.1 kB)
+#12 11.22 Collecting python-jose==3.5.0 (from python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 11.24   Downloading python_jose-3.5.0-py2.py3-none-any.whl.metadata (5.5 kB)
+#12 11.55 Collecting pydantic==2.13.5 (from dental-clinic-api==0.1.0)
+#12 11.60   Downloading pydantic-2.13.5-py3-none-any.whl.metadata (110 kB)
+#12 11.94 Collecting pydantic-settings==2.15.0 (from dental-clinic-api==0.1.0)
+#12 11.96   Downloading pydantic_settings-2.15.0-py3-none-any.whl.metadata (3.9 kB)
+#12 12.01 Collecting python-multipart==0.0.32 (from dental-clinic-api==0.1.0)
+#12 12.03   Downloading python_multipart-0.0.32-py3-none-any.whl.metadata (2.1 kB)
+#12 12.09 Collecting email-validator==2.3.0 (from dental-clinic-api==0.1.0)
+#12 12.13   Downloading email_validator-2.3.0-py3-none-any.whl.metadata (26 kB)
+#12 12.25 Collecting Mako (from alembic==1.19.1->dental-clinic-api==0.1.0)
+#12 12.27   Downloading mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+#12 12.31 Collecting typing-extensions>=4.12 (from alembic==1.19.1->dental-clinic-api==0.1.0)
+#12 12.33   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#12 12.40 Collecting argon2-cffi-bindings (from argon2-cffi==25.1.0->dental-clinic-api==0.1.0)
+#12 12.48   Downloading argon2_cffi_bindings-26.2.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (7.6 kB)
+#12 12.52 Collecting dnspython>=2.0.0 (from email-validator==2.3.0->dental-clinic-api==0.1.0)
+#12 12.55   Downloading dnspython-2.9.2-py3-none-any.whl.metadata (5.8 kB)
+#12 12.59 Collecting idna>=2.0.0 (from email-validator==2.3.0->dental-clinic-api==0.1.0)
+#12 12.62   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#12 12.75 Collecting starlette>=0.46.0 (from fastapi==0.141.1->dental-clinic-api==0.1.0)
+#12 12.77   Downloading starlette-1.10.0-py3-none-any.whl.metadata (6.6 kB)
+#12 12.82 Collecting typing-inspection>=0.4.2 (from fastapi==0.141.1->dental-clinic-api==0.1.0)
+#12 12.84   Downloading typing_inspection-0.4.5-py3-none-any.whl.metadata (2.6 kB)
+#12 12.88 Collecting annotated-doc>=0.0.2 (from fastapi==0.141.1->dental-clinic-api==0.1.0)
+#12 12.90   Downloading annotated_doc-0.0.7-py3-none-any.whl.metadata (6.4 kB)
+#12 12.95 Collecting annotated-types>=0.6.0 (from pydantic==2.13.5->dental-clinic-api==0.1.0)
+#12 12.98   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#12 14.42 Collecting pydantic-core==2.46.5 (from pydantic==2.13.5->dental-clinic-api==0.1.0)
+#12 14.45   Downloading pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+#12 14.54 Collecting python-dotenv>=0.21.0 (from pydantic-settings==2.15.0->dental-clinic-api==0.1.0)
+#12 14.57   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#12 14.64 Collecting platformdirs>=2.2 (from pyopencl==2025.2.7->dental-clinic-api==0.1.0)
+#12 14.66   Downloading platformdirs-4.14.8-py3-none-any.whl.metadata (5.7 kB)
+#12 14.80 Collecting pytools>=2025.1.6 (from pyopencl==2025.2.7->dental-clinic-api==0.1.0)
+#12 14.83   Downloading pytools-2026.1.1-py3-none-any.whl.metadata (2.9 kB)
+#12 14.93 Collecting ecdsa!=0.15 (from python-jose==3.5.0->python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 14.97   Downloading ecdsa-0.19.2-py2.py3-none-any.whl.metadata (29 kB)
+#12 15.03 Collecting rsa!=4.1.1,!=4.4,<5.0,>=4.0 (from python-jose==3.5.0->python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 15.06   Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+#12 15.13 Collecting pyasn1>=0.5.0 (from python-jose==3.5.0->python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 15.16   Downloading pyasn1-0.6.5-py3-none-any.whl.metadata (8.4 kB)
+#12 15.49 Collecting cryptography>=3.4.0 (from python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 15.51   Downloading cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (4.4 kB)
+#12 15.78 Collecting greenlet>=1 (from sqlalchemy==2.0.52->dental-clinic-api==0.1.0)
+#12 15.80   Downloading greenlet-3.5.6-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+#12 15.89 Collecting click>=7.0 (from uvicorn==0.52.4->uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 15.91   Downloading click-8.5.1-py3-none-any.whl.metadata (2.6 kB)
+#12 15.94 Collecting h11>=0.8 (from uvicorn==0.52.4->uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 15.97   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#12 16.06 Collecting httptools>=0.8.0 (from uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 16.08   Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#12 16.18 Collecting pyyaml>=5.1 (from uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 16.20   Downloading pyyaml-6.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.3 kB)
+#12 16.31 Collecting uvloop>=0.15.1 (from uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 16.33   Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+#12 16.53 Collecting watchfiles>=0.20 (from uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 16.55   Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#12 16.97 Collecting websockets>=13.0 (from uvicorn[standard]==0.52.4->dental-clinic-api==0.1.0)
+#12 17.00   Downloading websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#12 17.39 Collecting psycopg-binary==3.3.9 (from psycopg[binary]->dental-clinic-api==0.1.0)
+#12 17.42   Downloading psycopg_binary-3.3.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+#12 17.65 Collecting cffi>=2.0.0 (from cryptography>=3.4.0->python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 17.68   Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+#12 17.74 Collecting six>=1.9.0 (from ecdsa!=0.15->python-jose==3.5.0->python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 17.76   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+#12 17.98 Collecting siphash24>=1.6 (from pytools>=2025.1.6->pyopencl==2025.2.7->dental-clinic-api==0.1.0)
+#12 18.01   Downloading siphash24-1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+#12 18.07 Collecting anyio<5,>=4.0.0 (from starlette>=0.46.0->fastapi==0.141.1->dental-clinic-api==0.1.0)
+#12 18.09   Downloading anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+#12 18.34 Collecting MarkupSafe>=2.0 (from Mako->alembic==1.19.1->dental-clinic-api==0.1.0)
+#12 18.36   Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#12 18.42 Collecting pycparser (from cffi>=2.0.0->cryptography>=3.4.0->python-jose[cryptography]==3.5.0->dental-clinic-api==0.1.0)
+#12 18.47   Downloading pycparser-3.12-py3-none-any.whl.metadata (9.7 kB)
+#12 18.52 Downloading alembic-1.19.1-py3-none-any.whl (265 kB)
+#12 18.74 Downloading argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+#12 18.76 Downloading email_validator-2.3.0-py3-none-any.whl (35 kB)
+#12 18.81 Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+#12 18.93 Downloading numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.5 MB)
+#12 26.65    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.5/16.5 MB 2.1 MB/s eta 0:00:00
+#12 26.69 Downloading passlib-1.7.4-py2.py3-none-any.whl (525 kB)
+#12 27.12    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 525.6/525.6 kB 1.2 MB/s eta 0:00:00
+#12 27.16 Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
+#12 27.40 Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
+#12 27.45 Downloading pyopencl-2025.2.7-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (732 kB)
+#12 27.78    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 732.6/732.6 kB 2.2 MB/s eta 0:00:00
+#12 27.81 Downloading python_jose-3.5.0-py2.py3-none-any.whl (34 kB)
+#12 27.84 Downloading python_multipart-0.0.32-py3-none-any.whl (30 kB)
+#12 27.87 Downloading sqlalchemy-2.0.52-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.4 MB)
+#12 29.28    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 2.4 MB/s eta 0:00:00
+#12 29.31 Downloading uvicorn-0.52.4-py3-none-any.whl (79 kB)
+#12 29.36 Downloading pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#12 30.27    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 2.2 MB/s eta 0:00:00
+#12 30.31 Downloading psycopg_binary-3.3.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.9 MB)
+#12 31.97    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.9/3.9 MB 2.3 MB/s eta 0:00:00
+#12 31.99 Downloading annotated_doc-0.0.7-py3-none-any.whl (5.3 kB)
+#12 32.02 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#12 32.04 Downloading click-8.5.1-py3-none-any.whl (126 kB)
+#12 32.13 Downloading cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl (4.8 MB)
+#12 34.88    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 1.7 MB/s eta 0:00:00
+#12 34.91 Downloading dnspython-2.9.2-py3-none-any.whl (360 kB)
+#12 35.07 Downloading ecdsa-0.19.2-py2.py3-none-any.whl (150 kB)
+#12 35.15 Downloading greenlet-3.5.6-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (621 kB)
+#12 35.41    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 621.4/621.4 kB 2.9 MB/s eta 0:00:00
+#12 35.43 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#12 35.47 Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (552 kB)
+#12 35.72    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 552.8/552.8 kB 2.1 MB/s eta 0:00:00
+#12 35.75 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#12 35.92 Downloading platformdirs-4.14.8-py3-none-any.whl (94 kB)
+#12 35.96 Downloading pyasn1-0.6.5-py3-none-any.whl (84 kB)
+#12 36.02 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#12 36.10 Downloading pytools-2026.1.1-py3-none-any.whl (99 kB)
+#12 36.69 Downloading pyyaml-6.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (849 kB)
+#12 37.07    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 849.2/849.2 kB 2.2 MB/s eta 0:00:00
+#12 37.10 Downloading rsa-4.9.1-py3-none-any.whl (34 kB)
+#12 37.14 Downloading starlette-1.10.0-py3-none-any.whl (80 kB)
+#12 37.19 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#12 37.23 Downloading typing_inspection-0.4.5-py3-none-any.whl (14 kB)
+#12 37.27 Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+#12 39.26    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 2.3 MB/s eta 0:00:00
+#12 39.29 Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+#12 39.50 Downloading websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (226 kB)
+#12 39.80 Downloading argon2_cffi_bindings-26.2.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (26 kB)
+#12 39.85 Downloading mako-1.4.3-py3-none-any.whl (80 kB)
+#12 39.92 Downloading psycopg-3.3.9-py3-none-any.whl (219 kB)
+#12 40.03 Downloading anyio-4.16.0-py3-none-any.whl (134 kB)
+#12 40.10 Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+#12 40.22 Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#12 40.25 Downloading siphash24-1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (102 kB)
+#12 40.31 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#12 40.33 Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+#12 40.54 Building wheels for collected packages: dental-clinic-api
+#12 40.57   Building wheel for dental-clinic-api (pyproject.toml): started
+#12 41.62   Building wheel for dental-clinic-api (pyproject.toml): finished with status 'done'
+#12 41.62   Created wheel for dental-clinic-api: filename=dental_clinic_api-0.1.0-py3-none-any.whl size=44699 sha256=36286a49cd4187dbe366f91c66ba24f0ef8d9cb7a4041742a155473c607243a7
+#12 41.62   Stored in directory: /tmp/pip-ephem-wheel-cache-u1lxy3qu/wheels/54/1b/b7/aa63e25c8f14f4f2ae7b04e6097bdecb770e455c5c1ee0a600
+#12 41.62 Successfully built dental-clinic-api
+#12 41.74 Installing collected packages: passlib, websockets, uvloop, typing-extensions, six, siphash24, pyyaml, python-multipart, python-dotenv, pycparser, pyasn1, psycopg-binary, platformdirs, numpy, MarkupSafe, idna, httptools, h11, greenlet, dnspython, click, annotated-types, annotated-doc, uvicorn, typing-inspection, sqlalchemy, rsa, pytools, pydantic-core, psycopg, Mako, email-validator, ecdsa, cffi, anyio, watchfiles, starlette, python-jose, pyopencl, pydantic, cryptography, argon2-cffi-bindings, alembic, pydantic-settings, fastapi, argon2-cffi, dental-clinic-api
+#12 52.01 Successfully installed Mako-1.4.3 MarkupSafe-3.0.4 alembic-1.19.1 annotated-doc-0.0.7 annotated-types-0.8.0 anyio-4.16.0 argon2-cffi-25.1.0 argon2-cffi-bindings-26.2.0 cffi-2.1.1 click-8.5.1 cryptography-50.0.2 dental-clinic-api-0.1.0 dnspython-2.9.2 ecdsa-0.19.2 email-validator-2.3.0 fastapi-0.141.1 greenlet-3.5.6 h11-0.16.0 httptools-0.9.0 idna-3.20 numpy-2.2.6 passlib-1.7.4 platformdirs-4.14.8 psycopg-3.3.9 psycopg-binary-3.3.9 pyasn1-0.6.5 pycparser-3.12 pydantic-2.13.5 pydantic-core-2.46.5 pydantic-settings-2.15.0 pyopencl-2025.2.7 python-dotenv-1.2.4 python-jose-3.5.0 python-multipart-0.0.32 pytools-2026.1.1 pyyaml-6.0.4 rsa-4.9.1 siphash24-1.9 six-1.17.0 sqlalchemy-2.0.52 starlette-1.10.0 typing-extensions-4.16.0 typing-inspection-0.4.5 uvicorn-0.52.4 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.4
+#12 52.01 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#12 52.21 
+#12 52.21 [notice] A new release of pip is available: 25.0.1 -> 26.3
+#12 52.21 [notice] To update, run: pip install --upgrade pip
+#12 DONE 52.8s
+
+#13 [9/9] RUN useradd --create-home appuser
+#13 DONE 0.4s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 9.1s done
+#14 exporting manifest sha256:23eb516cb9e20b7df3e135ec515244cccd985b64a293e91a87ecb23644be0620 0.0s done
+#14 exporting config sha256:e18e4837f4336174c2b8f6a1cc8c21dc5a9692a610467a506e515c965268a1b6 0.0s done
+#14 exporting attestation manifest sha256:944c149840ccc3739a49847f15978fed4ab135c6861225aa3d57f119f81a2843 0.0s done
+#14 exporting manifest list sha256:9f9b4440edbbd994f312aad1521672982051118b05734e98bb6cf49ea59527a5 0.0s done
+#14 naming to docker.io/library/lumina-opencl-app-qa:1795642186_d870cfbd-c6a done
+#14 unpacking to docker.io/library/lumina-opencl-app-qa:1795642186_d870cfbd-c6a
+#14 unpacking to docker.io/library/lumina-opencl-app-qa:1795642186_d870cfbd-c6a 5.3s done
+#14 DONE 14.5s

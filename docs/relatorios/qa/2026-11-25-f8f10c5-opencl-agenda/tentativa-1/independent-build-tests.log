@@ -1,0 +1,73 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load remote build context
+#1 CACHED
+
+#2 copy /context /
+#2 CACHED
+
+#3 [internal] load metadata for docker.io/library/lumina-opencl-independent-app:qa-independent-351fa2e808
+#3 DONE 0.0s
+
+#4 [1/5] FROM docker.io/library/lumina-opencl-independent-app:qa-independent-351fa2e808@sha256:83f44dbc782dcf84794fd80ed054ad21716f050e14001c9b4fae1217b9cc4623
+#4 resolve docker.io/library/lumina-opencl-independent-app:qa-independent-351fa2e808@sha256:83f44dbc782dcf84794fd80ed054ad21716f050e14001c9b4fae1217b9cc4623 0.0s done
+#4 DONE 0.1s
+
+#5 [2/5] RUN python -m pip install 'pytest==9.1.1' 'httpx==0.28.1'
+#5 2.627 Collecting pytest==9.1.1
+#5 2.766   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+#5 2.896 Collecting httpx==0.28.1
+#5 2.921   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#5 2.957 Collecting iniconfig>=1.0.1 (from pytest==9.1.1)
+#5 2.980   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+#5 3.029 Collecting packaging>=22 (from pytest==9.1.1)
+#5 3.065   Downloading packaging-26.4-py3-none-any.whl.metadata (3.5 kB)
+#5 3.140 Collecting pluggy<2,>=1.5 (from pytest==9.1.1)
+#5 3.160   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+#5 3.253 Collecting pygments>=2.7.2 (from pytest==9.1.1)
+#5 3.272   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+#5 3.275 Requirement already satisfied: anyio in /usr/local/lib/python3.12/site-packages (from httpx==0.28.1) (4.16.0)
+#5 3.311 Collecting certifi (from httpx==0.28.1)
+#5 3.332   Downloading certifi-2026.11.20-py3-none-any.whl.metadata (2.5 kB)
+#5 3.375 Collecting httpcore==1.* (from httpx==0.28.1)
+#5 3.404   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#5 3.410 Requirement already satisfied: idna in /usr/local/lib/python3.12/site-packages (from httpx==0.28.1) (3.20)
+#5 3.411 Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.12/site-packages (from httpcore==1.*->httpx==0.28.1) (0.16.0)
+#5 3.414 Requirement already satisfied: typing_extensions>=4.16.0 in /usr/local/lib/python3.12/site-packages (from anyio->httpx==0.28.1) (4.16.0)
+#5 3.437 Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+#5 3.761 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#5 3.832 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#5 3.877 Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+#5 3.898 Downloading packaging-26.4-py3-none-any.whl (140 kB)
+#5 4.131 Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+#5 4.150 Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#5 4.679    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 2.6 MB/s eta 0:00:00
+#5 4.700 Downloading certifi-2026.11.20-py3-none-any.whl (127 kB)
+#5 4.818 Installing collected packages: pygments, pluggy, packaging, iniconfig, certifi, pytest, httpcore, httpx
+#5 6.168 Successfully installed certifi-2026.11.20 httpcore-1.0.9 httpx-0.28.1 iniconfig-2.3.1 packaging-26.4 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1
+#5 6.168 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#5 6.299 
+#5 6.299 [notice] A new release of pip is available: 25.0.1 -> 26.3
+#5 6.299 [notice] To update, run: pip install --upgrade pip
+#5 DONE 6.5s
+
+#6 [3/5] COPY tests /app/tests
+#6 DONE 0.0s
+
+#7 [4/5] COPY database /app/database
+#7 DONE 0.0s
+
+#8 [5/5] COPY scripts/benchmark_conflicts.py /app/scripts/benchmark_conflicts.py
+#8 DONE 0.0s
+
+#9 exporting to image
+#9 exporting layers
+#9 exporting layers 0.8s done
+#9 exporting manifest sha256:03a00c2f1f9b174c657a1cc02a8d73ac6d425dca90ed73436ac939170b2d3cc8 0.0s done
+#9 exporting config sha256:30485c25d969b5b1370e3978547e78fc0b02eba32876352d5c782a7cbd80ca93 0.0s done
+#9 exporting attestation manifest sha256:0e505996b45996f7366b05892a8d57f9ad114ab0fc3b355476ed77f06c8c4a51 0.0s done
+#9 exporting manifest list sha256:f32b633cfb8b80998f98a5ac1ce46719f7b4f755f9f5e1356625cafd85f05cbe 0.0s done
+#9 naming to docker.io/library/lumina-opencl-independent-tests:qa-independent-351fa2e808 done
+#9 unpacking to docker.io/library/lumina-opencl-independent-tests:qa-independent-351fa2e808
+#9 unpacking to docker.io/library/lumina-opencl-independent-tests:qa-independent-351fa2e808 0.4s done
+#9 DONE 1.3s

@@ -1,0 +1,13 @@
+/usr/local/lib/python3.12/site-packages/app/main.py:13: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+  from app.common.error_handlers import register_exception_handlers
+QA_HTTP {"expected": "200", "id": "HTTP-health", "obtained": 200, "status": "aprovado"}
+QA_HTTP {"expected": "200 contrato disponivel", "id": "HTTP-openapi", "obtained": 200, "status": "aprovado"}
+QA_HTTP {"expected": "401", "id": "HTTP-unauth", "obtained": 401, "status": "aprovado"}
+QA_HTTP {"expected": "200 access_token presente", "id": "HTTP-login", "obtained": {"access_token_present": true, "http": 200}, "status": "aprovado"}
+QA_HTTP {"expected": "duas esperas reais;201/409;uma gravacao correta", "id": "HTTP-PG-race", "obtained": {"http": [201, 409], "persisted_count": 1, "waiters": [{"pid": 107, "wait_event": "advisory", "wait_event_type": "Lock"}, {"pid": 109, "wait_event": "advisory", "wait_event_type": "Lock"}], "winner_patient_matches": true}, "status": "aprovado"}
+QA_HTTP {"expected": "200 ao atualizar proprio slot com fuso equivalente", "id": "HTTP-self-update-timezone", "obtained": 200, "status": "aprovado"}
+QA_HTTP {"expected": "201 para intervalo adjacente", "id": "HTTP-adjacent", "obtained": 201, "status": "aprovado"}
+QA_HTTP {"expected": "409 sobreposicao com consulta adjacente", "id": "HTTP-one-microsecond-overlap", "obtained": 409, "status": "aprovado"}
+QA_HTTP {"expected": "horario original preservado", "id": "HTTP-rollback-update", "obtained": true, "status": "aprovado"}
+QA_HTTP {"expected": "23P01 mesmo sem precheck", "id": "SQL-GiST-authority", "obtained": "23P01", "status": "aprovado"}
+QA_HTTP {"expected": "duas gravacoes apos tentativa rejeitada", "id": "SQL-GiST-rollback", "obtained": 2, "status": "aprovado"}

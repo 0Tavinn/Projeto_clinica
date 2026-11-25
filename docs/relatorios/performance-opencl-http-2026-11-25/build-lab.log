@@ -1,0 +1,52 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load remote build context
+#1 DONE 0.0s
+
+#2 copy /context /
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/lumina-perf-app:perf-b7c5a50f667c
+#3 DONE 0.0s
+
+#4 [1/3] FROM docker.io/library/lumina-perf-app:perf-b7c5a50f667c@sha256:7c64012a41bb5fc396129d54c4eb528a9ccb25215f7b2349c01e2b5dc6f8d2be
+#4 resolve docker.io/library/lumina-perf-app:perf-b7c5a50f667c@sha256:7c64012a41bb5fc396129d54c4eb528a9ccb25215f7b2349c01e2b5dc6f8d2be
+#4 resolve docker.io/library/lumina-perf-app:perf-b7c5a50f667c@sha256:7c64012a41bb5fc396129d54c4eb528a9ccb25215f7b2349c01e2b5dc6f8d2be 0.0s done
+#4 DONE 0.1s
+
+#5 [2/3] RUN python -m pip install httpx==0.28.1
+#5 2.562 Collecting httpx==0.28.1
+#5 2.694   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#5 2.701 Requirement already satisfied: anyio in /usr/local/lib/python3.12/site-packages (from httpx==0.28.1) (4.16.0)
+#5 2.748 Collecting certifi (from httpx==0.28.1)
+#5 2.770   Downloading certifi-2026.11.20-py3-none-any.whl.metadata (2.5 kB)
+#5 2.821 Collecting httpcore==1.* (from httpx==0.28.1)
+#5 2.841   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#5 2.858 Requirement already satisfied: idna in /usr/local/lib/python3.12/site-packages (from httpx==0.28.1) (3.20)
+#5 2.863 Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.12/site-packages (from httpcore==1.*->httpx==0.28.1) (0.16.0)
+#5 2.867 Requirement already satisfied: typing_extensions>=4.16.0 in /usr/local/lib/python3.12/site-packages (from anyio->httpx==0.28.1) (4.16.0)
+#5 2.893 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#5 2.944 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#5 3.021 Downloading certifi-2026.11.20-py3-none-any.whl (127 kB)
+#5 3.223 Installing collected packages: certifi, httpcore, httpx
+#5 3.429 Successfully installed certifi-2026.11.20 httpcore-1.0.9 httpx-0.28.1
+#5 3.429 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#5 3.638 
+#5 3.638 [notice] A new release of pip is available: 25.0.1 -> 26.3
+#5 3.638 [notice] To update, run: pip install --upgrade pip
+#5 DONE 4.1s
+
+#6 [3/3] COPY instrumented_app.py measure_http.py /measurement/
+#6 DONE 0.0s
+
+#7 exporting to image
+#7 exporting layers
+#7 exporting layers 0.2s done
+#7 exporting manifest sha256:ae6d3e103faea843b4329fe7482ddc07500110170510c93a40a704d9bc78eb1e 0.0s done
+#7 exporting config sha256:f5efa6804465fde792380189403cc31c64812b164a8582ab6e1be5627e209566 0.0s done
+#7 exporting attestation manifest sha256:5bf8f9bc30174c6fded1a58a5b791541c62930d00780f1b7f79f72be8afd827e 0.0s done
+#7 exporting manifest list sha256:589bbbd7a6b9694170b78283f77759d9cc63713aecf4b2ab7b9f9c5e732618f3
+#7 exporting manifest list sha256:589bbbd7a6b9694170b78283f77759d9cc63713aecf4b2ab7b9f9c5e732618f3 0.0s done
+#7 naming to docker.io/library/lumina-perf-lab:perf-b7c5a50f667c done
+#7 unpacking to docker.io/library/lumina-perf-lab:perf-b7c5a50f667c 0.1s done
+#7 DONE 0.5s

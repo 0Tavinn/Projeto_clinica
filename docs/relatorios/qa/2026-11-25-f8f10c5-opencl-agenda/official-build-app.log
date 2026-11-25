@@ -1,0 +1,59 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load remote build context
+#1 DONE 0.1s
+
+#1 [internal] load remote build context
+#1 CACHED
+
+#2 copy /context /
+#2 CACHED
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.4s
+
+#5 [1/9] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#5 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#5 DONE 0.0s
+
+#6 [5/9] COPY app ./app
+#6 CACHED
+
+#7 [7/9] COPY scripts ./scripts
+#7 CACHED
+
+#8 [3/9] WORKDIR /app
+#8 CACHED
+
+#9 [2/9] RUN apt-get update && apt-get install -y --no-install-recommends pocl-opencl-icd ocl-icd-libopencl1     && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [4/9] COPY pyproject.toml README.md alembic.ini ./
+#10 CACHED
+
+#11 [6/9] COPY alembic ./alembic
+#11 CACHED
+
+#12 [8/9] RUN python -m pip install .
+#12 CACHED
+
+#13 [9/9] RUN useradd --create-home appuser
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers 0.0s done
+#14 exporting manifest sha256:0ceb95444c2c99875a3f856ab382d4540896d456392d96bf7feb2ac3bd71fe81 0.1s done
+#14 exporting config sha256:90aaf6e136eef9966839e651e222aff08c550ec2c4e9bfc65b7dcb95ebb62d67
+#14 exporting config sha256:90aaf6e136eef9966839e651e222aff08c550ec2c4e9bfc65b7dcb95ebb62d67 0.0s done
+#14 exporting attestation manifest sha256:f5a3da89006e38123118319f1b19047fd68627def6db1681aef0d61acd701b4e 0.0s done
+#14 exporting manifest list sha256:596f30d7f335a8dcf0cc3a659b43261f30c1583cfbd726042a340a08170cc1d2 0.0s done
+#14 naming to docker.io/library/lumina-opencl-app-qa:1795639829_1da7510d-118 done
+#14 unpacking to docker.io/library/lumina-opencl-app-qa:1795639829_1da7510d-118
+#14 unpacking to docker.io/library/lumina-opencl-app-qa:1795639829_1da7510d-118 10.3s done
+#14 DONE 10.5s

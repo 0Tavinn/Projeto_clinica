@@ -1,0 +1,27 @@
+[
+  {
+    "supplied": null,
+    "effective": "sequential",
+    "passed": true
+  },
+  {
+    "supplied": "",
+    "effective": "sequential",
+    "passed": true
+  },
+  {
+    "supplied": "auto",
+    "effective": "auto",
+    "passed": true
+  },
+  {
+    "supplied": "sequential",
+    "effective": "sequential",
+    "passed": true
+  },
+  {
+    "setup_new_default": "sequential",
+    "existing_auto_preserved": true,
+    "passed": true
+  }
+]

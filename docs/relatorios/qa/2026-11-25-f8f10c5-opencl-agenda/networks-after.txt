@@ -1,0 +1,7 @@
+bridge
+host
+lumina_execucao_20261029_network
+lumina_pr18_tarcisio_default
+lumina_s07_docker_review_network_20261023
+lumina_ui_20261111175549_186409_network
+none

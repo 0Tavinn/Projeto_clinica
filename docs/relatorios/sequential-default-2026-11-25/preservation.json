@@ -1,0 +1,18 @@
+{
+  "files_checked": 414,
+  "changed": [
+    ".env.example",
+    "compose.yml",
+    "docs/paralelismo-agendamento.md",
+    "scripts/setup_dev.py",
+    "backend/tests/test_opencl_pg.py",
+    "backend/tests/run_opencl_qa.sh",
+    "backend/tests/test_opencl_conflicts.py",
+    "backend/app/core/config.py"
+  ],
+  "index_identical": true,
+  "stage_sha256": "41f728d17e0dcc8729b81db0f5abcf7ab900e8fd8249fa65dff173a07e8a4932",
+  "inventory_identical": true,
+  "protected_environment_files_identical": true,
+  "runner_artifacts": "/home/paulinho/Work/Projeto_clinica_clinical_2fa/docs/relatorios/opencl-1795642186_d870cfbd-c6a"
+}

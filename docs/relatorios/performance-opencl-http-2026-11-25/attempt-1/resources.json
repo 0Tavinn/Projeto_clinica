@@ -1,0 +1,12 @@
+{
+  "suffix": "perf-a8501519efba",
+  "label": "lumina.opencl.perf",
+  "names": {
+    "app": "lumina-perf-app:perf-a8501519efba",
+    "lab": "lumina-perf-lab:perf-a8501519efba",
+    "network": "lumina_perf-a8501519efba",
+    "volume": "lumina_perf-a8501519efba",
+    "db": "lumina_db_perf-a8501519efba",
+    "probe": "lumina_probe_perf-a8501519efba"
+  }
+}

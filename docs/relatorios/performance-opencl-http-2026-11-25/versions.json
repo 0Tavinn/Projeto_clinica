@@ -1,0 +1,21 @@
+{
+  "python": "3.12.16",
+  "postgres": "16.15",
+  "packages": {
+    "numpy": "2.2.6",
+    "pyopencl": "2025.2.7",
+    "fastapi": "0.141.1",
+    "sqlalchemy": "2.0.52",
+    "uvicorn": "0.52.4",
+    "httpx": "0.28.1"
+  },
+  "opencl": {
+    "platform": "Portable Computing Language",
+    "device": "cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H",
+    "device_type": "ALL | CPU",
+    "driver": "6.0+debian",
+    "opencl": "OpenCL 3.0 PoCL HSTR: cpu-x86_64-pc-linux-gnu-haswell",
+    "pyopencl": "2025.2.7",
+    "numpy": "2.2.6"
+  }
+}

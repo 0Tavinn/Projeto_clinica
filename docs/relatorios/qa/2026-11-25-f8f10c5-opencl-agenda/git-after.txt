@@ -1,0 +1,36 @@
+## feat/paralelismo-agendamento
+AM .env.example
+M  .gitignore
+M  README.md
+A  backend/.dockerignore
+MM backend/Dockerfile
+ M backend/app/appointments/repository.py
+ M backend/app/core/config.py
+ M backend/pyproject.toml
+A  backend/scripts/check_database.py
+AM compose.yml
+A  docs/ambiente-desenvolvimento.md
+A  docs/relatorios/2026-11-24-organizacao-ambiente-desenvolvimento.md
+A  frontend/.dockerignore
+A  frontend/Dockerfile
+A  frontend/nginx.conf
+A  scripts/dev.py
+A  scripts/dev_backup.py
+A  scripts/dev_support.py
+A  scripts/setup_dev.py
+A  scripts/verify_dev.py
+?? backend/app/appointments/conflict_detection.py
+?? backend/app/appointments/kernels/
+?? backend/app/appointments/opencl_conflicts.py
+?? backend/scripts/benchmark_conflicts.py
+?? backend/tests/opencl-qa.Dockerfile
+?? backend/tests/run_opencl_qa.sh
+?? backend/tests/test_opencl_conflicts.py
+?? backend/tests/test_opencl_pg.py
+?? backend/tests/test_opencl_repository.py
+?? docs/paralelismo-agendamento.md
+?? docs/relatorios/opencl-1795632915_6782/
+?? docs/relatorios/opencl-1795633113_7ecc7819-fc4/
+?? docs/relatorios/opencl-1795633269_5667a6d8-46a/
+?? docs/relatorios/opencl-1795639829_1da7510d-118/
+?? docs/relatorios/qa/

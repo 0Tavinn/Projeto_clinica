@@ -1,0 +1,10 @@
+/usr/local/lib/python3.12/site-packages/app/main.py:13: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+  from app.common.error_handlers import register_exception_handlers
+{
+  "status": "completed",
+  "samples": 360,
+  "warm": 336,
+  "processes": 10,
+  "integrity_checks": "passed",
+  "http_auth_errors": 0
+}
