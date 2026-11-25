@@ -24,6 +24,8 @@ services:
     environment:
       ENVIRONMENT: development
       DEBUG: "false"
+      APPOINTMENT_CONFLICT_ENGINE: ${APPOINTMENT_CONFLICT_ENGINE:-sequential}
+      APPOINTMENT_CONFLICT_BATCH_SIZE: ${APPOINTMENT_CONFLICT_BATCH_SIZE:-4096}
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       SECRET_KEY: ${SECRET_KEY:?Configure .env}
       CORS_ORIGINS: http://localhost:${FRONTEND_PORT:-8080},http://127.0.0.1:${FRONTEND_PORT:-8080}

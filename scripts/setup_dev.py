@@ -18,7 +18,8 @@ if not re.fullmatch(r"[a-z][a-z0-9_]*", args.project):
 ports = [args.api_port, args.frontend_port, args.db_port]
 if len(set(ports)) != 3 or any(not 1024 <= p <= 65535 for p in ports):
     parser.error("Escolha três portas locais distintas, entre 1024 e 65535.")
-values = dict(COMPOSE_PROJECT_NAME=args.project, POSTGRES_DB="lumina_dev", POSTGRES_USER="lumina_app",
+# Configura somente um ambiente novo; o O_EXCL abaixo preserva .env existente.
+values = dict(APPOINTMENT_CONFLICT_ENGINE="sequential", COMPOSE_PROJECT_NAME=args.project, POSTGRES_DB="lumina_dev", POSTGRES_USER="lumina_app",
               POSTGRES_PASSWORD=secrets.token_urlsafe(48), SECRET_KEY=secrets.token_urlsafe(48),
               API_PORT=args.api_port, FRONTEND_PORT=args.frontend_port, DB_PORT=args.db_port)
 try:
