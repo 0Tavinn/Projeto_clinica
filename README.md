@@ -8,16 +8,15 @@ cadastros de pacientes.
 Este README descreve somente o que está disponível no repositório nesta etapa.
 Funcionalidades planejadas não devem ser tratadas como concluídas.
 
-## Estado atual — Sprint 4
+## Execução de desenvolvimento — referência PR18
 
-A API já oferece autenticação, controle de perfis, cadastro de usuários da
-equipe e gestão de pacientes. Não há código de front-end versionado no
-repositório; a integração da interface com a API ainda é uma atividade da
-Sprint 4.
+O repositório contém API FastAPI, frontend React/Vite e o schema PostgreSQL 16
+unificado do PR #18. A execução reproduzível por Docker e os comandos de início,
+status, parada e recuperação estão em [Ambiente de desenvolvimento](docs/ambiente-desenvolvimento.md).
+O fluxo clínico novo e OpenCL da Agenda dependem de integração e testes próprios.
 
-O Docker existente ainda precisa ser alinhado ao PostgreSQL usado pela API. Por
-isso, o fluxo de desenvolvimento atual é o ambiente local com FastAPI e
-PostgreSQL, conforme o guia de desenvolvimento.
+As seções funcionais abaixo são o registro histórico da fundação da Sprint 4.
+A disponibilidade atual de cada módulo deve ser conferida na versão em uso.
 
 ## Funcionalidades implementadas
 
@@ -49,10 +48,11 @@ registro recebe `is_active = false` e não é apagado fisicamente.
 - Listagem de usuários: `GET /api/v1/users` ainda não existe.
 - Permitir que dentistas cadastrem ou alterem pacientes ainda não está
   implementado.
-- Front-end integrado, agenda, prontuários, IA e métricas financeiras não têm
-  implementação disponível neste repositório.
-- Docker e Alembic precisam ser revisados antes de serem usados como fluxo de
-  provisionamento do PostgreSQL.
+- A integração funcional de interface, Agenda e prontuários precisa ser
+  verificada na candidata identificada. IA e métricas financeiras permanecem
+  sujeitas ao planejamento próprio.
+- O provisionamento de desenvolvimento usa a cadeia Alembic até
+  `a6e8f0b2c4d6`, pelo procedimento documentado para banco vazio.
 
 ## Tecnologias utilizadas
 
