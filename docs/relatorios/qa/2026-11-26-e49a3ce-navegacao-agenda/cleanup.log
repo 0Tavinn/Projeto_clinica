@@ -1,0 +1,20 @@
+ Container lumina_nav_20261126_6ec95835-frontend-1 Stopping 
+ Container lumina_nav_20261126_6ec95835-frontend-1 Stopped 
+ Container lumina_nav_20261126_6ec95835-frontend-1 Removing 
+ Container lumina_nav_20261126_6ec95835-frontend-1 Removed 
+ Container lumina_nav_20261126_6ec95835-api-1 Stopping 
+ Container lumina_nav_20261126_6ec95835-api-1 Stopped 
+ Container lumina_nav_20261126_6ec95835-api-1 Removing 
+ Container lumina_nav_20261126_6ec95835-api-1 Removed 
+ Container lumina_nav_20261126_6ec95835-db-1 Stopping 
+ Container lumina_nav_20261126_6ec95835-db-1 Stopped 
+ Container lumina_nav_20261126_6ec95835-db-1 Removing 
+ Container lumina_nav_20261126_6ec95835-db-1 Removed 
+ Volume lumina_nav_20261126_6ec95835_postgres_data Removing 
+ Network lumina_nav_20261126_6ec95835_default Removing 
+ Volume lumina_nav_20261126_6ec95835_postgres_data Removed 
+ Network lumina_nav_20261126_6ec95835_default Removed 
+Untagged: lumina_nav_20261126_6ec95835-api:latest
+Deleted: sha256:c0cd40cd0edfe01635203bf107fb31840faafe50e8fe31466b38b77a7960a074
+Untagged: lumina_nav_20261126_6ec95835-frontend:latest
+Deleted: sha256:9a159018d95373ba32beaf496e3a989a824007680b95093436eebccc848dfd79

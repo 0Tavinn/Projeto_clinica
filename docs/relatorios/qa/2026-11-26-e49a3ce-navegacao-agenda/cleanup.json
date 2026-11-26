@@ -1,0 +1,9 @@
+{
+  "temporary_containers_removed": true,
+  "temporary_volume_removed": true,
+  "temporary_network_removed": true,
+  "temporary_image_tags_removed": true,
+  "daily_ids_images_mounts_started_at_unchanged": true,
+  "daily_healthy": true,
+  "versioned_code_unchanged": true
+}

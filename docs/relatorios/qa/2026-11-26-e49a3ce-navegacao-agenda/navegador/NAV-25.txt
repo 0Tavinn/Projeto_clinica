@@ -1,0 +1,37 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			38 text 3 consultas encontradas
++				49 row
++					50 cell
++						51 button sex., 27/11
++						52 container
++							53 text 09:00 às 09:45  ·  45  min
++					54 cell
++						55 text Paciente Fictício Ativo
++					56 cell
++						57 text Cancelada
++					58 cell
++						59 button Ver
++				60 row
++					61 cell
++						62 button sex., 27/11
++						63 container
++							64 text 09:00 às 09:30  ·  30  min
++					65 cell
++						66 text Paciente Fictício Revogado
++					67 cell
++						68 text Agendada
++					69 cell
++						70 button Ver
++				71 row
++					72 cell
++						73 button sex., 27/11
++						74 container
++							75 text 09:45 às 10:15  ·  30  min
++					76 cell
++						77 text Paciente Fictício Sem Vínculo
++					78 cell
++						79 text Agendada
++					80 cell
++						81 button Ver
+The focused UI element is 8 button Consultas

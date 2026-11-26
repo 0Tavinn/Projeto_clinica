@@ -1,0 +1,1 @@
+Primeira verificacao SQL encontrou AssertionError na expectativa textual 09:45 em scheduled_at UTC. O navegador usa UTC-03:00; 09:45 local corresponde a 12:45 UTC. A expectativa do roteiro foi corrigida por conversao de fuso. Nenhum codigo ou dado de produto foi alterado para isso.

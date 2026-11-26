@@ -1,0 +1,5 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~				40 time field (settable) Horário Escolha uma data e um horário futuros., Value: 09:00
+~				65 text Escolha uma data e um horário futuros. Duração
+The focused UI element is 57 button Agendar consulta

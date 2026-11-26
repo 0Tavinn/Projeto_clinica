@@ -1,0 +1,121 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+1 AXWebArea Lumina Odonto, URL: localhost:18126/
+	2 container root
+		3 container
+			4 text Lumina ODONTO
+			5 button Dashboard
+			6 button Pacientes
+			7 button Agenda
+			8 text RQ Recepcionista QA Ficticia Recepcionista
+			9 button Sair
+		10 container
+			11 heading Agenda, Value: 1
+				12 text Agenda
+			13 text Consultas da clínica, sincronizadas com a API.
+			14 button Nova consulta
+			15 text Data inicial
+			16 date field (settable) Data inicial, Value: 2026-11-26
+				17 container
+					18 stepper
+					19 stepper
+					20 stepper
+				21 pop up button Mostrar seletor de datas Mostrar seletor de datas
+			22 text Data final
+			23 date field (settable) Data final, Value: 2026-12-02
+				24 container
+					25 stepper
+					26 stepper
+					27 stepper
+				28 pop up button Mostrar seletor de datas Mostrar seletor de datas
+			29 text Dentista
+			30 pop up button (collapsed, settable) Dentista, Value: Todos os dentistas, Secondary Actions: Expand
+				31 menu
+					32 (selected) Todos os dentistas
+					33 Dentista Fictício
+					34 Segundo Dentista QA Ficticio
+			35 text Situação
+			36 pop up button (collapsed, settable) Situação, Value: Todas as situações, Secondary Actions: Expand
+				37 menu
+					38 (selected) Todas as situações
+					39 Agendada
+					40 Confirmada
+					41 Concluída
+					42 Cancelada
+					43 Ausência
+			44 text 4 consultas encontradas
+			45 table
+				46 row
+					47 cell
+						48 text DATA E HORÁRIO
+					49 cell
+						50 text PACIENTE
+					51 cell
+						52 text DENTISTA
+					53 cell
+						54 text SITUAÇÃO
+					55 cell
+						56 text AÇÕES
+				57 row
+					58 cell
+						59 button sex., 27/11
+						60 container
+							61 text 09:00 às 09:45  ·  45  min
+					62 cell
+						63 text Paciente Fictício Ativo
+					64 cell
+						65 text Dentista Fictício
+					66 cell
+						67 text Cancelada
+					68 cell
+						69 button Ver
+				70 row
+					71 cell
+						72 button sex., 27/11
+						73 container
+							74 text 09:00 às 09:30  ·  30  min
+					75 cell
+						76 text Paciente Fictício Revogado
+					77 cell
+						78 text Dentista Fictício
+					79 cell
+						80 text Agendada
+					81 cell
+						82 button Ver
+						83 button  Editar
+						84 button Confirmar
+						85 button Cancelar
+				86 row
+					87 cell
+						88 button sex., 27/11
+						89 container
+							90 text 09:00 às 09:30  ·  30  min
+					91 cell
+						92 text Paciente Fictício Ativo
+					93 cell
+						94 text Segundo Dentista QA Ficticio
+					95 cell
+						96 text Agendada
+					97 cell
+						98 button Ver
+						99 button  Editar
+						100 button Confirmar
+						101 button Cancelar
+				102 row
+					103 cell
+						104 button sex., 27/11
+						105 container
+							106 text 09:45 às 10:15  ·  30  min
+					107 cell
+						108 text Paciente Fictício Sem Vínculo
+					109 cell
+						110 text Dentista Fictício
+					111 cell
+						112 text Agendada
+					113 cell
+						114 button Ver
+						115 button  Editar
+						116 button Confirmar
+						117 button Cancelar
+		118 text Consulta agendada com sucesso.
+
+The focused UI element is 1 AXWebArea Lumina Odonto, URL: localhost:18126/

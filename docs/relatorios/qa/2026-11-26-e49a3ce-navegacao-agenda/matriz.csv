@@ -1,0 +1,32 @@
+﻿id,scenario,result,detail,at
+NAV-01,Abrir a aplicação de teste,PASSOU,Tela de login exibida na porta exclusiva 18126; aplicação ainda não autenticada.,2026-11-26T16:12:24.144Z
+NAV-02,Recusar senha inválida,PASSOU,Mensagem genérica de credenciais inválidas e permanência na tela de login.,2026-11-26T16:12:35.735Z
+NAV-03,Login válido da recepção,PASSOU,Dashboard autenticado mostra Recepcionista QA Ficticia. Menu recolhido nesta largura de janela.,2026-11-26T16:13:00.733Z
+NAV-04,Abrir menu em janela estreita,REPROVOU,"Na largura inicial de aproximadamente 375 px, clicar em Abrir menu não exibiu a navegação; Agenda permaneceu inacessível pelo menu.",2026-11-26T16:13:14.966Z
+NAV-05,Acessar Agenda e semana sem consultas,PASSOU,"Filtros iniciais 26/11 a 02/12; listagem vazia com mensagem e botão Nova consulta, sem erro.",2026-11-26T16:13:34.057Z
+NAV-06,Enviar formulário vazio,PASSOU,"Paciente, dentista, data e horário são apontados como obrigatórios sem sair do formulário.",2026-11-26T16:13:55.610Z
+NAV-07,Recusar agendamento passado,PASSOU,"Data 25/11/2026, 09:00 foi preenchida por controles nativos; validação exige data e horário futuros. Tentativas anteriores de fill em date/time não preencheram os campos e não foram contadas como defeito.",2026-11-26T16:14:58.679Z
+NAV-08,Criar consulta válida,PASSOU,"Recepção criou Paciente Fictício Ativo / Dentista Fictício, 27/11/2026, 09:00–09:30. Mensagem de sucesso e uma linha Agendada.",2026-11-26T16:15:17.266Z
+NAV-09,Consultar os detalhes,PASSOU,"Consulta nº 6 apresenta participantes, 27/11/2026 09:00–09:30, duração, estado e observação salvos.",2026-11-26T16:15:32.041Z
+NAV-10,Editar duração e observação,PASSOU,Consulta nº 6 alterada para 45 minutos; horário final 09:45 e aviso de reagendamento exibidos.,2026-11-26T16:15:44.857Z
+NAV-11,Recepção confirma consulta,PASSOU,Situação passou de Agendada para Confirmada; ação Confirmar desapareceu.,2026-11-26T16:15:54.147Z
+NAV-12,Persistência após recarregar a página,PASSOU,"Após reload e nova abertura da Agenda, consulta nº 6 continua Confirmada com 45 minutos.",2026-11-26T16:15:55.671Z
+NAV-13,Recusar sobreposição do mesmo dentista,PASSOU,"Paciente distinto no mesmo horário 27/11 09:00: formulário preservado, horário indisponível e mensagem de conflito exibidos.",2026-11-26T16:16:18.557Z
+NAV-14,Aceitar intervalos adjacentes,PASSOU,Consulta B às 09:45–10:15 foi aceita imediatamente após A 09:00–09:45 para o mesmo dentista. Duas linhas na agenda.,2026-11-26T16:16:31.487Z
+NAV-15,Filtrar por dentista,PASSOU,Selecionar o segundo dentista retorna zero no período; nenhuma consulta do primeiro permaneceu na tabela.,2026-11-26T16:16:31.672Z
+NAV-16,Filtrar por situação,PASSOU,Filtro Confirmada retorna somente a consulta A; consulta B Agendada não aparece.,2026-11-26T16:16:31.885Z
+NAV-17,Filtrar por período,PASSOU,"Data inicial alterada pelo calendário para 28/11: consulta de 27/11 desaparece, com resultado vazio coerente.",2026-11-26T16:16:54.099Z
+NAV-18,Recusar período de filtro invertido,PASSOU,"Com data inicial 28/11 e final 02/11, mensagem informa que a data final deve ser igual ou posterior à inicial.",2026-11-26T16:17:00.896Z
+NAV-19,Desistir do cancelamento,PASSOU,Diálogo informa preservação do histórico. Cancelar o diálogo manteve a consulta Confirmada.,2026-11-26T16:17:34.253Z
+NAV-20,Cancelar e preservar no histórico,PASSOU,"Confirmar o diálogo removeu a consulta do filtro Confirmada. No filtro Cancelada, a mesma consulta continua listada sem ações de edição.",2026-11-26T16:17:42.312Z
+NAV-21,Consultar cancelada sem edição,PASSOU,"Detalhes da consulta nº 6 preservam a observação editada, participantes e horário; nenhum botão Editar, Confirmar ou Cancelar é oferecido.",2026-11-26T16:17:53.097Z
+NAV-22,Liberar horário após cancelar,PASSOU,"Nova consulta C, 27/11 09:00–09:30, foi aceita para o primeiro dentista após cancelamento de A; histórico cancelado continua na lista.",2026-11-26T16:18:09.603Z
+NAV-23,Permitir o mesmo horário para dentistas distintos,PASSOU,"Consulta D 27/11 09:00 foi aceita para o segundo dentista, mantendo C no mesmo horário para o primeiro.",2026-11-26T16:18:22.494Z
+NAV-24,Encerrar a sessão da recepção,PASSOU,Sair retornou à tela de login; a Agenda deixou de ser exibida.,2026-11-26T16:18:23.156Z
+NAV-25,Dentista vê somente sua agenda,PASSOU,"Dentista Fictício vê três consultas da semana (A, B, C); consulta D de outro dentista não aparece. Não há Nova consulta, filtro por dentista ou Editar.",2026-11-26T16:18:36.913Z
+NAV-26,Ocultar conclusão e ausência antes do horário,PASSOU,"Após incluir passado e futuro na lista, botões Concluir/Registrar ausência aparecem apenas nas duas consultas cujo horário já iniciou.",2026-11-26T16:18:51.909Z
+NAV-27,Dentista conclui consulta passada,PASSOU,Dentista confirmou diálogo; consulta fictícia nº 3 passou de SCHEDULED a COMPLETED. Esse é o contrato da base PR18/e49a3ce e não comprova regras clínicas das outras branches.,2026-11-26T16:18:59.430Z
+NAV-28,Dentista registra ausência passada,PASSOU,Consulta fictícia nº 4 passou de CONFIRMED a NO_SHOW e perdeu ações de alteração.,2026-11-26T16:19:09.468Z
+NAV-29,Administrador consulta a agenda da clínica,PASSOU,"Administrador autenticado visualiza as quatro consultas da semana, incluindo as dos dois dentistas, sem reaproveitar filtro clínico do dentista.",2026-11-26T16:19:11.660Z
+NAV-30,Recusar edição com sobreposição,PASSOU,"Mover B para 09:15 gerou mensagem de conflito e manteve o formulário, com texto e seleção preservados.",2026-11-26T16:19:56.946Z
+NAV-31,Preservar consulta após edição recusada,PASSOU,"Ao sair da edição recusada, B continua na listagem às 09:45–10:15. Nenhuma alteração parcial aparece.",2026-11-26T16:19:57.554Z

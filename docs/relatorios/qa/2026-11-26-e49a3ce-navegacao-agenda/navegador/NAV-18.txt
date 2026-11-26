@@ -1,0 +1,5 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			23 date field (settable) Data final, Value: 2026-11-02
+~			44 text A data final deve ser igual ou posterior à data inicial.
+The focused UI element is 27 stepper

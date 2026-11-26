@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "appointments": 9,
+  "new_appointments": 4,
+  "rejected_create_added_rows": false,
+  "rejected_edit_changed_record": false,
+  "statuses_verified": [
+    3,
+    4,
+    6,
+    7,
+    8,
+    9
+  ],
+  "timezone_verified": "America/Sao_Paulo UTC-03:00; 09:45 local = 12:45 UTC",
+  "first_attempt": "verification-first-attempt.txt"
+}
