@@ -271,11 +271,11 @@ def install(app):
                      limit:int=Query(50,ge=1,le=100),offset:int=Query(0,ge=0),
                      user=Depends(m.access_user),db=Depends(m.db_dep)):
         require_role(user,'ADMINISTRATOR')
-        return m.allrows(db,'''SELECT * FROM clinical_access_links WHERE clinic_id=:clinic
-            AND (CAST(:patient AS INTEGER) IS NULL OR patient_id=:patient)
-            AND (CAST(:dentist AS INTEGER) IS NULL OR dentist_id=:dentist)
-            ORDER BY id LIMIT :limit OFFSET :offset''',clinic=user['clinic_id'],patient=patient_id,
-            dentist=dentist_id,limit=limit,offset=offset)
+        from app.clinical_patients_repository import read_administrative_links
+        return read_administrative_links(
+            db,clinic_id=user['clinic_id'],patient_id=patient_id,
+            dentist_id=dentist_id,limit=limit,offset=offset)
+
 
     @router.get('/access-events',tags=['Acesso clínico'])
     def access_events(link_id:int|None=None,limit:int=Query(50,ge=1,le=100),offset:int=Query(0,ge=0),

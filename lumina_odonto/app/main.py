@@ -420,6 +420,10 @@ def reset_clinical(body: PasswordReset, user=Depends(access_user), db: Session =
 from app.crud import install as install_crud
 install_crud(app)
 
+# As rotas clínicas precisam constar da captura de rotas estáticas do logger.
+from app.clinical_patients import install as install_clinical_patients
+install_clinical_patients(app)
+
 # A política é instalada após registrar as rotas e antes de receber requisições.
 from app.logging_policy import install_logging_policy
 install_logging_policy(app)

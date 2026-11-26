@@ -17,7 +17,7 @@ recebido é informada por Paulo; não foi inventada autoria Git para ele.
 
 O código consolidado está em `lumina_odonto/`, no commit
 `21cefa608327fa157938308a4c9e16fbfa3a6eb4`.
-Seus **22 arquivos correspondem byte a byte à candidata final validada**,
+Os **22 arquivos daquele commit correspondem byte a byte à candidata final validada**,
 com manifesto canônico
 `e3b28488163b174758f7e3782dbe916b0cc1cf8120cadf5a3cd5da79200e2825`.
 O mapa está em [manifesto-pacote-aprovado.json](manifesto-pacote-aprovado.json).
@@ -79,24 +79,25 @@ pode resolver versões diferentes das registradas nos relatórios.
 
 ## Conferência do conteúdo versionado
 
-A partir da raiz deste checkout, a comparação abaixo lê os arquivos sem
-iniciar API ou banco:
+O manifesto abaixo identifica o snapshot histórico consolidado em
+21cefa6. As rotas clínicas acrescentadas posteriormente são uma revisão
+funcional nova e têm evidências próprias. Para verificar o pacote histórico,
+leia os blobs desse commit, independentemente das alterações atuais:
 
 ```bash
 python3 - <<'PY'
+import hashlib, json, subprocess
 from pathlib import Path
-import hashlib, json
-root = Path.cwd()
-manifest = json.loads((root / 'docs/relatorios/prontuario-correcoes-qa-2026-11-26/manifesto-pacote-aprovado.json').read_text())
+manifest = json.loads(Path('docs/relatorios/prontuario-correcoes-qa-2026-11-26/manifesto-pacote-aprovado.json').read_text())
 for name, expected in manifest.items():
-    assert hashlib.sha256((root / 'lumina_odonto' / name).read_bytes()).hexdigest() == expected, name
-print(f'{len(manifest)} arquivos correspondem ao pacote aprovado.')
+    blob = subprocess.check_output(['git', 'show', '21cefa6:lumina_odonto/' + name])
+    assert hashlib.sha256(blob).hexdigest() == expected, name
+print(f'{len(manifest)} arquivos do snapshot histórico correspondem ao pacote aprovado.')
 PY
 ```
 
-Esta conferência foi executada durante a consolidação, inclusive sobre os
-blobs preparados para commit. Não constitui uma nova rodada funcional.
-Nenhum arquivo de aplicação foi alterado depois da aprovação do QA.
+Essa comparação não atribui o parecer antigo ao código funcional posterior.
+As evidências originais das subpastas permanecem históricas.
 
 ## O que permanece pendente
 

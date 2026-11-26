@@ -1,6 +1,7 @@
 """Política de logs Uvicorn sem valores clínicos de URLs ou exceções."""
 
 import logging
+from starlette.routing import compile_path
 
 _METHODS = {"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"}
 _SERVER_EVENTS = {
@@ -39,9 +40,9 @@ class ClinicalAccessFilter(logging.Filter):
                 status = supplied_status
             if isinstance(supplied_path, str):
                 supplied_path = supplied_path.split("?", 1)[0]
-                for route in self.routes:
-                    if route.path_regex.fullmatch(supplied_path):
-                        path = route.path
+                for route_path, path_regex in self.routes:
+                    if path_regex.fullmatch(supplied_path):
+                        path = route_path
                         break
         record.msg = '%s - "%s %s HTTP/%s" %d'
         record.args = ("-", method, path, version, status)
@@ -75,7 +76,13 @@ def install_logging_policy(app):
     Uvicorn configura seus loggers antes de importar a aplicação. Os filtros
     atuam antes dos formatters e não dependem de flags externas do ensaio.
     """
-    routes = tuple(route for route in app.routes if hasattr(route, "path_regex"))
+    # FastAPI pode manter routers incluídos indiretamente em app.routes.
+    # O contrato público fornece também seus caminhos já prefixados.
+    routes = {route.path: route.path_regex for route in app.routes
+              if hasattr(route, "path_regex")}
+    for path in app.openapi()["paths"]:
+        routes.setdefault(path, compile_path(path)[0])
+    routes = tuple(routes.items())
     for name, policy in (
         ("uvicorn.access", ClinicalAccessFilter(routes)),
         ("uvicorn.error", ClinicalServerFilter()),

@@ -57,6 +57,14 @@ dois fatores independentes. Redefinições/inativação podem invalidar tokens
 antes do horário de expiração. Evitar logs de tokens, senha, conteúdo de
 rascunho e URL completa de busca em ferramentas do frontend.
 
+## Selecionar paciente após desbloquear
+
+GET /api/v1/clinical/patients usa o mesmo clinical_token, derivando o dentista
+da sessão. Para identificar o paciente selecionado, GET
+/api/v1/clinical/patients/{patient_id}. Vínculo manual sem consulta também
+aparece. Ver [DTOs, paginação e administração](clinical-patients-and-links.md).
+O admin continua usando access_token em /access-links e /admin/access.
+
 ## Pesquisa no histórico do paciente
 
 GET `/api/v1/clinical/search?patient_id=7&q=limpeza&engine_name=auto&offset=0`

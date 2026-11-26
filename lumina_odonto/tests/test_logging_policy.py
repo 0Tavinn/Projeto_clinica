@@ -30,6 +30,8 @@ def test_exception_and_message_are_not_rendered(name, caplog):
     ("/api/v1/clinical/search?q=PRIVATE_LOG_SENTINEL", "/api/v1/clinical/search"),
     ("/api/v1/patients/123/record?q=PRIVATE_LOG_SENTINEL", "/api/v1/patients/{patient_id}/record"),
     ("/unknown/PRIVATE_LOG_SENTINEL?q=PRIVATE_LOG_SENTINEL", "[unmatched]"),
+    ("/api/v1/clinical/patients?q=PRIVATE_LOG_SENTINEL", "/api/v1/clinical/patients"),
+    ("/api/v1/clinical/patients/123?q=PRIVATE_LOG_SENTINEL", "/api/v1/clinical/patients/{patient_id}"),
 ])
 def test_access_keeps_operational_fields_without_values(request_path, route, version, caplog):
     with caplog.at_level(logging.INFO):

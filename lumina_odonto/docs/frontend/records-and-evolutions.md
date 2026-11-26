@@ -5,6 +5,13 @@ Fonte: `app/main.py`, `app/crud.py` e `sql/schema.sql` da candidata consolidada.
 Todos os exemplos abaixo usam `Authorization: Bearer <clinical_token>`.
 IDs, datas e conteúdo são fictícios; os exemplos não são capturas do QA.
 
+## Selecionar paciente e montar cabeçalho
+
+Usar GET /api/v1/clinical/patients e GET /api/v1/clinical/patients/{patient_id}
+com token clínico. Incluem vínculo manual e prontuário vazio, sem exigir
+consulta ou evolução. O DTO mínimo, cursor e erros estão no
+[contrato de pacientes clínicos e vínculos](clinical-patients-and-links.md).
+
 ## Prontuário existente ou vazio
 
 GET `/api/v1/patients/7/record` → 200:

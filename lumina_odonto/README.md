@@ -26,6 +26,7 @@ Acesse `http://localhost:8000/docs`. A configuração do Docker utiliza `db` com
 | Dentistas | `GET /dentists`, `GET /dentists/{id}`, `POST /dentists`, `PATCH /dentists/{id}` | Leitura autenticada; escrita admin |
 | Pacientes | `GET /patients`, `GET /patients/{id}`, `POST /patients`, `PATCH /patients/{id}`, `DELETE /patients/{id}` (desativação) | Recepção/admin; desativação admin |
 | Agenda | `GET /appointments`, `GET /appointments/{id}`, `POST /appointments`, `PATCH /appointments/{id}`, `DELETE /appointments/{id}` (cancelamento) | Recepção/admin; dentista lê sua agenda |
+| Pacientes clínicos | GET /clinical/patients, GET /clinical/patients/{patient_id} | Token clínico e vínculo ativo do próprio dentista; DTO mínimo |
 | Prontuários | `GET /patients/{id}/record`, `GET /patients/{id}/record/summary`, `PATCH /patients/{id}/record` | Dentista com token clínico e vínculo ativo |
 | Evoluções | `GET /patients/{id}/evolutions`, `GET /evolutions/{id}`, `POST /evolutions`, `PATCH /evolutions/{id}`, `POST /evolutions/{id}/finalize` | Dentista autorizado; somente autor edita rascunho |
 | Acesso clínico | `POST /admin/access`, `GET /access-links`, `GET /access-events` | Admin |
@@ -89,3 +90,6 @@ A política cobre os loggers Uvicorn configurados no pacote. Proxy,
 coletores externos, futuras rotas que imprimam dados e configurações de
 logging externas posteriores à importação exigem revisão própria.
 Não habilite SQL echo, dump de headers/corpos ou logs brutos da URL.
+
+As novas leituras de identificação e o array administrativo enriquecido estão
+detalhados em [Pacientes clínicos e vínculos](docs/frontend/clinical-patients-and-links.md).
