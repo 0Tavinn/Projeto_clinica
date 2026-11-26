@@ -63,6 +63,11 @@ class Page(Strict):
     offset: int = Field(default=0, ge=0)
 
 
+def appointment_dto(row):
+    # scheduled_period is an internal PostgreSQL range, not a public field.
+    return {k: v for k, v in row.items() if k != 'scheduled_period'}
+
+
 def install(app):
     from app import main as m
     def require_role(user, *roles):
@@ -74,8 +79,11 @@ def install(app):
             if row is None:
                 raise HTTPException(404, 'Registro não encontrado')
             m.audit(db, user['id'], action, resource, str(identifier if identifier is not None else row['id']))
+            result = appointment_dto(row) if resource == "appointment" else dict(row)
+            if resource == "user":
+                result = {k: v for k, v in result.items() if k not in ("password_hash", "clinical_password_hash", "session_version", "clinical_version")}
             db.commit()
-            return dict(row)
+            return result
         except IntegrityError:
             db.rollback()
             raise HTTPException(409, 'Conflito de integridade ou duplicidade')
@@ -206,11 +214,11 @@ def install(app):
         require_role(user,'ADMINISTRATOR','RECEPTIONIST','DENTIST')
         if user['role']=='DENTIST':
             dentist_id=m.dentist_for(db,user)
-        return m.allrows(db,'''SELECT a.* FROM appointments a WHERE a.clinic_id=:clinic
-            AND (:patient IS NULL OR a.patient_id=:patient)
-            AND (:dentist IS NULL OR a.dentist_id=:dentist)
+        return [appointment_dto(row) for row in m.allrows(db,'''SELECT a.* FROM appointments a WHERE a.clinic_id=:clinic
+            AND (CAST(:patient AS INTEGER) IS NULL OR a.patient_id=:patient)
+            AND (CAST(:dentist AS INTEGER) IS NULL OR a.dentist_id=:dentist)
             ORDER BY a.scheduled_at DESC LIMIT :limit OFFSET :offset''',
-            clinic=user['clinic_id'],patient=patient_id,dentist=dentist_id,limit=limit,offset=offset)
+            clinic=user['clinic_id'],patient=patient_id,dentist=dentist_id,limit=limit,offset=offset)]
 
     @router.get('/appointments/{appointment_id}',tags=['Agendamentos'])
     def appointment_get(appointment_id:int,user=Depends(m.access_user),db=Depends(m.db_dep)):
@@ -219,7 +227,7 @@ def install(app):
         m.require(row is not None,404,'Agendamento não encontrado')
         if user['role']=='DENTIST':
             m.require(row['dentist_id']==m.dentist_for(db,user),403,'Sem acesso a este agendamento')
-        return dict(row)
+        return appointment_dto(row)
 
     @router.patch('/appointments/{appointment_id}',tags=['Agendamentos'])
     def appointment_update(appointment_id:int,body:AppointmentPatch,user=Depends(m.access_user),db=Depends(m.db_dep)):
@@ -264,8 +272,8 @@ def install(app):
                      user=Depends(m.access_user),db=Depends(m.db_dep)):
         require_role(user,'ADMINISTRATOR')
         return m.allrows(db,'''SELECT * FROM clinical_access_links WHERE clinic_id=:clinic
-            AND (:patient IS NULL OR patient_id=:patient)
-            AND (:dentist IS NULL OR dentist_id=:dentist)
+            AND (CAST(:patient AS INTEGER) IS NULL OR patient_id=:patient)
+            AND (CAST(:dentist AS INTEGER) IS NULL OR dentist_id=:dentist)
             ORDER BY id LIMIT :limit OFFSET :offset''',clinic=user['clinic_id'],patient=patient_id,
             dentist=dentist_id,limit=limit,offset=offset)
 
@@ -274,7 +282,7 @@ def install(app):
                       user=Depends(m.access_user),db=Depends(m.db_dep)):
         require_role(user,'ADMINISTRATOR')
         return m.allrows(db,'''SELECT e.* FROM clinical_access_events e JOIN clinical_access_links l ON l.id=e.link_id
-            WHERE l.clinic_id=:clinic AND (:link IS NULL OR e.link_id=:link)
+            WHERE l.clinic_id=:clinic AND (CAST(:link AS INTEGER) IS NULL OR e.link_id=:link)
             ORDER BY e.id DESC LIMIT :limit OFFSET :offset''',
             clinic=user['clinic_id'],link=link_id,limit=limit,offset=offset)
 

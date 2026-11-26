@@ -30,7 +30,7 @@ Acesse `http://localhost:8000/docs`. A configuração do Docker utiliza `db` com
 | Evoluções | `GET /patients/{id}/evolutions`, `GET /evolutions/{id}`, `POST /evolutions`, `PATCH /evolutions/{id}`, `POST /evolutions/{id}/finalize` | Dentista autorizado; somente autor edita rascunho |
 | Acesso clínico | `POST /admin/access`, `GET /access-links`, `GET /access-events` | Admin |
 | Auditoria | `GET /audit-logs` | Admin |
-| Pesquisa | `GET /clinical/search?q=...&engine_name=auto` | Dentista com token clínico |
+| Pesquisa | `GET /clinical/search?patient_id=1&q=...&engine_name=auto` | Dentista com token clínico |
 | Senhas | `POST /admin/users/{id}/reset-login-password` | Admin |
 
 **Exclusão física não é oferecida** para registros clínicos, eventos, auditoria ou vínculos, para preservar o histórico. Pacientes e usuários são desativados; agendamentos são cancelados. Os eventos de acesso são imutáveis por gatilho PostgreSQL. Paciente e prontuário são criados na mesma transação; agendamento, concessão/reativação de vínculo e evento também.
@@ -45,7 +45,7 @@ Acesse `http://localhost:8000/docs`. A configuração do Docker utiliza `db` com
 
 ## OpenCL
 
-A pesquisa seleciona os candidatos autorizados no PostgreSQL **antes** de transferir descrições ao motor de busca. O parâmetro `engine_name=auto` tenta OpenCL e utiliza CPU quando o runtime não está disponível; `cpu` força busca sequencial; `opencl` exige OpenCL e devolve HTTP 503 se indisponível. O Dockerfile instala POCL para OpenCL via CPU; aceleração em GPU física requer drivers e exposição explícita do dispositivo. O processamento é literal, insensível a maiúsculas e acentos. A pesquisa tem limite de 1.000 candidatos por requisição: não equivale a busca paginada de todo o histórico.
+A pesquisa seleciona os candidatos autorizados no PostgreSQL **antes** de transferir descrições ao motor de busca. O parâmetro `engine_name=auto` tenta OpenCL e utiliza CPU quando o runtime não está disponível; `cpu` força busca sequencial; `opencl` exige OpenCL e devolve HTTP 503 se indisponível. O Dockerfile instala POCL para OpenCL via CPU; aceleração em GPU física requer drivers e exposição explícita do dispositivo. O processamento é literal, insensível a maiúsculas e acentos. A pesquisa exige `patient_id`, processa até 1.000 candidatos por página e retorna `next_offset` quando há mais candidatos. `total` conta os resultados da página. O orçamento de bytes retorna 413; termo vazio após normalização retorna 422 em todos os motores. A autorização é conferida antes e depois do processamento.
 
 ## Estrutura
 
@@ -59,4 +59,33 @@ A pesquisa seleciona os candidatos autorizados no PostgreSQL **antes** de transf
 
 ## Importante para implantação
 
-O pacote está **preparado para integração com o frontend**, mas **não está homologado para produção**. Não foram fornecidas as revisões originais Alembic, portanto não foram inventadas migrações históricas. O `verify_disposable.sh` original exige esses arquivos para executar a suíte completa. São necessários testes reais de concorrência, segurança, permissões e LGPD, estratégia de backup/restauração, migrações versionadas e revisão do uso de dados clínicos antes de usar pacientes reais. A aplicação não cria ou altera tabelas automaticamente em runtime.
+O pacote está **candidato a reteste de QA**, mas **não está homologado para produção**. Não foram fornecidas as revisões originais Alembic, portanto não foram inventadas migrações históricas. O `verify_disposable.sh` original exige esses arquivos para executar a suíte completa. São necessários testes reais de concorrência, segurança, permissões e LGPD, estratégia de backup/restauração, migrações versionadas e revisão do uso de dados clínicos antes de usar pacientes reais. A aplicação não cria ou altera tabelas automaticamente em runtime.
+
+## Reteste
+
+Execute `docker compose config` após copiar `.env.example`. Para testes: `docker compose run --rm api python -m pytest -q` (imagem inclui dependências de teste). Consulte `QA_CORRECOES.md`.
+
+## Política de logs da API — correção N05-LOG
+
+Ao importar app.main:app, a API instala a política de app/logging_policy.py.
+Ela se aplica ao CMD original da imagem e à execução uvicorn app.main:app,
+sem exigir configuração externa para remover querystrings.
+
+O access log mantém método, rota estática e status HTTP. Descarta valores
+da querystring, parâmetros de caminho, endereço do cliente e mensagens
+originais. Uma rota desconhecida aparece como [unmatched]. O log do servidor
+mantém eventos operacionais e o nível de gravidade, mas omite mensagens
+arbitrárias e traceback, que podem carregar termos de busca ou dados SQL.
+Isso reduz o detalhe disponível no stdout/stderr; investigar falhas exige
+reprodução controlada com dados fictícios, sem habilitar logs brutos em
+ambiente clínico.
+
+Nenhuma entrada clínica, corpo, token ou senha é adicionada aos logs por
+esta política. O contrato da busca e as respostas autorizadas permanecem
+iguais. Uma resposta200 pode conter conteúdo clínico autorizado.
+Os handlers422 continuam sanitizando erros de entrada.
+
+A política cobre os loggers Uvicorn configurados no pacote. Proxy,
+coletores externos, futuras rotas que imprimam dados e configurações de
+logging externas posteriores à importação exigem revisão própria.
+Não habilite SQL echo, dump de headers/corpos ou logs brutos da URL.

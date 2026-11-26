@@ -3,7 +3,9 @@ from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 import os
 import jwt
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request, Query
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
@@ -11,16 +13,30 @@ from pwdlib import PasswordHash
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
-from app.opencl_search import OpenCLSearch, OpenCLUnavailable, sequential_search
+from app.opencl_search import OpenCLSearch, OpenCLUnavailable, sequential_search, normalize
+from app.config import settings
 
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql+psycopg://lumina:lumina@localhost:5432/lumina')
-JWT_SECRET = os.getenv('JWT_SECRET', '')
+DATABASE_URL = settings.database_url
+JWT_SECRET = settings.jwt_secret
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine)
 hasher = PasswordHash.recommended()
 bearer = HTTPBearer(auto_error=False)
 app = FastAPI(title='Lumina Odonto - API REST', version='2.0.0')
 app.add_middleware(CORSMiddleware, allow_origins=[x.strip() for x in os.getenv('CORS_ORIGINS','http://localhost:3000').split(',') if x.strip()], allow_methods=['GET','POST','PATCH','DELETE'], allow_headers=['Authorization','Content-Type'])
+
+@app.exception_handler(RequestValidationError)
+async def private_validation_error(request: Request, exc: RequestValidationError):
+    # Never return input, context, custom messages or arbitrary field names.
+    known = {'body', 'query', 'path', 'header', 'patient_id', 'dentist_id',
+             'description', 'notes', 'procedure_performed', 'appointment_id',
+             'version', 'q', 'engine_name', 'offset', 'limit', 'email', 'password',
+             'new_password', 'scheduled_at', 'duration_minutes', 'status',
+             'full_name', 'cpf', 'birth_date', 'medical_record_number', 'action'}
+    return JSONResponse(status_code=422, content={'detail': [
+        {'loc': [part if isinstance(part, str) and part in known else 'field'
+                 for part in error['loc']], 'msg': 'Campo ausente ou inválido',
+         'type': 'validation_error'} for error in exc.errors()]})
 
 class Login(BaseModel):
     email: str
@@ -45,12 +61,12 @@ class EvolutionIn(BaseModel):
     procedure_performed: str | None = None
     notes: str | None = None
 class EvolutionPatch(BaseModel):
-    version: int = Field(ge=1)
+    version: int = Field(ge=1, strict=True)
     description: str | None = None
     procedure_performed: str | None = None
     notes: str | None = None
 class FinalizeIn(BaseModel):
-    version: int = Field(ge=1)
+    version: int = Field(ge=1, strict=True)
 class AdminAccess(BaseModel):
     patient_id: int
     dentist_id: int
@@ -107,15 +123,15 @@ def dentist_for(db, user):
     require(d is not None, 403, 'Perfil profissional inexistente')
     return d['id']
 
-def patient_for(db, clinic_id, patient_id):
-    p = one(db, 'SELECT * FROM patients WHERE id=:id AND clinic_id=:clinic AND is_active',
+def patient_for(db, clinic_id, patient_id, active=True):
+    p = one(db, 'SELECT * FROM patients WHERE id=:id AND clinic_id=:clinic' + (' AND is_active' if active else ''),
             id=patient_id, clinic=clinic_id)
     require(p is not None, 404, 'Paciente não encontrado')
     return p
 
-def dentist_in_clinic(db, clinic_id, dentist_id):
+def dentist_in_clinic(db, clinic_id, dentist_id, active=True):
     d = one(db, '''SELECT d.id FROM dentists d JOIN users u ON u.id=d.user_id
-        WHERE d.id=:id AND u.clinic_id=:clinic AND u.is_active AND u.role='DENTIST' ''',
+        WHERE d.id=:id AND u.clinic_id=:clinic AND u.role='DENTIST' ''' + (' AND u.is_active' if active else ''),
         id=dentist_id, clinic=clinic_id)
     require(d is not None, 422, 'Dentista incompatível com a clínica')
 
@@ -127,10 +143,19 @@ def link_for(db, clinic_id, patient_id, dentist_id, lock=False):
     return one(db, query, clinic=clinic_id, patient=patient_id, dentist=dentist_id)
 
 def allowed(db, user, patient_id, lock=False):
-    patient_for(db, user['clinic_id'], patient_id)
+    # Check the current state, not the identity snapshot from token decoding.
     dentist = dentist_for(db, user)
     link = link_for(db, user['clinic_id'], patient_id, dentist, lock)
     require(link and link['status'] == 'ACTIVE', 403, 'Acesso clínico não autorizado')
+    current = one(db, 'SELECT * FROM users WHERE id=:id', id=user['id'])
+    require(current and current['is_active'] and current['role'] == 'DENTIST'
+            and current['clinic_id'] == user['clinic_id']
+            and current['session_version'] == user['session_version']
+            and current['clinical_version'] == user['clinical_version'], 401, 'Sessão inválida')
+    clinic = one(db, 'SELECT is_active FROM clinics WHERE id=:id', id=user['clinic_id'])
+    require(clinic and clinic['is_active'], 403, 'Clínica inativa')
+    patient_for(db, user['clinic_id'], patient_id)
+    require(dentist_for(db, user) == dentist, 403, 'Perfil profissional alterado')
     return dentist
 
 def record_for(db, patient_id):
@@ -144,10 +169,12 @@ def audit(db, user_id, action, resource, details=''):
 
 def change_link(db, actor, patient_id, dentist_id, source, action=None, appointment=None):
     clinic = actor['clinic_id']
-    patient_for(db, clinic, patient_id)
-    dentist_in_clinic(db, clinic, dentist_id)
+    revoking = source == "ADMIN" and action == "REVOKED"
+    patient_for(db, clinic, patient_id, active=not revoking)
+    dentist_in_clinic(db, clinic, dentist_id, active=not revoking)
     # Lock de paciente serializa criação e alteração do vínculo para o mesmo paciente.
     db.execute(text('SELECT id FROM patients WHERE id=:id FOR UPDATE'), {'id': patient_id})
+    patient_for(db, clinic, patient_id, active=not revoking)
     link = link_for(db, clinic, patient_id, dentist_id, lock=True)
     if source == 'APPOINTMENT':
         require(appointment is not None, 422, 'Consulta necessária')
@@ -330,34 +357,40 @@ def opencl_engine():
     return OpenCLSearch()
 
 @app.get('/api/v1/clinical/search')
-def search(q: str, engine_name: str = 'auto', user=Depends(clinical_user), db: Session = Depends(db_dep)):
-    require(0 < len(q.strip()) <= 128, 422, 'Termo deve ter entre 1 e 128 caracteres')
+def search(q: str, patient_id: int = Query(gt=0), engine_name: str = 'auto',
+           offset: int = Query(0, ge=0), user=Depends(clinical_user), db: Session = Depends(db_dep)):
+    require(0 < len(q.strip()) <= 128 and bool(normalize(q).strip()), 422, 'Termo inválido')
     require(engine_name in ('auto','cpu','opencl'), 422, 'Motor inválido')
-    dentist = dentist_for(db, user)
-    # A consulta SQL restringe clínica, vínculo ativo e privacidade dos rascunhos ANTES de usar OpenCL.
-    rows = allrows(db, '''SELECT e.id,e.description,e.status,e.dentist_id,r.patient_id
+    # Wait for any existing revocation BEFORE fetching clinical content.
+    dentist = allowed(db, user, patient_id, lock=True)
+    rows = allrows(db, """SELECT e.id,e.description,e.status,e.dentist_id,r.patient_id
         FROM clinical_evolutions e JOIN medical_records r ON r.id=e.medical_record_id
-        JOIN patients p ON p.id=r.patient_id
-        JOIN clinical_access_links l ON l.patient_id=p.id AND l.clinic_id=p.clinic_id
-        WHERE p.clinic_id=:clinic AND p.is_active AND l.dentist_id=:dentist AND l.status='ACTIVE'
+        WHERE r.patient_id=:patient
           AND (e.status='FINALIZED' OR (e.status='DRAFT' AND e.dentist_id=:dentist))
-        ORDER BY e.id LIMIT 1000''', clinic=user['clinic_id'], dentist=dentist)
-    # Mantém locks compartilhados nos vínculos até a leitura ser concluída.
-    db.execute(text('''SELECT id FROM clinical_access_links WHERE clinic_id=:clinic AND dentist_id=:dentist
-        AND status='ACTIVE' FOR SHARE'''), {'clinic': user['clinic_id'], 'dentist': dentist}).all()
+        ORDER BY e.id LIMIT 1001 OFFSET :offset""", patient=patient_id, dentist=dentist, offset=offset)
+    more = len(rows) > 1000
+    rows = rows[:1000]
+    # Release locks during computation so a revocation can complete.
+    db.rollback()
     texts = [r['description'] for r in rows]
+    require(sum(len(normalize(t).encode('utf-8')) for t in texts) <= settings.opencl_max_text_bytes,
+            413, 'Lote excede orçamento de bytes')
     used = 'cpu'
     if engine_name != 'cpu':
         try:
             indexes = opencl_engine().search(texts, q)
             used = 'opencl'
-        except (OpenCLUnavailable, ValueError, RuntimeError) as exc:
+        except (OpenCLUnavailable, ValueError, RuntimeError):
             if engine_name == 'opencl':
-                raise HTTPException(503, f'OpenCL indisponível: {type(exc).__name__}')
+                raise HTTPException(503, 'OpenCL indisponível')
             indexes = sequential_search(texts, q)
     else:
         indexes = sequential_search(texts, q)
-    return {'engine': used, 'total': len(indexes), 'results': [rows[i] for i in indexes], 'candidate_limit': 1000}
+    # Fresh transaction, recheck authorization after the kernel and lock until
+    # response serialization. A revocation committed during compute wins.
+    require(allowed(db, user, patient_id, lock=True) == dentist)
+    return {'engine': used, 'total': len(indexes), 'results': [rows[i] for i in indexes],
+            'candidate_limit': 1000, 'offset': offset, 'next_offset': offset + 1000 if more else None}
 
 @app.post('/api/v1/admin/users/{user_id}/reset-login-password')
 def reset_login(user_id: int, body: PasswordReset, user=Depends(access_user), db: Session = Depends(db_dep)):
@@ -386,3 +419,7 @@ def reset_clinical(body: PasswordReset, user=Depends(access_user), db: Session =
 # Registro dos módulos REST adicionais (importação tardia evita ciclo de imports).
 from app.crud import install as install_crud
 install_crud(app)
+
+# A política é instalada após registrar as rotas e antes de receber requisições.
+from app.logging_policy import install_logging_policy
+install_logging_policy(app)
