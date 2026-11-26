@@ -1,0 +1,23 @@
+[
+  {
+    "name": "/lumina_nav04_review_20261126_0c2bed5f-api-1",
+    "id": "6b5edccf347d8eb1b51bb0db7ca58746f84bcd6f9f279af77bb5f0a72c79099e",
+    "image": "sha256:ed75aa72d7ba29c31e1ef3765dc00e137aaf5cb003048aa1bfaf80f95af8bd23",
+    "revision": "1a2ec6c519272840e31acf89996f882a9aaa71d7",
+    "health": "healthy"
+  },
+  {
+    "name": "/lumina_nav04_review_20261126_0c2bed5f-frontend-1",
+    "id": "85c59fae7e488e7b66315a3e47e9b34e33a1b79321c2e31005318c5efcd16d10",
+    "image": "sha256:c60464cb6c4d0d38762ab85749a000f81a3c648c57ca0d88aefed54ab7f629c4",
+    "revision": "1a2ec6c519272840e31acf89996f882a9aaa71d7",
+    "health": "healthy"
+  },
+  {
+    "name": "/lumina_nav04_review_20261126_0c2bed5f-db-1",
+    "id": "0e080427195a52f60273f16b0e304d72edfd0d569c225c0a0776e43ba0c16f1b",
+    "image": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+    "revision": null,
+    "health": "healthy"
+  }
+]

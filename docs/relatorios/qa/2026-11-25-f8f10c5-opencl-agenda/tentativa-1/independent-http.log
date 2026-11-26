@@ -1,0 +1,48 @@
+QA_HTTP {"expected": "200", "id": "HTTP-health", "obtained": 200, "status": "aprovado"}
+QA_HTTP {"expected": "200 contrato disponivel", "id": "HTTP-openapi", "obtained": 200, "status": "aprovado"}
+QA_HTTP {"expected": "401", "id": "HTTP-unauth", "obtained": 401, "status": "aprovado"}
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/clsregistry.py", line 516, in _resolve_name
+    rval = d[token]
+           ~^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_collections.py", line 340, in __missing__
+    self[key] = val = self.creator(key)
+                      ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/clsregistry.py", line 484, in _access_cls
+    return self.fallback[key]
+           ~~~~~~~~~~~~~^^^^^
+KeyError: 'MedicalRecord'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/qa/probe_http.py", line 32, in <module>
+    cl=Clinic(name="QA HTTP Agenda",cnpj="00000000009991",email="qa-http@example.test")
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 4, in __init__
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state.py", line 591, in _initialize_instance
+    manager.dispatch.init(self, args, kwargs)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/event/attr.py", line 516, in __call__
+    fn(*args, **kw)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/mapper.py", line 4420, in _event_on_init
+    instrumenting_mapper._check_configure()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/mapper.py", line 2411, in _check_configure
+    _configure_registries({self.registry}, cascade=True)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/mapper.py", line 4228, in _configure_registries
+    _do_configure_registries(registries, cascade)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/mapper.py", line 4269, in _do_configure_registries
+    mapper._post_configure_properties()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/mapper.py", line 2428, in _post_configure_properties
+    prop.init()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/interfaces.py", line 595, in init
+    self.do_init()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/relationships.py", line 1656, in do_init
+    self._setup_entity()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/relationships.py", line 1866, in _setup_entity
+    self._clsregistry_resolve_name(argument)(),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/clsregistry.py", line 520, in _resolve_name
+    self._raise_for_name(name, err)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/clsregistry.py", line 501, in _raise_for_name
+    raise exc.InvalidRequestError(
+sqlalchemy.exc.InvalidRequestError: When initializing mapper Mapper[Patient(patients)], expression 'MedicalRecord' failed to locate a name ('MedicalRecord'). If this is a class name, consider adding this relationship() to the <class 'app.patients.models.Patient'> class after both dependent classes have been defined.

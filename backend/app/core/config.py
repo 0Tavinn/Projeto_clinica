@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     DEBUG: bool = False
 
+    # O cotidiano usa a referência sequencial. Auto habilita OpenCL CPU com fallback.
+    APPOINTMENT_CONFLICT_ENGINE: Literal["auto", "sequential"] = "sequential"
+    APPOINTMENT_CONFLICT_BATCH_SIZE: int = Field(default=4096, ge=1, le=65536)
+
     # Exemplo PostgreSQL:
     # postgresql+psycopg://user:password@host:5432/database
     DATABASE_URL: str = Field(

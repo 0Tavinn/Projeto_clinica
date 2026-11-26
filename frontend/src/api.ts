@@ -22,6 +22,7 @@ export type UserCreatePayload = {
   full_name: string
   email: string
   password: string
+  clinical_password?: string
   cpf: string
   phone: string | null
   role: UserRole
@@ -101,10 +102,43 @@ export type PatientPayload = {
   address: string | null
 }
 
+export type MedicalRecord = {
+  id: number
+  patient_id: number
+  opened_at: string
+  updated_at: string
+  general_notes: string | null
+}
+
+export type ClinicalEvolution = {
+  id: number
+  medical_record_id: number
+  status: 'DRAFT' | 'FINALIZED'
+  recorded_at: string
+  finalized_at: string | null
+  created_at: string
+  description: string
+  procedure_performed: string | null
+  notes: string | null
+  appointment_id: number | null
+  dentist: {
+    id: number
+    full_name: string
+    cro_number: string
+    cro_state: string
+  }
+}
+
 type TokenPair = {
   access_token: string
   refresh_token: string
   token_type: 'bearer'
+}
+
+type ClinicalAccessToken = {
+  access_token: string
+  token_type: 'clinical'
+  expires_in: number
 }
 
 type ValidationIssue = {
@@ -291,7 +325,26 @@ export const authApi = {
   },
   logout() {
     sessionStorageService.clear()
+    clinicalSessionStorage.clear()
   },
+}
+
+const CLINICAL_TOKEN_KEY = 'lumina.clinical_access_token'
+const clinicalSessionStorage = {
+  get: () => sessionStorage.getItem(CLINICAL_TOKEN_KEY),
+  set: (token: string) => sessionStorage.setItem(CLINICAL_TOKEN_KEY, token),
+  clear: () => sessionStorage.removeItem(CLINICAL_TOKEN_KEY),
+}
+
+export const clinicalAccessApi = {
+  async unlock(clinicalPassword: string): Promise<void> {
+    const response = await apiRequest<ClinicalAccessToken>('/auth/clinical-access', {
+      method: 'POST',
+      body: JSON.stringify({ clinical_password: clinicalPassword }),
+    })
+    clinicalSessionStorage.set(response.access_token)
+  },
+  clear: clinicalSessionStorage.clear,
 }
 
 export const usersApi = {
@@ -316,6 +369,51 @@ export const patientsApi = {
   deactivate: (id: number) => apiRequest<void>(`/patients/${id}`, {
     method: 'DELETE',
   }),
+}
+
+export const recordsApi = {
+  get: (patientId: number) => clinicalApiRequest<MedicalRecord>(`/patients/${patientId}/record`),
+  listEvolutions: (patientId: number) => clinicalApiRequest<ClinicalEvolution[]>(
+    `/patients/${patientId}/evolutions`,
+  ),
+  createDraft: (payload: {
+    patient_id: number
+    description: string
+    procedure_performed?: string | null
+    notes?: string | null
+    appointment_id?: number | null
+  }) => clinicalApiRequest<ClinicalEvolution>('/patients/evolutions', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+  updateDraft: (id: number, payload: {
+    description?: string
+    procedure_performed?: string | null
+    notes?: string | null
+  }) => clinicalApiRequest<ClinicalEvolution>(`/patients/evolutions/${id}/draft`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  }),
+  finalize: (id: number) => clinicalApiRequest<ClinicalEvolution>(
+    `/patients/evolutions/${id}/finalize`,
+    { method: 'POST' },
+  ),
+}
+
+async function clinicalApiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = clinicalSessionStorage.get()
+  if (!token) {
+    throw new ApiError('Confirme a senha do prontuário para continuar.', 401)
+  }
+  const headers = new Headers(options.headers)
+  headers.set('Authorization', `Bearer ${token}`)
+  const response = await fetchApi(path, { ...options, headers })
+  if (!response.ok) {
+    if (response.status === 401) clinicalSessionStorage.clear()
+    throw await toApiError(response)
+  }
+  if (response.status === 204) return undefined as T
+  return response.json() as Promise<T>
 }
 
 function toQueryString(params: Record<string, string | number | undefined>): string {

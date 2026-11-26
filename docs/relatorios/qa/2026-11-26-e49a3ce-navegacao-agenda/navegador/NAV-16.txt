@@ -1,0 +1,26 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 89
+~			30 pop up button (collapsed, settable) Dentista, Value: Todos os dentistas, Secondary Actions: Expand
+~					32 (selected) Todos os dentistas
+~					34 Segundo Dentista QA Ficticio
+~			36 pop up button (collapsed, settable) Situação, Value: Confirmada, Secondary Actions: Expand
+~					38 Todas as situações
+~					40 (selected) Confirmada
+~			44 text 1 consultas encontradas
++				89 row
++					90 cell
++						91 button sex., 27/11
++						92 container
++							93 text 09:00 às 09:45  ·  45  min
++					94 cell
++						95 text Paciente Fictício Ativo
++					96 cell
++						97 text Dentista Fictício
++					98 cell
++						99 text Confirmada
++					100 cell
++						101 button Ver
++						102 button  Editar
++						103 button Cancelar
+The focused UI element is 1 AXWebArea Lumina Odonto, URL: localhost:18126/

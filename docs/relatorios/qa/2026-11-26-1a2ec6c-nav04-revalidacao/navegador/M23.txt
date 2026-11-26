@@ -1,0 +1,13 @@
+Browser tab: 3, Title: "Lumina Odonto", URL: "http://localhost:18146/".
+0 AXWebArea Lumina Odonto, URL: localhost:18146/
+	1 container Description: Menu principal, ID: mobile-navigation
+		2 button Fechar menu
+		3 container
+			4 text Lumina ODONTO
+			5 button Dashboard
+			6 button Pacientes
+			7 button Agenda
+			8 text RQ Recepcionista QA Revisao Recepcionista
+			9 button Sair
+
+The focused UI element is 2 button Fechar menu

@@ -1,0 +1,72 @@
+[
+  {
+    "label": "sequential-0",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 0
+  },
+  {
+    "label": "auto-0",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 0
+  },
+  {
+    "label": "auto-32",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 11
+  },
+  {
+    "label": "sequential-32",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 0
+  },
+  {
+    "label": "sequential-512",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 0
+  },
+  {
+    "label": "auto-512",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 11
+  },
+  {
+    "label": "auto-8192",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 11
+  },
+  {
+    "label": "sequential-8192",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 0
+  },
+  {
+    "label": "sequential-parallel",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 0
+  },
+  {
+    "label": "auto-parallel",
+    "exit": -15,
+    "new_process": true,
+    "cache_empty_before_first_request": true,
+    "cache_entries_after": 11
+  }
+]

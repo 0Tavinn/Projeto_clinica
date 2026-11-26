@@ -1,0 +1,108 @@
+Window: "Lumina Odonto - Brave", App: brave.exe.
+	0 window (janela) Lumina Odonto - Brave Secondary Actions: Raise
+		1 pane (painel) (disabled)
+		2 pane (região) Lumina Odonto - Brave
+			3 pane (região)
+				4 pane (região)
+					5 pane (região)
+						6 button (botão) Minimizar ID: view_1
+						1261 button (botão) Restaurar ID: view_3
+						8 button (botão) Fechar ID: view_4
+					9 pane (região)
+						10 pane (região)
+							11 toolbar (barra de ferramentas) ID: view_1000
+								12 button (botão) Voltar ID: view_1001
+								13 button (botão) (disabled) Avançar ID: view_1002
+								14 button (botão) Recarregar ID: view_1003
+								15 button (botão) Adicionar esta guia aos favoritos ID: view_1005
+								16 group (grupo)
+									17 button (botão) Ver informações do site ID: view_1011
+									18 text field (editar) (settable, string) Barra de endereço e de pesquisa Description: Pesquise no Brave ou digite o URL Value: localhost:18136 ID: view_1012
+									19 pane (região)
+										739 button (botão) Zoom: 90%
+									20 pane (região)
+										21 separator (separador) Separador
+										22 button (botão) Brave Shields
+										23 button (botão) Recompensas Brave
+								24 pane (região)
+									25 button (botão) Bitwarden Tem acesso a este site ID: view_1009
+									26 button (botão) Extensões ID: view_1006
+								27 button (botão) Mostrar barra lateral
+								28 button (botão) Brave Wallet
+								29 button (botão) Leo AI
+								30 button (botão) VPN
+								31 button (botão) Brave ID: view_1007
+							32 pane (região)
+						33 pane (região)
+							34 pane (região)
+								898 document (documento) DevTools Value: devtools://devtools/bundled/device_mode_emulation_frame.html?remoteBase=https://devtools.brave.com/serve_file/@80c75da68097f674d782368eae87463b89d1720/&targetType=tab&can_dock=true ID: RootWebArea
+									899 toolbar (barra de ferramentas)
+										900 text Dimensions:
+										901 combo box (caixa de combinação) (settable, string) Device type Description: Device type Value: Responsive
+										902 spinner (botão de rotação) (settable, float) Width Description: Width Value: 377
+										903 text ×
+										904 spinner (botão de rotação) (settable, float) Height (leave empty for full) Description: 780 Value: 780
+										905 combo box (caixa de combinação) (settable, string) Zoom Description: Zoom Value: Fit to window
+										906 combo box (caixa de combinação) (settable, string) Throttling Value: Disabled: No throttling
+										907 combo box (caixa de combinação) (settable, string) Value: 'Save-Data': default
+										908 button (botão) Rotate Description: Rotate
+									909 toolbar (barra de ferramentas)
+										910 button (botão) More options Description: More options
+									911 group (grupo)
+									912 group (grupo)
+									913 group (grupo)
+									914 group (grupo)
+									915 group (grupo)
+									916 group (grupo)
+									917 group (grupo)
+									918 image (gráfico)
+									919 image (gráfico)
+									920 image (gráfico)
+									921 image (gráfico)
+									922 group (grupo) Description: Double-click for full height
+										923 image (gráfico)
+								924 pane (região)
+								1021 document (documento) Lumina Odonto Value: http://localhost:18136/ ID: RootWebArea
+									1386 group (grupo) ID: root
+										1387 text Lumina
+										1388 text ODONTO
+										1389 text GESTÃO ODONTOLÓGICA
+										1390 text (título) Cuidado inteligente para cada sorriso.
+										1391 text Gestão simples, segura e próxima da sua clínica.
+										1392 text LUMINA ODONTO
+										1393 text (título) Acesso da clínica
+										1394 text Entre com o usuário cadastrado pela administração.
+										1395 text E-mail
+										1396 text field (editar) (settable, string) E-mail
+										1397 text Senha
+										1398 text field (editar) (settable, string) Senha
+										1399 button (botão) Entrar
+										1400 text Acesso destinado a usuários autorizados.
+						939 pane (região)
+							940 pane (região)
+								941 button (botão) Pesquisa em todas as guias
+							942 pane (região) ID: view_21
+								943 tab (tabulação)
+									944 tab item (item de tabulação) (selectable) Google Gemini ID: view_20
+									945 tab item (item de tabulação) (selectable) Uso da memória em feat(agenda): implementar OpenCL e padronizar ambiente de desenvolvimento by eiSerjao · Pull Request #19 · 0Tavinn/Projeto_clinica: 228 MB ID: view_20
+									946 tab item (item de tabulação) (selectable) Uso da memória em Lumina Odonto: 47,6 MB ID: view_20
+										947 button (botão) Fechar
+								948 pane (região)
+							949 button (botão) Nova guia
+							950 pane (região)
+						951 pane (região)
+						952 pane (região)
+						953 pane (região)
+							954 pane (região)
+								955 pane (região)
+								956 separator (separador)
+						957 pane (região)
+
+Document text: ```
+￼
+```
+
+Focused element: 18 text field (editar) (settable, string) Barra de endereço e de pesquisa Description: Pesquise no Brave ou digite o URL Value: localhost:18136 ID: view_1012
+
+Document text:
+￼

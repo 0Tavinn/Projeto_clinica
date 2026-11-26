@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Configure .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Configure .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configure .env}
+    ports:
+      - "127.0.0.1:${DB_PORT:-55432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 2s
+      timeout: 3s
+      retries: 40
+  api:
+    build:
+      context: ./backend
+      args:
+        SOURCE_COMMIT: ${SOURCE_COMMIT:-unknown}
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: development
+      DEBUG: "false"
+      APPOINTMENT_CONFLICT_ENGINE: ${APPOINTMENT_CONFLICT_ENGINE:-sequential}
+      APPOINTMENT_CONFLICT_BATCH_SIZE: ${APPOINTMENT_CONFLICT_BATCH_SIZE:-4096}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      SECRET_KEY: ${SECRET_KEY:?Configure .env}
+      CORS_ORIGINS: http://localhost:${FRONTEND_PORT:-8080},http://127.0.0.1:${FRONTEND_PORT:-8080}
+    ports:
+      - "127.0.0.1:${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        SOURCE_COMMIT: ${SOURCE_COMMIT:-unknown}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+volumes:
+  postgres_data:

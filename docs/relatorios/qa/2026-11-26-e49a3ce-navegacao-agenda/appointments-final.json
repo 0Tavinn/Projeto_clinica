@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "clinic_id": 1,
+    "patient_id": 1,
+    "dentist_id": 1,
+    "scheduled_at": "2030-01-15T13:00:00+00:00",
+    "duration_minutes": 30,
+    "status": "SCHEDULED",
+    "notes": "Consulta fictícia: concessão de vínculo ativo"
+  },
+  {
+    "id": 2,
+    "clinic_id": 1,
+    "patient_id": 2,
+    "dentist_id": 1,
+    "scheduled_at": "2026-10-15T13:00:00+00:00",
+    "duration_minutes": 30,
+    "status": "COMPLETED",
+    "notes": "Consulta fictícia antiga: vínculo posteriormente revogado"
+  },
+  {
+    "id": 3,
+    "clinic_id": 1,
+    "patient_id": 1,
+    "dentist_id": 1,
+    "scheduled_at": "2026-11-24T16:12:03.804262+00:00",
+    "duration_minutes": 30,
+    "status": "COMPLETED",
+    "notes": "QA navegacao: consulta passada para concluir"
+  },
+  {
+    "id": 4,
+    "clinic_id": 1,
+    "patient_id": 3,
+    "dentist_id": 1,
+    "scheduled_at": "2026-11-25T16:12:03.804262+00:00",
+    "duration_minutes": 30,
+    "status": "NO_SHOW",
+    "notes": "QA navegacao: consulta passada para ausencia"
+  },
+  {
+    "id": 5,
+    "clinic_id": 1,
+    "patient_id": 3,
+    "dentist_id": 2,
+    "scheduled_at": "2031-02-10T13:00:00+00:00",
+    "duration_minutes": 30,
+    "status": "SCHEDULED",
+    "notes": "QA navegacao: consulta de outro dentista"
+  },
+  {
+    "id": 6,
+    "clinic_id": 1,
+    "patient_id": 1,
+    "dentist_id": 1,
+    "scheduled_at": "2026-11-27T12:00:00+00:00",
+    "duration_minutes": 45,
+    "status": "CANCELED",
+    "notes": "QA-NAV-A EDITADA — alteração fictícia preservada."
+  },
+  {
+    "id": 7,
+    "clinic_id": 1,
+    "patient_id": 3,
+    "dentist_id": 1,
+    "scheduled_at": "2026-11-27T12:45:00+00:00",
+    "duration_minutes": 30,
+    "status": "SCHEDULED",
+    "notes": "QA-NAV-B — tentativa fictícia de sobreposição."
+  },
+  {
+    "id": 8,
+    "clinic_id": 1,
+    "patient_id": 2,
+    "dentist_id": 1,
+    "scheduled_at": "2026-11-27T12:00:00+00:00",
+    "duration_minutes": 30,
+    "status": "SCHEDULED",
+    "notes": "QA-NAV-C — reserva fictícia após cancelamento."
+  },
+  {
+    "id": 9,
+    "clinic_id": 1,
+    "patient_id": 1,
+    "dentist_id": 2,
+    "scheduled_at": "2026-11-27T12:00:00+00:00",
+    "duration_minutes": 30,
+    "status": "SCHEDULED",
+    "notes": "QA-NAV-D — mesmo horário para outro dentista."
+  }
+]

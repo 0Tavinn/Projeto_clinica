@@ -1,0 +1,51 @@
+Browser tab: 3, Title: "Lumina Odonto", URL: "http://localhost:18146/".
+0 AXWebArea Lumina Odonto, URL: localhost:18146/
+	1 container
+		2 pop up button (collapsed) Description: Abrir menu, Secondary Actions: Expand
+		3 text Lumina ODONTO
+		4 heading Equipe, Value: 1
+			5 text Equipe
+		6 text Usuários da clínica retornados pela API.
+		7 button Novo usuário
+		8 table
+			9 row
+				10 cell
+					11 text NOME
+				12 cell
+					13 text E-MAIL
+				14 cell
+					15 text PERFIL
+				16 cell
+					17 text SITUAÇÃO
+			18 row
+				19 cell
+					20 text AF
+					21 text Administrador Fictício
+				22 cell
+					23 text admin.demo@example.com
+				24 cell
+					25 text Administrador
+				26 cell
+					27 text Ativo
+			28 row
+				29 cell
+					30 text DF
+					31 text Dentista Fictício
+				32 cell
+					33 text dentista.demo@example.com
+				34 cell
+					35 text Dentista
+				36 cell
+					37 text Ativo
+			38 row
+				39 cell
+					40 text RQ
+					41 text Recepcionista QA Revisao
+				42 cell
+					43 text recepcao.revisao@example.com
+				44 cell
+					45 text Recepcionista
+				46 cell
+					47 text Ativo
+
+The focused UI element is 2 pop up button (collapsed) Description: Abrir menu, Secondary Actions: Expand

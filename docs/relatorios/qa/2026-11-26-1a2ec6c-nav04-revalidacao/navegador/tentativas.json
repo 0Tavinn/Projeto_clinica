@@ -1,0 +1,11 @@
+[
+  {
+    "action": "Clicar Prontuários em desktop",
+    "observed": "Permaneceu em Pacientes; getJsDialog não retornou diálogo. Ainda sem conclusão de causa.",
+    "countedAsPass": false
+  },
+  {
+    "action": "Ler fonte por caminho UNC no processo do navegador",
+    "observed": "Falha de leitura de arquivo; nenhuma alteração executada."
+  }
+]

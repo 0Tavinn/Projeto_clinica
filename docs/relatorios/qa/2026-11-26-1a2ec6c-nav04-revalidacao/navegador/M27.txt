@@ -1,0 +1,59 @@
+Browser tab: 3, Title: "Lumina Odonto", URL: "http://localhost:18146/".
+0 AXWebArea Lumina Odonto, URL: localhost:18146/
+	1 container root
+		2 container
+			3 text Lumina ODONTO
+			4 button Dashboard
+			5 button Pacientes
+			6 button Agenda
+			7 text RQ Recepcionista QA Revisao Recepcionista
+			8 button Sair
+		9 container
+			10 heading Agenda, Value: 1
+				11 text Agenda
+			12 text Consultas da clínica, sincronizadas com a API.
+			13 button Nova consulta
+			14 text Data inicial
+			15 date field (settable) Data inicial, Value: 2026-11-26
+				16 container
+					17 stepper
+					18 stepper
+					19 stepper
+				20 pop up button Mostrar seletor de datas Mostrar seletor de datas
+			21 text Data final
+			22 date field (settable) Data final, Value: 2026-12-02
+				23 container
+					24 stepper
+					25 stepper
+					26 stepper
+				27 pop up button Mostrar seletor de datas Mostrar seletor de datas
+			28 text Dentista
+			29 pop up button (collapsed, settable) Dentista, Value: Todos os dentistas, Secondary Actions: Expand
+				30 menu
+					31 (selected) Todos os dentistas
+					32 Dentista Fictício
+			33 text Situação
+			34 pop up button (collapsed, settable) Situação, Value: Todas as situações, Secondary Actions: Expand
+				35 menu
+					36 (selected) Todas as situações
+					37 Agendada
+					38 Confirmada
+					39 Concluída
+					40 Cancelada
+					41 Ausência
+			42 text 0 consultas encontradas
+			43 table
+				44 row
+					45 cell
+						46 text DATA E HORÁRIO
+					47 cell
+						48 text PACIENTE
+					49 cell
+						50 text DENTISTA
+					51 cell
+						52 text SITUAÇÃO
+					53 cell
+						54 text AÇÕES
+			55 text Nenhuma consulta encontrada para os filtros selecionados.
+
+The focused UI element is 6 button Agenda

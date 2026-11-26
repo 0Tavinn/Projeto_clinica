@@ -1,0 +1,12 @@
+{
+  "suffix": "perf-b7c5a50f667c",
+  "label": "lumina.opencl.perf",
+  "names": {
+    "app": "lumina-perf-app:perf-b7c5a50f667c",
+    "lab": "lumina-perf-lab:perf-b7c5a50f667c",
+    "network": "lumina_perf-b7c5a50f667c",
+    "volume": "lumina_perf-b7c5a50f667c",
+    "db": "lumina_db_perf-b7c5a50f667c",
+    "probe": "lumina_probe_perf-b7c5a50f667c"
+  }
+}

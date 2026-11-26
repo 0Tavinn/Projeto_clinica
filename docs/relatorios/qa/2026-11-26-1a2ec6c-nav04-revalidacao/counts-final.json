@@ -1,0 +1,9 @@
+{
+  "users": 3,
+  "patients": 3,
+  "appointments": 2,
+  "records": 3,
+  "evolutions": 2,
+  "postgres": "16.15",
+  "revision": "a6e8f0b2c4d6"
+}

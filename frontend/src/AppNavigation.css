@@ -1,0 +1,61 @@
+.desktop-navigation {
+  display: contents;
+}
+
+.app-navigation-dialog {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .mobile-header .icon-button,
+  .app-navigation-close {
+    width: 44px;
+    height: 44px;
+  }
+
+  .app-navigation-dialog[open] {
+    display: block;
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(320px, calc(100vw - 44px));
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--panel);
+    color: var(--ink);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .app-navigation-dialog::backdrop {
+    background: rgb(18 40 61 / 45%);
+  }
+
+  .app-navigation-dialog .sidebar {
+    display: flex;
+    position: static;
+    width: 100%;
+    min-height: 100%;
+    padding: 28px 20px 24px;
+    border: 0;
+  }
+
+  .app-navigation-dialog .sidebar nav {
+    margin-top: 36px;
+    gap: 8px;
+  }
+
+  .app-navigation-dialog .nav-item {
+    height: 56px;
+    font-size: 16px;
+  }
+
+  .app-navigation-close {
+    position: absolute;
+    top: 18px;
+    right: 12px;
+  }
+}

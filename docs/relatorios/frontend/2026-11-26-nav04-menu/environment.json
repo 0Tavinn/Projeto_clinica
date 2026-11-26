@@ -1,0 +1,9 @@
+{
+  "project": "lumina_nav04_20261126_8d19c4",
+  "frontend_port": 18136,
+  "api_port": 18137,
+  "db_port": 55476,
+  "volume": "lumina_nav04_20261126_8d19c4_postgres_data",
+  "network": "lumina_nav04_20261126_8d19c4_default",
+  "source": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source"
+}

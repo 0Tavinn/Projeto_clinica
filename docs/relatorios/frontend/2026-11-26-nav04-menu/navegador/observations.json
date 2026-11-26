@@ -1,0 +1,114 @@
+[
+  {
+    "id": "M01-reception-open-375",
+    "description": "Recepção em 375x812: diálogo aberto; somente Dashboard, Pacientes, Agenda e Sair.",
+    "observedAt": "2026-11-26T16:45:08.780Z"
+  },
+  {
+    "id": "M02-reception-focus-wrap",
+    "description": "Tentativa de teclado: Shift+Tab foi recebido pelo DevTools, não pela página; erro de foco do roteiro, não contado como aprovação do foco.",
+    "observedAt": "2026-11-26T16:45:20.449Z"
+  },
+  {
+    "id": "M03-reception-focus-page",
+    "description": "Segunda tentativa de teclado ainda atingiu DevTools; não confirma contenção do foco. Evidência mantida como erro do roteiro.",
+    "observedAt": "2026-11-26T16:46:03.706Z"
+  },
+  {
+    "id": "M04-reception-escape",
+    "description": "Tentativa de Escape sem foco confirmado na página: diálogo permaneceu aberto; não contada como aprovação.",
+    "observedAt": "2026-11-26T16:47:07.462Z"
+  },
+  {
+    "id": "M05-reception-escape-restores-focus",
+    "description": "Escape fechou o menu; botão Abrir menu ficou com foco visível.",
+    "observedAt": "2026-11-26T16:47:57.792Z"
+  },
+  {
+    "id": "M06-keyboard-adjustment",
+    "description": "Reabertura por Enter funcionou; Shift+Tab a partir do primeiro botão alcançou controles do navegador. Acrescentar contenção explícita de Tab antes da validação final.",
+    "observedAt": "2026-11-26T16:48:33.980Z"
+  },
+  {
+    "id": "F01-reception-shift-tab",
+    "description": "REVISÃO FINAL, recepção 375x810: Shift+Tab do primeiro botão mantém foco em Sair dentro do painel.",
+    "observedAt": "2026-11-26T16:50:11.245Z"
+  },
+  {
+    "id": "F02-tab-wrap-close",
+    "description": "REVISÃO FINAL: Tab de Sair retorna a Fechar menu; foco visível no primeiro botão.",
+    "observedAt": "2026-11-26T16:50:47.573Z"
+  },
+  {
+    "id": "F03-close-keyboard",
+    "description": "Recepção 375x810: Enter em Fechar menu fecha o diálogo e devolve foco ao botão Abrir menu.",
+    "observedAt": "2026-11-26T16:50:55.695Z",
+    "captureBytes": 62308
+  },
+  {
+    "id": "F04-reception-agenda",
+    "description": "Recepção 375x810: selecionar Agenda abriu a tela real e fechou o menu automaticamente.",
+    "observedAt": "2026-11-26T16:51:09.901Z",
+    "captureBytes": 62240
+  },
+  {
+    "id": "F05-backdrop-close",
+    "description": "Recepção: clique no fundo escurecido fecha o menu e mantém a Agenda.",
+    "observedAt": "2026-11-26T16:51:18.447Z",
+    "captureBytes": 62198
+  },
+  {
+    "id": "F06-close-button",
+    "description": "Recepção: botão Fechar menu fecha o painel sem mudar a tela.",
+    "observedAt": "2026-11-26T16:51:25.460Z",
+    "captureBytes": 62405
+  },
+  {
+    "id": "F07-reception-desktop-resize",
+    "description": "Recepção 1440x1000: trocar largura com painel aberto fecha o modal, preserva Agenda e mostra sidebar desktop.",
+    "observedAt": "2026-11-26T16:52:01.016Z",
+    "captureBytes": 74100
+  },
+  {
+    "id": "F08-reception-desktop-patients",
+    "description": "Recepção 1440x1000: Pacientes abre lista real com três dados fictícios, sem menu de outro perfil.",
+    "observedAt": "2026-11-26T16:52:22.507Z",
+    "captureBytes": 80091
+  },
+  {
+    "id": "F09-reception-desktop-dashboard",
+    "description": "Recepção 1440x1000: Dashboard continua acessível pela sidebar.",
+    "observedAt": "2026-11-26T16:52:22.995Z",
+    "captureBytes": 88979
+  },
+  {
+    "id": "F10-back-to-mobile",
+    "description": "Recepção 377x780: voltar do desktop mantém menu fechado e exibe Abrir menu, sem painel residual.",
+    "observedAt": "2026-11-26T16:52:33.256Z",
+    "captureBytes": 68371
+  },
+  {
+    "id": "F11-scroll-restored",
+    "description": "377x780: após fechar menu e trocar breakpoint, a página continua rolando até os cartões inferiores.",
+    "observedAt": "2026-11-26T16:53:07.261Z",
+    "captureBytes": 70223
+  },
+  {
+    "id": "F12-reception-mobile-logout",
+    "description": "Recepção 377x780: Sair no painel encerra sessão, remove menu e apresenta login.",
+    "observedAt": "2026-11-26T16:53:22.171Z",
+    "captureBytes": 71789
+  },
+  {
+    "id": "F13-dentist-mobile-menu",
+    "description": "Dentista 377x780: menu com Dashboard, Pacientes, Prontuários, Consultas e Sair; sem Equipe ou Agenda de outro perfil.",
+    "observedAt": "2026-11-26T16:54:01.402Z",
+    "captureBytes": 59902
+  },
+  {
+    "id": "F14-dentist-consultations",
+    "description": "Dentista 377x780: Consultas abriu a agenda do perfil e fechou o painel; sem Nova consulta.",
+    "observedAt": "2026-11-26T16:54:08.951Z",
+    "captureBytes": 67006
+  }
+]

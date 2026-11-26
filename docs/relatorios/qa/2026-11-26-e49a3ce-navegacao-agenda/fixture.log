@@ -1,0 +1,13 @@
+BEGIN
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+COMMIT
+                                              json_build_object                                              
+-------------------------------------------------------------------------------------------------------------
+ {"users" : 4, "patients" : 3, "appointments" : 5, "postgres_version" : "16.15", "alembic" : "a6e8f0b2c4d6"}
+(1 row)
+

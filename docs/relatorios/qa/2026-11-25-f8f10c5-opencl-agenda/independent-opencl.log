@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.1.1, pluggy-1.7.0 -- /usr/local/bin/python
+rootdir: /qa
+collecting ... collected 5 items
+
+../qa/test_independent_opencl.py::test_independent_concurrent_first_initialization QA_EVIDENCE {"calls": 8, "case": "concurrent_first_init", "compilations": 1, "kernel_ns_min": 66469, "runtime": {"device": "cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H", "device_type": "ALL | CPU", "driver": "6.0+debian", "numpy": "2.2.6", "opencl": "OpenCL 3.0 PoCL HSTR: cpu-x86_64-pc-linux-gnu-haswell", "platform": "Portable Computing Language", "pyopencl": "2025.2.7"}}
+PASSED
+../qa/test_independent_opencl.py::test_independent_randomized_lots_and_microsecond_boundaries QA_EVIDENCE {"case": "randomized_precision", "comparisons": 37, "seed": 20261125}
+PASSED
+../qa/test_independent_opencl.py::test_independent_fallback_failure_then_later_conflict QA_EVIDENCE {"batches": 3, "case": "fallback_later_conflict", "compared_opencl_batches": 2, "conflict": true, "engine": "mixed"}
+PASSED
+../qa/test_independent_opencl.py::test_independent_compile_build_method_failure_and_recovery QA_EVIDENCE {"case": "compile_failure_recovery", "failure_engine": "sequential", "recovered_engine": "opencl"}
+PASSED
+../qa/test_independent_opencl.py::test_independent_empty_never_initializes_opencl_and_sequential_never_calls QA_EVIDENCE {"case": "empty_and_sequential", "empty_batches": 0, "sequential_conflict": true}
+PASSED
+
+----------------------- generated xml file: /tmp/qa.xml ------------------------
+============================== 5 passed in 4.22s ===============================

@@ -1,0 +1,12 @@
+# Imagem exclusiva de migração; não instala FastAPI, API ou OpenCL.
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+WORKDIR /app
+# Mesmas versões declaradas no backend; o checkout é montado somente para leitura.
+RUN pip install \
+    alembic==1.19.1 \
+    sqlalchemy==2.0.52 \
+    "psycopg[binary]" \
+    pydantic-settings==2.15.0

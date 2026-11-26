@@ -1,0 +1,17 @@
+{
+  "official_targeted_passed": 65,
+  "official_full_passed": 97,
+  "official_full_skipped": 1,
+  "same_nodeids_in_both": 65,
+  "unique_provided_tests": 98,
+  "pg_nodeids_covered_targeted_skipped_full": [
+    "tests/test_opencl_pg.py::test_http_race_and_gist_authority"
+  ],
+  "independent_test_functions_passed": 5,
+  "independent_http_sql_checks_passed": 11,
+  "packaging_contract_checks_passed": 2,
+  "unique_matrix_passed": 116,
+  "unique_matrix_failed": 0,
+  "not_executed_outside_scope": 2,
+  "matrix_rows": 118
+}

@@ -1,0 +1,63 @@
+diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
+index e43512d..18a8ac1 100644
+--- a/frontend/src/App.tsx
++++ b/frontend/src/App.tsx
+@@ -1,3 +1,4 @@
++import { AppNavigation } from './AppNavigation'
+ import { useEffect, useMemo, useState } from 'react'
+ import type { FormEvent, ReactNode } from 'react'
+ import {
+@@ -11,7 +12,6 @@ import {
+   CircleUserRound,
+   LayoutDashboard,
+   LogOut,
+-  Menu,
+   Pencil,
+   Plus,
+   Search,
+@@ -629,18 +629,17 @@ export default function App() {
+   }
+ 
+   return (
+-    <div className="app-shell">
+-      <Sidebar
+-        view={view}
+-        user={currentUser}
+-        onNavigate={navigate}
+-        onLogout={() => endLocalSession()}
+-      />
+-      <main className="main-content">
+-        <div className="mobile-header">
+-          <button className="icon-button" aria-label="Abrir menu"><Menu size={22} /></button>
+-          <Brand compact />
+-        </div>
++    <AppNavigation
++      brand={<Brand compact />}
++      sidebar={(closeMenu) => (
++        <Sidebar
++          view={view}
++          user={currentUser}
++          onNavigate={(nextView) => { closeMenu(); navigate(nextView) }}
++          onLogout={() => { closeMenu(); endLocalSession() }}
++        />
++      )}
++    >
+ 
+         {view === 'dashboard' && (
+           <Dashboard
+@@ -760,14 +759,13 @@ export default function App() {
+             }}
+           />
+         )}
+-      </main>
+       {toast && (
+         <div className={`toast ${toast.tone}`} role={toast.tone === 'error' ? 'alert' : 'status'}>
+           {toast.tone === 'error' ? <CircleAlert size={18} /> : <Check size={18} />}
+           {toast.message}
+         </div>
+       )}
+-    </div>
++    </AppNavigation>
+   )
+ }
+ 

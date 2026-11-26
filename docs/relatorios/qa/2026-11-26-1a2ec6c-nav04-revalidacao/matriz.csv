@@ -1,0 +1,29 @@
+﻿id,scenario,profile,result,detail,at
+M01,Abrir menu com destinos administrativos,Administrador,PASSOU,"Menu modal aberto, foco em Fechar menu, Equipe presente e rolagem de fundo bloqueada.",2026-11-26T17:27:03.754Z
+M02,Escape fecha e restaura foco na revisão final,Administrador,PASSOU,Escape fechou o painel; foco no acionador e rolagem restaurados na mesma versão final identificada pelos hashes.,2026-11-26T17:27:03.935Z
+M03,Selecionar Equipe no menu móvel,Administrador,PASSOU,Equipe carregou três contas fictícias da API e o menu fechou automaticamente.,2026-11-26T17:27:29.483Z
+M04,Selecionar Pacientes no menu móvel,Administrador,PASSOU,Lista de pacientes abriu e o painel fechou.,2026-11-26T17:27:30.224Z
+M05,Selecionar Agenda no menu móvel,Administrador,PASSOU,Agenda abriu com Nova consulta para administrador e sem painel residual.,2026-11-26T17:27:32.133Z
+M06,Conter Tab e Shift+Tab no painel,Administrador,PASSOU,"Shift+Tab no primeiro controle foi a Sair; Tab no último retornou a Fechar menu, sem sair do diálogo.",2026-11-26T17:27:32.628Z
+M07,Fechar ao clicar fora do painel,Administrador,PASSOU,Clique no fundo escurecido fechou o menu e preservou a Agenda.,2026-11-26T17:27:41.936Z
+M08,Fechar pelo botão dedicado,Administrador,PASSOU,Botão Fechar menu funciona; aria-expanded voltou a false.,2026-11-26T17:27:42.622Z
+M09,Mudar para desktop com menu aberto,Administrador,PASSOU,"Ao ampliar para 1440×1000 o diálogo foi removido; sidebar desktop, Agenda, foco e rolagem ficaram corretos.",2026-11-26T17:28:07.811Z
+M10,Equipe em desktop,Administrador,PASSOU,Equipe abre pela sidebar desktop com as três contas fictícias.,2026-11-26T17:28:08.255Z
+M11,Pacientes em desktop,Administrador,PASSOU,Lista de pacientes abre pela sidebar desktop sem modal móvel.,2026-11-26T17:28:08.666Z
+M12,Dashboard em desktop,Administrador,PASSOU,Dashboard administrativo preserva o acesso rápido à Equipe.,2026-11-26T17:28:09.079Z
+M13,Retornar ao móvel sem painel residual,Administrador,PASSOU,"Retorno a largura móvel apresenta menu fechado, com acionador utilizável.",2026-11-26T17:28:09.252Z
+M14,Logout administrativo pelo menu móvel,Administrador,PASSOU,"Sair retorna ao login, remove o painel e restaura a rolagem.",2026-11-26T17:28:09.925Z
+M15,Destinos corretos em desktop,Dentista,PASSOU,"Sidebar do dentista mostra Dashboard, Pacientes, Prontuários, Consultas e Sair; não mostra Equipe.",2026-11-26T17:28:32.862Z
+M16,Selecionar Consultas em desktop,Dentista,PASSOU,Consultas abre sem oferecer criação de agendamento ao dentista.,2026-11-26T17:28:33.313Z
+M17,Selecionar Pacientes em desktop,Dentista,PASSOU,Lista de pacientes abre pela navegação desktop sem modal móvel.,2026-11-26T17:28:33.765Z
+M18,Retornar ao Dashboard em desktop,Dentista,PASSOU,"Dashboard do dentista abre pela sidebar; a tentativa de entrada clínica é registrada à parte, sem aceite do prontuário.",2026-11-26T17:29:58.870Z
+M19,Menu móvel do dentista preserva os destinos,Dentista,PASSOU,"Destinos de dentista presentes, sem Equipe ou ações administrativas.",2026-11-26T17:30:00.359Z
+M20,Escape na versão final para dentista,Dentista,PASSOU,"Escape fecha e devolve o foco ao acionador, sem prender rolagem.",2026-11-26T17:30:00.520Z
+M21,Selecionar Consultas no menu móvel,Dentista,PASSOU,Consultas abre sem Nova consulta e fecha o menu automaticamente.,2026-11-26T17:30:01.236Z
+M22,Logout do dentista no menu móvel,Dentista,PASSOU,"Login reaparece, painel e bloqueio da rolagem removidos.",2026-11-26T17:30:01.947Z
+M23,Menu da recepção sem destinos de outros perfis,Recepção,PASSOU,Recepção acessa seus destinos; Equipe e Prontuários não são exibidos.,2026-11-26T17:30:30.990Z
+M24,Escape na versão final para recepção,Recepção,PASSOU,Escape fechou o menu e restaurou foco/rolagem para recepção.,2026-11-26T17:30:31.128Z
+M25,Revalidar o caminho original NAV-04,Recepção,PASSOU,"Partindo do Dashboard estreito, Abrir menu → Agenda funciona e o painel fecha. O bloqueio original NAV-04 não foi reproduzido.",2026-11-26T17:30:32.961Z
+M26,Voltar ao Dashboard pelo menu,Recepção,PASSOU,Dashboard da recepção abriu pelo menu e o painel fechou sem resíduos.,2026-11-26T17:30:33.636Z
+M27,Preservar Agenda em desktop para recepção,Recepção,PASSOU,"Navegação da recepção em desktop preservada, sem destinos administrativos.",2026-11-26T17:30:34.094Z
+M28,Logout em desktop,Recepção,PASSOU,Sair pela sidebar desktop retorna ao login sem menu ou bloqueio de rolagem.,2026-11-26T17:30:34.514Z

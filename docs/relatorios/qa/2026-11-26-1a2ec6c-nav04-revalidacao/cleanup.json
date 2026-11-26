@@ -1,0 +1,9 @@
+{
+  "containers_removed": true,
+  "volume_removed": true,
+  "network_removed": true,
+  "temporary_image_tags_removed": true,
+  "daily_metadata_unchanged": true,
+  "daily_healthy": true,
+  "product_code_unchanged_during_tests": true
+}

@@ -9,7 +9,13 @@ from app.core.database import get_db
 from app.security.auth import CurrentUser
 from app.security.rate_limit import enforce_login_rate_limit
 from app.users import service
-from app.users.schemas import RefreshRequest, Token, UserRead
+from app.users.schemas import (
+    ClinicalAccessRequest,
+    ClinicalAccessToken,
+    RefreshRequest,
+    Token,
+    UserRead,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -54,6 +60,23 @@ def refresh(
     - 401: refresh token inválido, expirado, ou usuário inativo/inexistente.
     """
     return service.refresh_access_token(db, refresh_token=payload.refresh_token)
+
+
+@router.post(
+    "/clinical-access",
+    response_model=ClinicalAccessToken,
+    summary="Confirma a senha adicional para acessar prontuários.",
+)
+def clinical_access(
+    payload: ClinicalAccessRequest,
+    current_user: CurrentUser,
+    db: Annotated[Session, Depends(get_db)],
+) -> ClinicalAccessToken:
+    return service.unlock_clinical_records(
+        db,
+        user=current_user,
+        clinical_password=payload.clinical_password,
+    )
 
 
 @router.get(

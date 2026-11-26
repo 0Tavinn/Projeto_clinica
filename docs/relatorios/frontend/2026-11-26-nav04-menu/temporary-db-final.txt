@@ -1,0 +1,5 @@
+ users | patients | appointments 
+-------+----------+--------------
+     3 |        3 |            2
+(1 row)
+

@@ -1,0 +1,45 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+1 AXWebArea Lumina Odonto, URL: localhost:18126/
+	2 container root
+		3 container
+			4 text Lumina ODONTO
+			5 button Dashboard
+			6 button Pacientes
+			7 button Agenda
+			8 text RQ Recepcionista QA Ficticia Recepcionista
+			9 button Sair
+		10 container
+			71 button Agenda
+			72 heading Paciente Fictício Ativo, Value: 1
+				73 text Paciente Fictício Ativo
+			74 text sex., 27/11/2026 · 09:00 às 09:45
+			75 text Cancelada
+			76 heading Detalhes da consulta, Value: 2
+				77 text Detalhes da consulta
+			78 container
+				79 text Consulta nº  6
+			80 definition list
+				81 container PACIENTE
+					82 text PACIENTE
+				83 text Paciente Fictício Ativo
+				84 container DENTISTA
+					85 text DENTISTA
+				86 text Dentista Fictício
+				87 container DATA
+					88 text DATA
+				89 text sex., 27/11/2026
+				90 container HORÁRIO
+					91 text HORÁRIO
+				92 text 09:00 às 09:45
+				93 container DURAÇÃO
+					94 text DURAÇÃO
+				95 container
+					96 text 45  minutos
+				97 container SITUAÇÃO
+					98 text SITUAÇÃO
+				99 text Cancelada
+				100 container OBSERVAÇÕES
+					101 text OBSERVAÇÕES
+				102 text QA-NAV-A EDITADA — alteração fictícia preservada.
+
+The focused UI element is 1 AXWebArea Lumina Odonto, URL: localhost:18126/

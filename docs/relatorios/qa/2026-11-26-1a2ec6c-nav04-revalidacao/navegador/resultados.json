@@ -1,0 +1,583 @@
+[
+  {
+    "id": "M01",
+    "scenario": "Abrir menu com destinos administrativos",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Menu modal aberto, foco em Fechar menu, Equipe presente e rolagem de fundo bloqueada.",
+    "ui": {
+      "bodyOverflow": "hidden",
+      "controls": "mobile-navigation",
+      "dialogButtons": [
+        "Fechar menu",
+        "Dashboard",
+        "Pacientes",
+        "Equipe",
+        "Agenda",
+        "Sair"
+      ],
+      "dialogExists": true,
+      "dialogOpen": true,
+      "expanded": "true",
+      "focus": "Fechar menu",
+      "height": 780,
+      "modal": true,
+      "width": 378
+    },
+    "at": "2026-11-26T17:27:03.754Z"
+  },
+  {
+    "id": "M02",
+    "scenario": "Escape fecha e restaura foco na revisão final",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Escape fechou o painel; foco no acionador e rolagem restaurados na mesma versão final identificada pelos hashes.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:27:03.935Z"
+  },
+  {
+    "id": "M03",
+    "scenario": "Selecionar Equipe no menu móvel",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Equipe carregou três contas fictícias da API e o menu fechou automaticamente.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 378
+    },
+    "at": "2026-11-26T17:27:29.483Z"
+  },
+  {
+    "id": "M04",
+    "scenario": "Selecionar Pacientes no menu móvel",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Lista de pacientes abriu e o painel fechou.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:27:30.224Z"
+  },
+  {
+    "id": "M05",
+    "scenario": "Selecionar Agenda no menu móvel",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Agenda abriu com Nova consulta para administrador e sem painel residual.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:27:32.133Z"
+  },
+  {
+    "id": "M06",
+    "scenario": "Conter Tab e Shift+Tab no painel",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Shift+Tab no primeiro controle foi a Sair; Tab no último retornou a Fechar menu, sem sair do diálogo.",
+    "ui": {
+      "bodyOverflow": "hidden",
+      "controls": "mobile-navigation",
+      "dialogButtons": [
+        "Fechar menu",
+        "Dashboard",
+        "Pacientes",
+        "Equipe",
+        "Agenda",
+        "Sair"
+      ],
+      "dialogExists": true,
+      "dialogOpen": true,
+      "expanded": "true",
+      "focus": "Fechar menu",
+      "height": 780,
+      "modal": true,
+      "width": 378
+    },
+    "at": "2026-11-26T17:27:32.628Z"
+  },
+  {
+    "id": "M07",
+    "scenario": "Fechar ao clicar fora do painel",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Clique no fundo escurecido fechou o menu e preservou a Agenda.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:27:41.936Z"
+  },
+  {
+    "id": "M08",
+    "scenario": "Fechar pelo botão dedicado",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Botão Fechar menu funciona; aria-expanded voltou a false.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:27:42.622Z"
+  },
+  {
+    "id": "M09",
+    "scenario": "Mudar para desktop com menu aberto",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Ao ampliar para 1440×1000 o diálogo foi removido; sidebar desktop, Agenda, foco e rolagem ficaram corretos.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Agenda",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:28:07.811Z"
+  },
+  {
+    "id": "M10",
+    "scenario": "Equipe em desktop",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Equipe abre pela sidebar desktop com as três contas fictícias.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Equipe",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:28:08.255Z"
+  },
+  {
+    "id": "M11",
+    "scenario": "Pacientes em desktop",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Lista de pacientes abre pela sidebar desktop sem modal móvel.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Pacientes",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:28:08.666Z"
+  },
+  {
+    "id": "M12",
+    "scenario": "Dashboard em desktop",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Dashboard administrativo preserva o acesso rápido à Equipe.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Dashboard",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:28:09.079Z"
+  },
+  {
+    "id": "M13",
+    "scenario": "Retornar ao móvel sem painel residual",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Retorno a largura móvel apresenta menu fechado, com acionador utilizável.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "LuminaODONTODashboardPacientesEquipeAgendaAFAdministrador FictícioAdministrador ",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:28:09.252Z"
+  },
+  {
+    "id": "M14",
+    "scenario": "Logout administrativo pelo menu móvel",
+    "profile": "Administrador",
+    "result": "PASSOU",
+    "detail": "Sair retorna ao login, remove o painel e restaura a rolagem.",
+    "ui": {
+      "bodyOverflow": "",
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "focus": "LuminaODONTOGESTÃO ODONTOLÓGICACuidado inteligentepara cada sorriso.Gestão simpl",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:28:09.925Z"
+  },
+  {
+    "id": "M15",
+    "scenario": "Destinos corretos em desktop",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Sidebar do dentista mostra Dashboard, Pacientes, Prontuários, Consultas e Sair; não mostra Equipe.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "LuminaODONTODashboardPacientesProntuáriosConsultasDFDentista FictícioDentista Sa",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:28:32.862Z"
+  },
+  {
+    "id": "M16",
+    "scenario": "Selecionar Consultas em desktop",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Consultas abre sem oferecer criação de agendamento ao dentista.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Consultas",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:28:33.313Z"
+  },
+  {
+    "id": "M17",
+    "scenario": "Selecionar Pacientes em desktop",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Lista de pacientes abre pela navegação desktop sem modal móvel.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Pacientes",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:28:33.765Z"
+  },
+  {
+    "id": "M18",
+    "scenario": "Retornar ao Dashboard em desktop",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Dashboard do dentista abre pela sidebar; a tentativa de entrada clínica é registrada à parte, sem aceite do prontuário.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Dashboard",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:29:58.870Z"
+  },
+  {
+    "id": "M19",
+    "scenario": "Menu móvel do dentista preserva os destinos",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Destinos de dentista presentes, sem Equipe ou ações administrativas.",
+    "ui": {
+      "bodyOverflow": "hidden",
+      "controls": "mobile-navigation",
+      "dialogButtons": [
+        "Fechar menu",
+        "Dashboard",
+        "Pacientes",
+        "Prontuários",
+        "Consultas",
+        "Sair"
+      ],
+      "dialogExists": true,
+      "dialogOpen": true,
+      "expanded": "true",
+      "focus": "Fechar menu",
+      "height": 780,
+      "modal": true,
+      "width": 378
+    },
+    "at": "2026-11-26T17:30:00.359Z"
+  },
+  {
+    "id": "M20",
+    "scenario": "Escape na versão final para dentista",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Escape fecha e devolve o foco ao acionador, sem prender rolagem.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:30:00.520Z"
+  },
+  {
+    "id": "M21",
+    "scenario": "Selecionar Consultas no menu móvel",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Consultas abre sem Nova consulta e fecha o menu automaticamente.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 378
+    },
+    "at": "2026-11-26T17:30:01.236Z"
+  },
+  {
+    "id": "M22",
+    "scenario": "Logout do dentista no menu móvel",
+    "profile": "Dentista",
+    "result": "PASSOU",
+    "detail": "Login reaparece, painel e bloqueio da rolagem removidos.",
+    "ui": {
+      "bodyOverflow": "",
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "focus": "LuminaODONTOGESTÃO ODONTOLÓGICACuidado inteligentepara cada sorriso.Gestão simpl",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:30:01.947Z"
+  },
+  {
+    "id": "M23",
+    "scenario": "Menu da recepção sem destinos de outros perfis",
+    "profile": "Recepção",
+    "result": "PASSOU",
+    "detail": "Recepção acessa seus destinos; Equipe e Prontuários não são exibidos.",
+    "ui": {
+      "bodyOverflow": "hidden",
+      "controls": "mobile-navigation",
+      "dialogButtons": [
+        "Fechar menu",
+        "Dashboard",
+        "Pacientes",
+        "Agenda",
+        "Sair"
+      ],
+      "dialogExists": true,
+      "dialogOpen": true,
+      "expanded": "true",
+      "focus": "Fechar menu",
+      "height": 780,
+      "modal": true,
+      "width": 378
+    },
+    "at": "2026-11-26T17:30:30.990Z"
+  },
+  {
+    "id": "M24",
+    "scenario": "Escape na versão final para recepção",
+    "profile": "Recepção",
+    "result": "PASSOU",
+    "detail": "Escape fechou o menu e restaurou foco/rolagem para recepção.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:30:31.128Z"
+  },
+  {
+    "id": "M25",
+    "scenario": "Revalidar o caminho original NAV-04",
+    "profile": "Recepção",
+    "result": "PASSOU",
+    "detail": "Partindo do Dashboard estreito, Abrir menu → Agenda funciona e o painel fecha. O bloqueio original NAV-04 não foi reproduzido.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:30:32.961Z"
+  },
+  {
+    "id": "M26",
+    "scenario": "Voltar ao Dashboard pelo menu",
+    "profile": "Recepção",
+    "result": "PASSOU",
+    "detail": "Dashboard da recepção abriu pelo menu e o painel fechou sem resíduos.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": "mobile-navigation",
+      "dialogButtons": [],
+      "dialogExists": true,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Abrir menu",
+      "height": 780,
+      "modal": false,
+      "width": 362
+    },
+    "at": "2026-11-26T17:30:33.636Z"
+  },
+  {
+    "id": "M27",
+    "scenario": "Preservar Agenda em desktop para recepção",
+    "profile": "Recepção",
+    "result": "PASSOU",
+    "detail": "Navegação da recepção em desktop preservada, sem destinos administrativos.",
+    "ui": {
+      "bodyOverflow": "",
+      "controls": null,
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "expanded": "false",
+      "focus": "Agenda",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:30:34.094Z"
+  },
+  {
+    "id": "M28",
+    "scenario": "Logout em desktop",
+    "profile": "Recepção",
+    "result": "PASSOU",
+    "detail": "Sair pela sidebar desktop retorna ao login sem menu ou bloqueio de rolagem.",
+    "ui": {
+      "bodyOverflow": "",
+      "dialogButtons": [],
+      "dialogExists": false,
+      "dialogOpen": false,
+      "focus": "LuminaODONTOGESTÃO ODONTOLÓGICACuidado inteligentepara cada sorriso.Gestão simpl",
+      "height": 1000,
+      "modal": false,
+      "width": 1440
+    },
+    "at": "2026-11-26T17:30:34.514Z"
+  }
+]

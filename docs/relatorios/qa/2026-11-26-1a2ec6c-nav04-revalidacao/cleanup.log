@@ -1,0 +1,20 @@
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Stopping 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Stopped 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Removing 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Removed 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Stopping 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Stopped 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Removing 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Removed 
+ Container lumina_nav04_review_20261126_0c2bed5f-db-1 Stopping 
+ Container lumina_nav04_review_20261126_0c2bed5f-db-1 Stopped 
+ Container lumina_nav04_review_20261126_0c2bed5f-db-1 Removing 
+ Container lumina_nav04_review_20261126_0c2bed5f-db-1 Removed 
+ Network lumina_nav04_review_20261126_0c2bed5f_default Removing 
+ Volume lumina_nav04_review_20261126_0c2bed5f_postgres_data Removing 
+ Volume lumina_nav04_review_20261126_0c2bed5f_postgres_data Removed 
+ Network lumina_nav04_review_20261126_0c2bed5f_default Removed 
+Untagged: lumina_nav04_review_20261126_0c2bed5f-api:latest
+Deleted: sha256:ed75aa72d7ba29c31e1ef3765dc00e137aaf5cb003048aa1bfaf80f95af8bd23
+Untagged: lumina_nav04_review_20261126_0c2bed5f-frontend:latest
+Deleted: sha256:c60464cb6c4d0d38762ab85749a000f81a3c648c57ca0d88aefed54ab7f629c4

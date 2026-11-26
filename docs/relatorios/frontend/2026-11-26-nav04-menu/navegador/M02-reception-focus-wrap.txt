@@ -1,0 +1,217 @@
+Window: "Lumina Odonto - Brave", App: brave.exe.
+	0 window (janela) Lumina Odonto - Brave Secondary Actions: Raise
+		1 pane (painel) (disabled)
+		2 pane (região) Lumina Odonto - Brave
+			3 pane (região)
+				4 pane (região)
+					5 pane (região)
+						6 button (botão) Minimizar ID: view_1
+						7 button (botão) Restaurar ID: view_3
+						8 button (botão) Fechar ID: view_4
+					9 pane (região)
+						10 pane (região)
+							11 toolbar (barra de ferramentas) ID: view_1000
+								12 button (botão) Voltar ID: view_1001
+								13 button (botão) (disabled) Avançar ID: view_1002
+								14 button (botão) Recarregar ID: view_1003
+								15 button (botão) Adicionar esta guia aos favoritos ID: view_1005
+								16 group (grupo)
+									17 button (botão) Ver informações do site ID: view_1011
+									18 text field (editar) (settable, string) Barra de endereço e de pesquisa Description: Pesquise no Brave ou digite o URL Value: localhost:18136 ID: view_1012
+									19 pane (região)
+										739 button (botão) Zoom: 90%
+										763 button (botão)
+									20 pane (região)
+										21 separator (separador) Separador
+										22 button (botão) Brave Shields
+										23 button (botão) Recompensas Brave
+								24 pane (região)
+									26 button (botão) Extensões ID: view_1006
+								27 button (botão) Mostrar barra lateral
+								28 button (botão) Brave Wallet
+								29 button (botão) Leo AI
+								30 button (botão) VPN
+								31 button (botão) Brave ID: view_1007
+							32 pane (região)
+						33 pane (região)
+							34 pane (região)
+								558 document (documento) DevTools Value: devtools://devtools/bundled/devtools_app.html?remoteBase=https://devtools.brave.com/serve_file/@80c75da68097f674d782368eae87463b89d1720/&targetType=tab&can_dock=true ID: RootWebArea
+									559 toolbar (barra de ferramentas)
+										560 text Dimensions:
+										561 combo box (caixa de combinação) (settable, string) Device type Description: Device type Value: Responsive
+										562 spinner (botão de rotação) (settable, float) Width Description: Width Value: 375
+										563 text ×
+										564 spinner (botão de rotação) (settable, float) Height (leave empty for full) Description: 812 Value: 812
+										565 combo box (caixa de combinação) (settable, string) Zoom Description: Zoom Value: Fit to window
+										566 combo box (caixa de combinação) (settable, string) Throttling Value: Disabled: No throttling
+										567 combo box (caixa de combinação) (settable, string) Value: 'Save-Data': default
+										568 button (botão) Rotate Description: Rotate
+									569 toolbar (barra de ferramentas)
+										570 button (botão) More options Description: More options
+									571 group (grupo)
+									572 group (grupo)
+									573 group (grupo)
+									574 group (grupo)
+									575 group (grupo)
+									576 group (grupo)
+									577 group (grupo)
+									578 image (gráfico)
+									579 image (gráfico)
+									580 image (gráfico)
+									581 image (gráfico)
+									582 group (grupo) Description: Double-click for full height
+										583 image (gráfico)
+									584 group (grupo) DevTools is now available in Portuguese
+										585 text (alerta)
+											586 text DevTools is now available in Portuguese
+										587 button (botão) Don’t show again
+										588 button (botão) Always match Chrome’s language
+										589 button (botão) Switch DevTools to Portuguese
+										590 group (grupo)
+											591 group (grupo) Close Description: Close
+												592 button (botão) Close Description: Close
+									593 group (grupo)
+										594 group (navegação) Main toolbar
+											595 toolbar (barra de ferramentas)
+												692 group (grupo) Select an element in the page to inspect it Description: Select an element in the page to inspect it - Ctrl + Shift + C
+													693 button (botão "alternar") Select an element in the page to inspect it - Ctrl + Shift + C Description: Select an element in the page to inspect it - Ctrl + Shift + C
+												694 group (grupo) Toggle device toolbar Description: Toggle device toolbar - Ctrl + Shift + M
+													695 button (botão "alternar") Toggle device toolbar - Ctrl + Shift + M Description: Toggle device toolbar - Ctrl + Shift + M
+											596 tab (tabulação) Panels
+												597 tab item (item de tabulação) (selectable) Elements ID: tab-elements
+												598 tab item (item de tabulação) (selectable) Console ID: tab-console
+												599 tab item (item de tabulação) (selectable) Sources ID: tab-sources
+												600 tab item (item de tabulação) (selectable) Network ID: tab-network
+											603 button (botão) More tabs Description: More tabs
+											604 toolbar (barra de ferramentas)
+												746 group (grupo) Open Issues to view 2 issues: 2 possible improvements Description: Open Issues to view 2 issues: 2 possible improvements
+													747 button (botão) Open Issues to view 2 issues: 2 possible improvements
+												696 group (grupo) Settings Description: Settings - F1 - Shift + ?
+													697 button (botão) Settings - F1 - Shift + ? Description: Settings - F1 - Shift + ?
+												698 button (botão) Customize and control DevTools Description: Customize and control DevTools
+													699 button (botão) Customize and control DevTools Description: Customize and control DevTools
+												700 group (grupo) Close Description: Close
+													701 button (botão) Close Description: Close
+										605 pane (painel de guias) Console panel
+											647 group (grupo) console
+												648 toolbar (barra de ferramentas)
+													649 group (grupo) Show Console sidebar Description: Show Console sidebar
+														650 button (botão) Show Console sidebar Description: Show Console sidebar
+													651 group (grupo) Clear console Description: Clear console - Ctrl + L
+														652 button (botão) Clear console - Ctrl + L Description: Clear console - Ctrl + L
+													653 group (grupo) Collapse all Description: Collapse all
+														654 button (botão) Collapse all Description: Collapse all
+													655 button (botão) JavaScript context: top Description: JavaScript context: top
+													656 group (grupo) Create live expression Description: Create live expression
+														657 button (botão) Create live expression Description: Create live expression
+													658 group (grupo) Description: e.g. /eventd/ -cdn url:a.com
+														659 combo box (caixa de combinação) (settable, string) Filter Value: Filter
+															748 text Filter
+													661 button (botão) Log level: Default levels Description: Log level: Default levels
+														662 text Default levels
+													663 group (grupo) Some problems no longer generate console messages, but are surfaced in the Issues tab Click to view 2 possible improvements Description: Some problems no longer generate console messages, but are surfaced in the Issues tab Click to view 2 possible improvements ID: console-issues-counter
+														703 button (botão) Some problems no longer generate console messages, but are surfaced in the Issues tab Click to view 2 possible improvements
+													664 group (grupo) Console settings Description: Console settings
+														665 button (botão "alternar") Console settings Description: Console settings
+													666 group (grupo) 0 messages in console
+												667 group (grupo) ID: console-messages
+													668 group (grupo)
+													669 group (grupo)
+													670 group (grupo)
+														671 text field (editar) (settable, string) Console prompt Value: 
+															672 text 
+									606 group (complementar) Drawer
+										607 group (grupo)
+											608 toolbar (barra de ferramentas)
+												609 button (botão) More tools Description: More tools
+													610 button (botão) More tools Description: More tools
+											611 tab (tabulação)
+												612 tab item (item de tabulação) (selectable) Console ID: tab-console-view
+												613 tab item (item de tabulação) (selectable) What’s new ID: tab-release-note
+											614 toolbar (barra de ferramentas)
+												615 group (grupo) Toggle drawer orientation Description: Toggle drawer orientation
+													616 button (botão) Toggle drawer orientation Description: Toggle drawer orientation
+												617 group (grupo) Minimize drawer Description: Minimize drawer
+													618 button (botão) Minimize drawer Description: Minimize drawer
+												619 group (grupo) Close drawer Description: Close drawer
+													620 button (botão) Close drawer Description: Close drawer
+											621 pane (painel de guias) What’s new panel
+												704 group (grupo) whats-new
+													705 text New in DevTools (December 2026)
+													706 button (botão) See all new features
+													707 text (título) DevTools for agents: Logpoints, virtual WebAuthn authenticators, live config reloading, and offline heap snapshots
+														708 hyperlink (link) DevTools for agents: Logpoints, virtual WebAuthn authenticators, live config reloading, and offline heap snapshots Description: https://developer.chrome.com/blog/new-in-devtools-december-2026/#mcp
+													709 text Set source-mapped logpoints (
+													710 text set_logpoints
+													711 text ), configure virtual WebAuthn authenticators (
+													712 text configure_webauthn
+													713 text ), watch and hot-reload MCP configuration files with
+													714 text --watchConfig
+													715 text , and analyze heap snapshots and V8 execution contexts offline without a browser connection.
+													716 text (título) Sources: Original scopes view, stack traces, and expression evaluation with ECMA-426 source map scopes
+														717 hyperlink (link) Sources: Original scopes view, stack traces, and expression evaluation with ECMA-426 source map scopes Description: https://developer.chrome.com/blog/new-in-devtools-december-2026/#sources
+													718 text Inspect your authored file's original lexical scope tree in the
+													719 text Scope
+													720 text pane, view original function names and merged outlined frames across stack traces, and evaluate expressions using original variable names powered by ECMA-426 source map
+													721 text scopes
+													722 text .
+													723 text (título) Performance and Memory: Faster trace parsing, Lantern HTTP/3 simulation, and generator context analysis
+														724 hyperlink (link) Performance and Memory: Faster trace parsing, Lantern HTTP/3 simulation, and generator context analysis Description: https://developer.chrome.com/blog/new-in-devtools-december-2026/#performance
+													725 text Parse large performance traces roughly 26% faster with reduced memory usage, and analyze heap snapshot context retention across suspended generators, async functions, and finished ES modules.
+									622 text (alerta)
+										742 text Console cleared
+									624 status bar (status)
+								35 pane (região)
+								744 document (documento) Lumina Odonto Value: http://localhost:18136/ ID: RootWebArea
+									832 window (caixa de diálogo) Menu principal Secondary Actions: Raise ID: mobile-navigation
+										833 button (botão) Fechar menu
+										834 group (complementar)
+											835 text Lumina
+											836 text ODONTO
+											837 group (navegação)
+												838 button (botão) Dashboard
+												839 button (botão) Pacientes
+												840 button (botão) Agenda
+											841 text RN
+											842 text Recepcionista NAV04 Ficticia
+											843 text Recepcionista
+											844 button (botão) Sair
+						36 pane (região)
+							37 pane (região)
+								38 button (botão) Pesquisa em todas as guias
+							39 pane (região) ID: view_21
+								40 tab (tabulação)
+									477 tab item (item de tabulação) (selectable) Uso da memória em Lumina Odonto: 34,7 MB ID: view_20
+										478 button (botão) Fechar
+								44 pane (região)
+							45 button (botão) Nova guia
+							46 pane (região)
+						47 pane (região)
+						48 pane (região)
+						49 pane (região)
+							50 pane (região)
+								51 pane (região)
+								52 separator (separador)
+						53 pane (região)
+
+Selected text: ```
+localhost:18136
+```
+
+Note: Pay special attention to the content selected by the user. If the user asks a question or refers to the content they are looking at on-screen, they might be referring to the selected content (but they might be referring to something else that's visible, too).
+
+Focused element: 18 text field (editar) (settable, string) Barra de endereço e de pesquisa Description: Pesquise no Brave ou digite o URL Value: localhost:18136 ID: view_1012
+
+Selected text: localhost:18136
+
+Document text:
+Fechar menu
+Lumina
+ODONTO
+Dashboard
+Pacientes
+Agenda
+RN
+Recepcionista NAV04 Ficticia
+Recepcionista
+Sair

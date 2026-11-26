@@ -1,0 +1,3 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+There has been no change in the accessibility tree.
+The focused UI element is 0 AXWebArea Lumina Odonto, URL: localhost:18126/

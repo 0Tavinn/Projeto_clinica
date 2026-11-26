@@ -1,0 +1,133 @@
+diff --git a/backend/Dockerfile b/backend/Dockerfile
+index bc114ed..49932c4 100644
+--- a/backend/Dockerfile
++++ b/backend/Dockerfile
+@@ -1,28 +1,18 @@
+-FROM python:3.12-slim AS base
+-
+-ENV PYTHONDONTWRITEBYTECODE=1 \
+-    PYTHONUNBUFFERED=1 \
+-    PIP_NO_CACHE_DIR=1
+-
+-WORKDIR /app
+-
+-# Dependências de sistema mínimas para compilar drivers/argon2 se necessário.
+-RUN apt-get update \
+-    && apt-get install -y --no-install-recommends build-essential default-libmysqlclient-dev pkg-config \
++FROM python:3.12-slim
++ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
++# PoCL fornece dispositivo CPU sem depender de GPU ou senha clínica.
++RUN apt-get update && apt-get install -y --no-install-recommends pocl-opencl-icd ocl-icd-libopencl1 \
+     && rm -rf /var/lib/apt/lists/*
+-
+-COPY pyproject.toml ./
+-RUN pip install --upgrade pip && pip install .
+-
++WORKDIR /app
++# O pacote exige README e app presentes durante a instalação.
++COPY pyproject.toml README.md alembic.ini ./
+ COPY app ./app
+ COPY alembic ./alembic
+-COPY alembic.ini ./
+ COPY scripts ./scripts
+-
+-# Usuário não-root
+-RUN useradd --create-home --shell /bin/bash appuser
++RUN python -m pip install .
++RUN useradd --create-home appuser
+ USER appuser
+-
++ARG SOURCE_COMMIT=unknown
++LABEL org.opencontainers.image.revision=$SOURCE_COMMIT
+ EXPOSE 8000
+-
+-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
++CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]
+diff --git a/backend/app/appointments/repository.py b/backend/app/appointments/repository.py
+index ecfa060..077e0be 100644
+--- a/backend/app/appointments/repository.py
++++ b/backend/app/appointments/repository.py
+@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
+ from sqlalchemy.orm import Session
+ 
+ from app.appointments.models import Appointment, AppointmentStatus
++from app.appointments.conflict_detection import detect_conflict, interval
+ from app.common.exceptions import AppointmentTimeConflictError
+ from app.dentists.models import Dentist
+ 
+@@ -68,7 +69,6 @@ class AppointmentRepository:
+         duration_minutes: int,
+         excluding_id: int | None = None,
+     ) -> bool:
+-        new_end = scheduled_at + datetime.timedelta(minutes=duration_minutes)
+         statement = select(Appointment).where(
+             Appointment.clinic_id == clinic_id,
+             Appointment.dentist_id == dentist_id,
+@@ -76,16 +76,22 @@ class AppointmentRepository:
+                 [AppointmentStatus.CANCELED, AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW]
+             ),
+         )
+-        for appointment in self.db.execute(statement).scalars():
+-            if excluding_id is not None and appointment.id == excluding_id:
+-                continue
+-            existing_start = appointment.scheduled_at
+-            if existing_start.tzinfo is None:
+-                existing_start = existing_start.replace(tzinfo=datetime.timezone.utc)
+-            existing_end = existing_start + datetime.timedelta(minutes=appointment.duration_minutes)
+-            if existing_start < new_end and scheduled_at < existing_end:
+-                return True
+-        return False
++        # Os filtros e a exclusão do próprio ID continuam no repositório.
++        # yield_per limita os objetos carregados enquanto o comparador loteia.
++        result = self.db.execute(statement.execution_options(yield_per=1024))
++        try:
++            candidates = (
++                interval(appointment.scheduled_at, appointment.duration_minutes)
++                for appointment in result.scalars()
++                if excluding_id is None or appointment.id != excluding_id
++            )
++            return detect_conflict(
++                candidates, interval(scheduled_at, duration_minutes)
++            ).conflict
++        finally:
++            # Um conflito pode encerrar o consumo antes do último lote.
++            # Fecha o cursor antes do commit que mantém a autoridade do banco.
++            result.close()
+ 
+     def create(self, appointment: Appointment) -> Appointment:
+         self.db.add(appointment)
+diff --git a/backend/app/core/config.py b/backend/app/core/config.py
+index 9e472a8..31fa03c 100644
+--- a/backend/app/core/config.py
++++ b/backend/app/core/config.py
+@@ -31,6 +31,10 @@ class Settings(BaseSettings):
+     API_V1_PREFIX: str = "/api/v1"
+     DEBUG: bool = False
+ 
++    # CPU OpenCL é opcional em execução; falhas recorrem ao mesmo cálculo sequencial.
++    APPOINTMENT_CONFLICT_ENGINE: Literal["auto", "sequential"] = "auto"
++    APPOINTMENT_CONFLICT_BATCH_SIZE: int = Field(default=4096, ge=1, le=65536)
++
+     # Exemplo PostgreSQL:
+     # postgresql+psycopg://user:password@host:5432/database
+     DATABASE_URL: str = Field(
+diff --git a/backend/pyproject.toml b/backend/pyproject.toml
+index 4e0ce95..8071e9f 100644
+--- a/backend/pyproject.toml
++++ b/backend/pyproject.toml
+@@ -6,6 +6,8 @@ requires-python = ">=3.11,<3.13"
+ readme = "README.md"
+ 
+ dependencies = [
++    "numpy==2.2.6",
++    "pyopencl==2025.2.7",
+     "fastapi==0.141.1",
+     "uvicorn[standard]==0.52.4",
+     "sqlalchemy==2.0.52",
+@@ -37,3 +39,6 @@ testpaths = ["tests"]
+ where = ["."]
+ include = ["app*"]
+ exclude = ["alembic*", "scripts*", "tests*"]
++
++[tool.setuptools.package-data]
++"app.appointments" = ["kernels/*.cl"]

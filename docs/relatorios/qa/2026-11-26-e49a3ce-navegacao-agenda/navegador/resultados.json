@@ -1,0 +1,219 @@
+[
+  {
+    "id": "NAV-01",
+    "scenario": "Abrir a aplicação de teste",
+    "result": "PASSOU",
+    "detail": "Tela de login exibida na porta exclusiva 18126; aplicação ainda não autenticada.",
+    "at": "2026-11-26T16:12:24.144Z"
+  },
+  {
+    "id": "NAV-02",
+    "scenario": "Recusar senha inválida",
+    "result": "PASSOU",
+    "detail": "Mensagem genérica de credenciais inválidas e permanência na tela de login.",
+    "at": "2026-11-26T16:12:35.735Z"
+  },
+  {
+    "id": "NAV-03",
+    "scenario": "Login válido da recepção",
+    "result": "PASSOU",
+    "detail": "Dashboard autenticado mostra Recepcionista QA Ficticia. Menu recolhido nesta largura de janela.",
+    "at": "2026-11-26T16:13:00.733Z"
+  },
+  {
+    "id": "NAV-04",
+    "scenario": "Abrir menu em janela estreita",
+    "result": "REPROVOU",
+    "detail": "Na largura inicial de aproximadamente 375 px, clicar em Abrir menu não exibiu a navegação; Agenda permaneceu inacessível pelo menu.",
+    "at": "2026-11-26T16:13:14.966Z"
+  },
+  {
+    "id": "NAV-05",
+    "scenario": "Acessar Agenda e semana sem consultas",
+    "result": "PASSOU",
+    "detail": "Filtros iniciais 26/11 a 02/12; listagem vazia com mensagem e botão Nova consulta, sem erro.",
+    "at": "2026-11-26T16:13:34.057Z"
+  },
+  {
+    "id": "NAV-06",
+    "scenario": "Enviar formulário vazio",
+    "result": "PASSOU",
+    "detail": "Paciente, dentista, data e horário são apontados como obrigatórios sem sair do formulário.",
+    "at": "2026-11-26T16:13:55.610Z"
+  },
+  {
+    "id": "NAV-07",
+    "scenario": "Recusar agendamento passado",
+    "result": "PASSOU",
+    "detail": "Data 25/11/2026, 09:00 foi preenchida por controles nativos; validação exige data e horário futuros. Tentativas anteriores de fill em date/time não preencheram os campos e não foram contadas como defeito.",
+    "at": "2026-11-26T16:14:58.679Z"
+  },
+  {
+    "id": "NAV-08",
+    "scenario": "Criar consulta válida",
+    "result": "PASSOU",
+    "detail": "Recepção criou Paciente Fictício Ativo / Dentista Fictício, 27/11/2026, 09:00–09:30. Mensagem de sucesso e uma linha Agendada.",
+    "at": "2026-11-26T16:15:17.266Z"
+  },
+  {
+    "id": "NAV-09",
+    "scenario": "Consultar os detalhes",
+    "result": "PASSOU",
+    "detail": "Consulta nº 6 apresenta participantes, 27/11/2026 09:00–09:30, duração, estado e observação salvos.",
+    "at": "2026-11-26T16:15:32.041Z"
+  },
+  {
+    "id": "NAV-10",
+    "scenario": "Editar duração e observação",
+    "result": "PASSOU",
+    "detail": "Consulta nº 6 alterada para 45 minutos; horário final 09:45 e aviso de reagendamento exibidos.",
+    "at": "2026-11-26T16:15:44.857Z"
+  },
+  {
+    "id": "NAV-11",
+    "scenario": "Recepção confirma consulta",
+    "result": "PASSOU",
+    "detail": "Situação passou de Agendada para Confirmada; ação Confirmar desapareceu.",
+    "at": "2026-11-26T16:15:54.147Z"
+  },
+  {
+    "id": "NAV-12",
+    "scenario": "Persistência após recarregar a página",
+    "result": "PASSOU",
+    "detail": "Após reload e nova abertura da Agenda, consulta nº 6 continua Confirmada com 45 minutos.",
+    "at": "2026-11-26T16:15:55.671Z"
+  },
+  {
+    "id": "NAV-13",
+    "scenario": "Recusar sobreposição do mesmo dentista",
+    "result": "PASSOU",
+    "detail": "Paciente distinto no mesmo horário 27/11 09:00: formulário preservado, horário indisponível e mensagem de conflito exibidos.",
+    "at": "2026-11-26T16:16:18.557Z"
+  },
+  {
+    "id": "NAV-14",
+    "scenario": "Aceitar intervalos adjacentes",
+    "result": "PASSOU",
+    "detail": "Consulta B às 09:45–10:15 foi aceita imediatamente após A 09:00–09:45 para o mesmo dentista. Duas linhas na agenda.",
+    "at": "2026-11-26T16:16:31.487Z"
+  },
+  {
+    "id": "NAV-15",
+    "scenario": "Filtrar por dentista",
+    "result": "PASSOU",
+    "detail": "Selecionar o segundo dentista retorna zero no período; nenhuma consulta do primeiro permaneceu na tabela.",
+    "at": "2026-11-26T16:16:31.672Z"
+  },
+  {
+    "id": "NAV-16",
+    "scenario": "Filtrar por situação",
+    "result": "PASSOU",
+    "detail": "Filtro Confirmada retorna somente a consulta A; consulta B Agendada não aparece.",
+    "at": "2026-11-26T16:16:31.885Z"
+  },
+  {
+    "id": "NAV-17",
+    "scenario": "Filtrar por período",
+    "result": "PASSOU",
+    "detail": "Data inicial alterada pelo calendário para 28/11: consulta de 27/11 desaparece, com resultado vazio coerente.",
+    "at": "2026-11-26T16:16:54.099Z"
+  },
+  {
+    "id": "NAV-18",
+    "scenario": "Recusar período de filtro invertido",
+    "result": "PASSOU",
+    "detail": "Com data inicial 28/11 e final 02/11, mensagem informa que a data final deve ser igual ou posterior à inicial.",
+    "at": "2026-11-26T16:17:00.896Z"
+  },
+  {
+    "id": "NAV-19",
+    "scenario": "Desistir do cancelamento",
+    "result": "PASSOU",
+    "detail": "Diálogo informa preservação do histórico. Cancelar o diálogo manteve a consulta Confirmada.",
+    "at": "2026-11-26T16:17:34.253Z"
+  },
+  {
+    "id": "NAV-20",
+    "scenario": "Cancelar e preservar no histórico",
+    "result": "PASSOU",
+    "detail": "Confirmar o diálogo removeu a consulta do filtro Confirmada. No filtro Cancelada, a mesma consulta continua listada sem ações de edição.",
+    "at": "2026-11-26T16:17:42.312Z"
+  },
+  {
+    "id": "NAV-21",
+    "scenario": "Consultar cancelada sem edição",
+    "result": "PASSOU",
+    "detail": "Detalhes da consulta nº 6 preservam a observação editada, participantes e horário; nenhum botão Editar, Confirmar ou Cancelar é oferecido.",
+    "at": "2026-11-26T16:17:53.097Z"
+  },
+  {
+    "id": "NAV-22",
+    "scenario": "Liberar horário após cancelar",
+    "result": "PASSOU",
+    "detail": "Nova consulta C, 27/11 09:00–09:30, foi aceita para o primeiro dentista após cancelamento de A; histórico cancelado continua na lista.",
+    "at": "2026-11-26T16:18:09.603Z"
+  },
+  {
+    "id": "NAV-23",
+    "scenario": "Permitir o mesmo horário para dentistas distintos",
+    "result": "PASSOU",
+    "detail": "Consulta D 27/11 09:00 foi aceita para o segundo dentista, mantendo C no mesmo horário para o primeiro.",
+    "at": "2026-11-26T16:18:22.494Z"
+  },
+  {
+    "id": "NAV-24",
+    "scenario": "Encerrar a sessão da recepção",
+    "result": "PASSOU",
+    "detail": "Sair retornou à tela de login; a Agenda deixou de ser exibida.",
+    "at": "2026-11-26T16:18:23.156Z"
+  },
+  {
+    "id": "NAV-25",
+    "scenario": "Dentista vê somente sua agenda",
+    "result": "PASSOU",
+    "detail": "Dentista Fictício vê três consultas da semana (A, B, C); consulta D de outro dentista não aparece. Não há Nova consulta, filtro por dentista ou Editar.",
+    "at": "2026-11-26T16:18:36.913Z"
+  },
+  {
+    "id": "NAV-26",
+    "scenario": "Ocultar conclusão e ausência antes do horário",
+    "result": "PASSOU",
+    "detail": "Após incluir passado e futuro na lista, botões Concluir/Registrar ausência aparecem apenas nas duas consultas cujo horário já iniciou.",
+    "at": "2026-11-26T16:18:51.909Z"
+  },
+  {
+    "id": "NAV-27",
+    "scenario": "Dentista conclui consulta passada",
+    "result": "PASSOU",
+    "detail": "Dentista confirmou diálogo; consulta fictícia nº 3 passou de SCHEDULED a COMPLETED. Esse é o contrato da base PR18/e49a3ce e não comprova regras clínicas das outras branches.",
+    "at": "2026-11-26T16:18:59.430Z"
+  },
+  {
+    "id": "NAV-28",
+    "scenario": "Dentista registra ausência passada",
+    "result": "PASSOU",
+    "detail": "Consulta fictícia nº 4 passou de CONFIRMED a NO_SHOW e perdeu ações de alteração.",
+    "at": "2026-11-26T16:19:09.468Z"
+  },
+  {
+    "id": "NAV-29",
+    "scenario": "Administrador consulta a agenda da clínica",
+    "result": "PASSOU",
+    "detail": "Administrador autenticado visualiza as quatro consultas da semana, incluindo as dos dois dentistas, sem reaproveitar filtro clínico do dentista.",
+    "at": "2026-11-26T16:19:11.660Z"
+  },
+  {
+    "id": "NAV-30",
+    "scenario": "Recusar edição com sobreposição",
+    "result": "PASSOU",
+    "detail": "Mover B para 09:15 gerou mensagem de conflito e manteve o formulário, com texto e seleção preservados.",
+    "at": "2026-11-26T16:19:56.946Z"
+  },
+  {
+    "id": "NAV-31",
+    "scenario": "Preservar consulta após edição recusada",
+    "result": "PASSOU",
+    "detail": "Ao sair da edição recusada, B continua na listagem às 09:45–10:15. Nenhuma alteração parcial aparece.",
+    "at": "2026-11-26T16:19:57.554Z"
+  }
+]

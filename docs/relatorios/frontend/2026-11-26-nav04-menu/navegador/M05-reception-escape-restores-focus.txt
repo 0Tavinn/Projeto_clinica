@@ -1,0 +1,146 @@
+Window: "Lumina Odonto - Brave", App: brave.exe.
+	0 window (janela) Lumina Odonto - Brave Secondary Actions: Raise
+		1 pane (painel) (disabled)
+		2 pane (região) Lumina Odonto - Brave
+			3 pane (região)
+				4 pane (região)
+					5 pane (região)
+						6 button (botão) Minimizar ID: view_1
+						958 button (botão) Maximizar ID: view_2
+						8 button (botão) Fechar ID: view_4
+					9 pane (região)
+						10 pane (região)
+							11 toolbar (barra de ferramentas) ID: view_1000
+								12 button (botão) Voltar ID: view_1001
+								13 button (botão) (disabled) Avançar ID: view_1002
+								14 button (botão) Recarregar ID: view_1003
+								15 button (botão) Adicionar esta guia aos favoritos ID: view_1005
+								16 group (grupo)
+									17 button (botão) Ver informações do site ID: view_1011
+									18 text field (editar) (settable, string) Barra de endereço e de pesquisa Description: Pesquise no Brave ou digite o URL Value: localhost:18136 ID: view_1012
+									19 pane (região)
+										739 button (botão) Zoom: 90%
+										763 button (botão)
+									20 pane (região)
+										21 separator (separador) Separador
+										22 button (botão) Brave Shields
+										23 button (botão) Recompensas Brave
+								24 pane (região)
+									26 button (botão) Extensões ID: view_1006
+								27 button (botão) Mostrar barra lateral
+								28 button (botão) Brave Wallet
+								29 button (botão) Leo AI
+								30 button (botão) VPN
+								31 button (botão) Brave ID: view_1007
+							32 pane (região)
+						33 pane (região)
+							34 pane (região)
+								898 document (documento) DevTools Value: devtools://devtools/bundled/device_mode_emulation_frame.html?remoteBase=https://devtools.brave.com/serve_file/@80c75da68097f674d782368eae87463b89d1720/&targetType=tab&can_dock=true ID: RootWebArea
+									899 toolbar (barra de ferramentas)
+										900 text Dimensions:
+										901 combo box (caixa de combinação) (settable, string) Device type Description: Device type Value: Responsive
+										902 spinner (botão de rotação) (settable, float) Width Description: Width Value: 375
+										903 text ×
+										904 spinner (botão de rotação) (settable, float) Height (leave empty for full) Description: 810 Value: 810
+										905 combo box (caixa de combinação) (settable, string) Zoom Description: Zoom Value: Fit to window
+										906 combo box (caixa de combinação) (settable, string) Throttling Value: Disabled: No throttling
+										907 combo box (caixa de combinação) (settable, string) Value: 'Save-Data': default
+										908 button (botão) Rotate Description: Rotate
+									909 toolbar (barra de ferramentas)
+										910 button (botão) More options Description: More options
+									911 group (grupo)
+									912 group (grupo)
+									913 group (grupo)
+									914 group (grupo)
+									915 group (grupo)
+									916 group (grupo)
+									917 group (grupo)
+									918 image (gráfico)
+									919 image (gráfico)
+									920 image (gráfico)
+									921 image (gráfico)
+									922 group (grupo) Description: Double-click for full height
+										923 image (gráfico)
+								924 pane (região)
+								925 document (documento) Lumina Odonto Value: http://localhost:18136/ ID: RootWebArea
+									980 group (grupo) ID: root
+										981 group (principal)
+											982 button (botão) Abrir menu
+											983 text Lumina
+											984 text ODONTO
+											985 group (cabeçalho da seção)
+												986 text (título) Olá, Recepcionista
+												987 text Você está conectado como Recepcionista.
+											988 text PACIENTES ATIVOS
+											989 text 3
+											990 text Dados carregados da API
+											991 text SEU PERFIL
+											992 text Recepcionista
+											993 text Permissões aplicadas
+											994 text EQUIPE
+											995 text —
+											996 text Acesso administrativo
+											997 text ACESSO RÁPIDO
+											998 text (título) Módulos da Sprint 04
+											999 button (botão) Gerenciar pacientes
+											1000 text SESSÃO AUTENTICADA
+											1001 text (título) Recepcionista NAV04 Ficticia
+											1002 text recepcao.nav04@example.com
+											1003 text #
+											1004 text 1
+											1005 text Clínica vinculada
+											1006 text Ativa
+											1007 text Sessão validada pela API
+						939 pane (região)
+							940 pane (região)
+								941 button (botão) Pesquisa em todas as guias
+							942 pane (região) ID: view_21
+								943 tab (tabulação)
+									946 tab item (item de tabulação) (selectable) Uso da memória em Lumina Odonto: 48,8 MB ID: view_20
+										947 button (botão) Fechar
+								948 pane (região)
+							949 button (botão) Nova guia
+							950 pane (região)
+						951 pane (região)
+						952 pane (região)
+						953 pane (região)
+							954 pane (região)
+								955 pane (região)
+								956 separator (separador)
+						957 pane (região)
+
+Selected text: ```
+localhost:18136
+```
+
+Note: Pay special attention to the content selected by the user. If the user asks a question or refers to the content they are looking at on-screen, they might be referring to the selected content (but they might be referring to something else that's visible, too).
+
+Focused element: 18 text field (editar) (settable, string) Barra de endereço e de pesquisa Description: Pesquise no Brave ou digite o URL Value: localhost:18136 ID: view_1012
+
+Selected text: localhost:18136
+
+Document text:
+Abrir menu
+Lumina
+ODONTO
+Olá, Recepcionista
+Você está conectado como Recepcionista.
+PACIENTES ATIVOS
+3
+Dados carregados da API
+SEU PERFIL
+Recepcionista
+Permissões aplicadas
+EQUIPE
+—
+Acesso administrativo
+ACESSO RÁPIDO
+Módulos da Sprint 04
+Gerenciar pacientes
+SESSÃO AUTENTICADA
+Recepcionista NAV04 Ficticia
+recepcao.nav04@example.com
+#1
+Clínica vinculada
+Ativa
+Sessão validada pela API

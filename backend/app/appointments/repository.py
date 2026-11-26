@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.appointments.models import Appointment, AppointmentStatus
+from app.appointments.conflict_detection import detect_conflict, interval
 from app.common.exceptions import AppointmentTimeConflictError
 from app.dentists.models import Dentist
 
@@ -68,7 +69,6 @@ class AppointmentRepository:
         duration_minutes: int,
         excluding_id: int | None = None,
     ) -> bool:
-        new_end = scheduled_at + datetime.timedelta(minutes=duration_minutes)
         statement = select(Appointment).where(
             Appointment.clinic_id == clinic_id,
             Appointment.dentist_id == dentist_id,
@@ -76,16 +76,22 @@ class AppointmentRepository:
                 [AppointmentStatus.CANCELED, AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW]
             ),
         )
-        for appointment in self.db.execute(statement).scalars():
-            if excluding_id is not None and appointment.id == excluding_id:
-                continue
-            existing_start = appointment.scheduled_at
-            if existing_start.tzinfo is None:
-                existing_start = existing_start.replace(tzinfo=datetime.timezone.utc)
-            existing_end = existing_start + datetime.timedelta(minutes=appointment.duration_minutes)
-            if existing_start < new_end and scheduled_at < existing_end:
-                return True
-        return False
+        # Os filtros e a exclusão do próprio ID continuam no repositório.
+        # yield_per limita os objetos carregados enquanto o comparador loteia.
+        result = self.db.execute(statement.execution_options(yield_per=1024))
+        try:
+            candidates = (
+                interval(appointment.scheduled_at, appointment.duration_minutes)
+                for appointment in result.scalars()
+                if excluding_id is None or appointment.id != excluding_id
+            )
+            return detect_conflict(
+                candidates, interval(scheduled_at, duration_minutes)
+            ).conflict
+        finally:
+            # Um conflito pode encerrar o consumo antes do último lote.
+            # Fecha o cursor antes do commit que mantém a autoridade do banco.
+            result.close()
 
     def create(self, appointment: Appointment) -> Appointment:
         self.db.add(appointment)

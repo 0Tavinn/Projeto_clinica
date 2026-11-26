@@ -1,0 +1,8 @@
+Browser tab: 2, Title: "Lumina Odonto", URL: "http://localhost:18126/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 47
+~				42 time field (settable) Horário Horário indisponível para o dentista selecionado., Value: 09:15
++				60 text Horário indisponível para o dentista selecionado. Duração
++				61 text O dentista já possui uma consulta agendada nesse período.
++		62 text O dentista já possui uma consulta agendada nesse período.
+The focused UI element is 1 AXWebArea Lumina Odonto, URL: localhost:18126/

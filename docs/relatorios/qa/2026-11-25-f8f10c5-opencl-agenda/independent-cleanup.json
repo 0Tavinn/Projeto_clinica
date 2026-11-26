@@ -1,0 +1,32 @@
+[
+  {
+    "type": "container",
+    "name": "lumina_agenda_qa-independent-351fa2e808_api",
+    "removed": true
+  },
+  {
+    "type": "container",
+    "name": "lumina_agenda_qa-independent-351fa2e808_db",
+    "removed": true
+  },
+  {
+    "type": "volume",
+    "name": "lumina_agenda_qa-independent-351fa2e808_data",
+    "removed": true
+  },
+  {
+    "type": "network",
+    "name": "lumina_agenda_qa-independent-351fa2e808",
+    "removed": true
+  },
+  {
+    "type": "image",
+    "name": "lumina-opencl-independent-tests:qa-independent-351fa2e808",
+    "removed": true
+  },
+  {
+    "type": "image",
+    "name": "lumina-opencl-independent-app:qa-independent-351fa2e808",
+    "removed": true
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "container",
+    "name": "lumina_probe_perf-b7c5a50f667c",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina_db_perf-b7c5a50f667c",
+    "removed": true
+  },
+  {
+    "kind": "volume",
+    "name": "lumina_perf-b7c5a50f667c",
+    "removed": true
+  },
+  {
+    "kind": "network",
+    "name": "lumina_perf-b7c5a50f667c",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-perf-lab:perf-b7c5a50f667c",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-perf-app:perf-b7c5a50f667c",
+    "removed": true
+  }
+]

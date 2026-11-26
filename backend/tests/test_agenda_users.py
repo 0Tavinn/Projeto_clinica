@@ -11,6 +11,7 @@ def _user_payload(*, email, cpf, role="DENTIST", cro="12345"):
         "full_name": "Profissional da Agenda",
         "email": email,
         "password": "Senha@1234",
+        "clinical_password": "Prontuario@123",
         "cpf": cpf,
         "phone": "81999990000",
         "role": role,

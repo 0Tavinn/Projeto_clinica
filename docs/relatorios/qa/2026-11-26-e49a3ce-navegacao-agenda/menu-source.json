@@ -1,0 +1,13 @@
+{
+  "tsx": {
+    "file": "frontend/src/App.tsx",
+    "line": 641,
+    "excerpt": "        onLogout={() => endLocalSession()}\n      />\n      <main className=\"main-content\">\n        <div className=\"mobile-header\">\n          <button className=\"icon-button\" aria-label=\"Abrir menu\"><Menu size={22} /></button>\n          <Brand compact />\n        </div>\n\n        {view === 'dashboard' && ("
+  },
+  "css": {
+    "file": "frontend/src/styles.css",
+    "line": 7,
+    "excerpt": "@media(max-width:760px){.sidebar{display:none}.main-content{width:100%;margin:0;padding:22px 18px 48px}.mobile-header{display:flex;align-items:center;gap:14px;margin-bottom:38px}.brand-compact{margin:0}.brand-compact strong{font-size:25px}.brand-compact span{font-size:1"
+  },
+  "diagnosis": "Botao Abrir menu sem onClick; sidebar escondida pela media query ate 760 px."
+}

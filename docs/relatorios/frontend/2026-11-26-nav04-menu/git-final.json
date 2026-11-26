@@ -1,0 +1,8 @@
+{
+  "branch": "feat/paralelismo-agendamento",
+  "head": "1a2ec6c519272840e31acf89996f882a9aaa71d7",
+  "status": " M frontend/src/App.tsx\n?? docs/relatorios/frontend/\n?? frontend/src/AppNavigation.css\n?? frontend/src/AppNavigation.tsx\n",
+  "staged": "",
+  "upstream_left_right": "0\t1",
+  "commit_push_merge_performed": false
+}

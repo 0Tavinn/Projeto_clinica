@@ -1,0 +1,5 @@
+..................................................................       [100%]
+66 passed, 9 warnings in 10.58s
+/app/app/main.py:13: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+  from app.common.error_handlers import register_exception_handlers
+Evidências em ../docs/relatorios/opencl-1795642186_d870cfbd-c6a

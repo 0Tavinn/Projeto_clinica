@@ -1,0 +1,1 @@
+{"default": "sequential", "engine": "sequential", "conflict": true, "pyopencl_imported": false, "fallback": false}

@@ -1,0 +1,40 @@
+{
+  "boundaryBefore": {
+    "bodyOverflow": "hidden",
+    "controls": "mobile-navigation",
+    "dialogButtons": [
+      "Fechar menu",
+      "Dashboard",
+      "Pacientes",
+      "Equipe",
+      "Agenda",
+      "Sair"
+    ],
+    "dialogExists": true,
+    "dialogOpen": true,
+    "expanded": "true",
+    "focus": "Sair",
+    "height": 780,
+    "modal": true,
+    "width": 378
+  },
+  "boundaryAfter": {
+    "bodyOverflow": "hidden",
+    "controls": "mobile-navigation",
+    "dialogButtons": [
+      "Fechar menu",
+      "Dashboard",
+      "Pacientes",
+      "Equipe",
+      "Agenda",
+      "Sair"
+    ],
+    "dialogExists": true,
+    "dialogOpen": true,
+    "expanded": "true",
+    "focus": "Fechar menu",
+    "height": 780,
+    "modal": true,
+    "width": 378
+  }
+}

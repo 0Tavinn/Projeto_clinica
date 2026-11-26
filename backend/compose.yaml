@@ -1,18 +1,17 @@
 services:
   db:
-    image: mysql:8.4
+    image: postgres:16
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: dental_clinic
-      MYSQL_USER: dental_user
-      MYSQL_PASSWORD: dental_pass
-      MYSQL_ROOT_PASSWORD: root_change_me
+      POSTGRES_DB: dental_clinic
+      POSTGRES_USER: dental_user
+      POSTGRES_PASSWORD: dental_pass
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - dental_clinic_mysql_data:/var/lib/mysql
+      - dental_clinic_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_change_me"]
+      test: ["CMD-SHELL", "pg_isready -U dental_user -d dental_clinic"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -26,7 +25,7 @@ services:
     environment:
       ENVIRONMENT: development
       DEBUG: "true"
-      DATABASE_URL: mysql+pymysql://dental_user:dental_pass@db:3306/dental_clinic
+      DATABASE_URL: postgresql+psycopg://dental_user:dental_pass@db:5432/dental_clinic
       SECRET_KEY: ${SECRET_KEY:-INSECURE-DEV-ONLY-CHANGE-ME}
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: "30"
@@ -38,4 +37,4 @@ services:
       sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
 
 volumes:
-  dental_clinic_mysql_data:
+  dental_clinic_postgres_data:
