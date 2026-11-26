@@ -1,0 +1,17 @@
+[
+  {
+    "command": "git diff --check -- frontend/src/App.tsx",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": "git diff --no-index --check -- /dev/null frontend/src/AppNavigation.tsx",
+    "exit": 1,
+    "output": ""
+  },
+  {
+    "command": "git diff --no-index --check -- /dev/null frontend/src/AppNavigation.css",
+    "exit": 1,
+    "output": ""
+  }
+]

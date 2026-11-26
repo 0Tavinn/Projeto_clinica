@@ -1,0 +1,25 @@
+id,description,status,observed_at,evidence
+M01-reception-open-375,"Recepção em 375x812: diálogo aberto; somente Dashboard, Pacientes, Agenda e Sair.",intermediario_ou_tentativa,2026-11-26T16:45:08.780Z,navegador/M01-reception-open-375.txt
+M02-reception-focus-wrap,"Tentativa de teclado: Shift+Tab foi recebido pelo DevTools, não pela página; erro de foco do roteiro, não contado como aprovação do foco.",intermediario_ou_tentativa,2026-11-26T16:45:20.449Z,navegador/M02-reception-focus-wrap.txt
+M03-reception-focus-page,Segunda tentativa de teclado ainda atingiu DevTools; não confirma contenção do foco. Evidência mantida como erro do roteiro.,intermediario_ou_tentativa,2026-11-26T16:46:03.706Z,navegador/M03-reception-focus-page.txt
+M04-reception-escape,Tentativa de Escape sem foco confirmado na página: diálogo permaneceu aberto; não contada como aprovação.,intermediario_ou_tentativa,2026-11-26T16:47:07.462Z,navegador/M04-reception-escape.txt
+M05-reception-escape-restores-focus,Escape fechou o menu; botão Abrir menu ficou com foco visível.,intermediario_ou_tentativa,2026-11-26T16:47:57.792Z,navegador/M05-reception-escape-restores-focus.txt
+M06-keyboard-adjustment,Reabertura por Enter funcionou; Shift+Tab a partir do primeiro botão alcançou controles do navegador. Acrescentar contenção explícita de Tab antes da validação final.,intermediario_ou_tentativa,2026-11-26T16:48:33.980Z,navegador/M06-keyboard-adjustment.txt
+F01-reception-shift-tab,"REVISÃO FINAL, recepção 375x810: Shift+Tab do primeiro botão mantém foco em Sair dentro do painel.",observado_final,2026-11-26T16:50:11.245Z,navegador/F01-reception-shift-tab.txt
+F02-tab-wrap-close,REVISÃO FINAL: Tab de Sair retorna a Fechar menu; foco visível no primeiro botão.,observado_final,2026-11-26T16:50:47.573Z,navegador/F02-tab-wrap-close.txt
+F03-close-keyboard,Recepção 375x810: Enter em Fechar menu fecha o diálogo e devolve foco ao botão Abrir menu.,observado_final,2026-11-26T16:50:55.695Z,navegador/F03-close-keyboard.txt
+F04-reception-agenda,Recepção 375x810: selecionar Agenda abriu a tela real e fechou o menu automaticamente.,observado_final,2026-11-26T16:51:09.901Z,navegador/F04-reception-agenda.txt
+F05-backdrop-close,Recepção: clique no fundo escurecido fecha o menu e mantém a Agenda.,observado_final,2026-11-26T16:51:18.447Z,navegador/F05-backdrop-close.txt
+F06-close-button,Recepção: botão Fechar menu fecha o painel sem mudar a tela.,observado_final,2026-11-26T16:51:25.460Z,navegador/F06-close-button.txt
+F07-reception-desktop-resize,"Recepção 1440x1000: trocar largura com painel aberto fecha o modal, preserva Agenda e mostra sidebar desktop.",observado_final,2026-11-26T16:52:01.016Z,navegador/F07-reception-desktop-resize.txt
+F08-reception-desktop-patients,"Recepção 1440x1000: Pacientes abre lista real com três dados fictícios, sem menu de outro perfil.",observado_final,2026-11-26T16:52:22.507Z,navegador/F08-reception-desktop-patients.txt
+F09-reception-desktop-dashboard,Recepção 1440x1000: Dashboard continua acessível pela sidebar.,observado_final,2026-11-26T16:52:22.995Z,navegador/F09-reception-desktop-dashboard.txt
+F10-back-to-mobile,"Recepção 377x780: voltar do desktop mantém menu fechado e exibe Abrir menu, sem painel residual.",observado_final,2026-11-26T16:52:33.256Z,navegador/F10-back-to-mobile.txt
+F11-scroll-restored,"377x780: após fechar menu e trocar breakpoint, a página continua rolando até os cartões inferiores.",observado_final,2026-11-26T16:53:07.261Z,navegador/F11-scroll-restored.txt
+F12-reception-mobile-logout,"Recepção 377x780: Sair no painel encerra sessão, remove menu e apresenta login.",observado_final,2026-11-26T16:53:22.171Z,navegador/F12-reception-mobile-logout.txt
+F13-dentist-mobile-menu,"Dentista 377x780: menu com Dashboard, Pacientes, Prontuários, Consultas e Sair; sem Equipe ou Agenda de outro perfil.",observado_final,2026-11-26T16:54:01.402Z,navegador/F13-dentist-mobile-menu.txt
+F14-dentist-consultations,Dentista 377x780: Consultas abriu a agenda do perfil e fechou o painel; sem Nova consulta.,observado_final,2026-11-26T16:54:08.951Z,navegador/F14-dentist-consultations.txt
+P01,"Administrador móvel/desktop, incluindo Equipe",pendente_por_interrupcao,,
+P02,Dentista desktop,pendente_por_interrupcao,,
+P03,Prontuários após interrupção de CUA,pendente_por_interrupcao,,
+P04,Escape na revisão final,pendente_por_interrupcao,,

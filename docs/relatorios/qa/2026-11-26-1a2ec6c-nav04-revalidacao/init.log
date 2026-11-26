@@ -1,0 +1,186 @@
+ Image lumina_nav04_review_20261126_0c2bed5f-frontend Building 
+ Image lumina_nav04_review_20261126_0c2bed5f-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.49kB done
+#1 DONE 0.0s
+
+#2 [api internal] load build definition from Dockerfile
+#2 transferring dockerfile: 777B done
+#2 DONE 0.0s
+
+#3 [frontend internal] load build definition from Dockerfile
+#3 transferring dockerfile: 389B done
+#3 DONE 0.0s
+
+#4 [frontend internal] load metadata for docker.io/library/node:24-alpine
+#4 ...
+
+#5 [auth] library/node:pull token for registry-1.docker.io
+#5 DONE 0.0s
+
+#6 [auth] library/python:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/nginx:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [frontend internal] load metadata for docker.io/library/nginx:alpine
+#8 DONE 1.0s
+
+#9 [api internal] load metadata for docker.io/library/python:3.12-slim
+#9 DONE 1.2s
+
+#4 [frontend internal] load metadata for docker.io/library/node:24-alpine
+#4 DONE 1.2s
+
+#10 [api internal] load .dockerignore
+#10 transferring context: 116B done
+#10 DONE 0.0s
+
+#11 [frontend internal] load .dockerignore
+#11 transferring context: 70B done
+#11 DONE 0.0s
+
+#12 [api 1/9] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#12 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#12 DONE 0.0s
+
+#13 [frontend stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:7fc0fb4af7bf006aeb31aea88069976060f8f0a0a86b667126742cc17f4e31ae
+#13 resolve docker.io/library/nginx:alpine@sha256:7fc0fb4af7bf006aeb31aea88069976060f8f0a0a86b667126742cc17f4e31ae 0.0s done
+#13 DONE 0.0s
+
+#14 [frontend build 1/6] FROM docker.io/library/node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
+#14 resolve docker.io/library/node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 0.0s done
+#14 DONE 0.0s
+
+#15 [api internal] load build context
+#15 transferring context: 3.20kB 0.0s done
+#15 DONE 0.0s
+
+#16 [frontend internal] load build context
+#16 transferring context: 80.98kB done
+#16 DONE 0.0s
+
+#17 [frontend stage-1 2/3] COPY nginx.conf /etc/nginx/conf.d/default.conf
+#17 CACHED
+
+#18 [frontend build 6/6] RUN npm run build
+#18 CACHED
+
+#19 [frontend build 4/6] RUN npm ci
+#19 CACHED
+
+#20 [frontend build 2/6] WORKDIR /app
+#20 CACHED
+
+#21 [frontend build 5/6] COPY . .
+#21 CACHED
+
+#22 [frontend build 3/6] COPY package.json package-lock.json ./
+#22 CACHED
+
+#23 [api 5/9] COPY app ./app
+#23 CACHED
+
+#24 [api 8/9] RUN python -m pip install .
+#24 CACHED
+
+#25 [api 4/9] COPY pyproject.toml README.md alembic.ini ./
+#25 CACHED
+
+#26 [api 6/9] COPY alembic ./alembic
+#26 CACHED
+
+#27 [api 3/9] WORKDIR /app
+#27 CACHED
+
+#28 [api 7/9] COPY scripts ./scripts
+#28 CACHED
+
+#29 [api 2/9] RUN apt-get update && apt-get install -y --no-install-recommends pocl-opencl-icd ocl-icd-libopencl1     && rm -rf /var/lib/apt/lists/*
+#29 CACHED
+
+#30 [frontend stage-1 3/3] COPY --from=build /app/dist /usr/share/nginx/html
+#30 CACHED
+
+#31 [api 9/9] RUN useradd --create-home appuser
+#31 CACHED
+
+#32 [frontend] exporting to image
+#32 exporting layers done
+#32 exporting manifest sha256:ee3f405067f6525c85167863d299b02e3b61beb59d75de32826b21964f2f98fe 0.0s done
+#32 exporting config sha256:3968c213a339ab6c3233290c4200150746289e214dd42806e7e11be370148c74 0.0s done
+#32 exporting attestation manifest sha256:8bd1d56e13570ea8629f553660eeedba9ccd748f1abe270372bc773bbae33768 0.0s done
+#32 exporting manifest list sha256:c60464cb6c4d0d38762ab85749a000f81a3c648c57ca0d88aefed54ab7f629c4 0.0s done
+#32 naming to docker.io/library/lumina_nav04_review_20261126_0c2bed5f-frontend:latest
+#32 naming to docker.io/library/lumina_nav04_review_20261126_0c2bed5f-frontend:latest done
+#32 unpacking to docker.io/library/lumina_nav04_review_20261126_0c2bed5f-frontend:latest 0.0s done
+#32 DONE 0.2s
+
+#33 [api] exporting to image
+#33 exporting layers done
+#33 exporting manifest sha256:7c799c6ab546bbd88365416a15a0f6e674bc9feb298e093e10543ae950fe0f8d 0.0s done
+#33 exporting config sha256:58d5b01fd9a2d25dad793f1a0d4e04b3ed4ee22716ffef23e282855f1871d76d 0.0s done
+#33 exporting attestation manifest sha256:2f385944fee7758903aad6e8aff47e719861b725d371feae6ea9e6166a6215c6 0.0s done
+#33 exporting manifest list sha256:ed75aa72d7ba29c31e1ef3765dc00e137aaf5cb003048aa1bfaf80f95af8bd23 0.0s done
+#33 naming to docker.io/library/lumina_nav04_review_20261126_0c2bed5f-api:latest done
+#33 unpacking to docker.io/library/lumina_nav04_review_20261126_0c2bed5f-api:latest
+#33 ...
+
+#34 [frontend] resolving provenance for metadata file
+#34 DONE 0.0s
+
+#33 [api] exporting to image
+#33 unpacking to docker.io/library/lumina_nav04_review_20261126_0c2bed5f-api:latest 5.6s done
+#33 DONE 5.8s
+
+#35 [api] resolving provenance for metadata file
+#35 DONE 0.0s
+ Image lumina_nav04_review_20261126_0c2bed5f-api Built 
+ Image lumina_nav04_review_20261126_0c2bed5f-frontend Built 
+ Network lumina_nav04_review_20261126_0c2bed5f_default Creating 
+ Network lumina_nav04_review_20261126_0c2bed5f_default Creating 
+ Volume lumina_nav04_review_20261126_0c2bed5f_postgres_data Creating 
+ Volume lumina_nav04_review_20261126_0c2bed5f_postgres_data Creating 
+ Volume lumina_nav04_review_20261126_0c2bed5f_postgres_data Created 
+ Volume lumina_nav04_review_20261126_0c2bed5f_postgres_data Created 
+ Network lumina_nav04_review_20261126_0c2bed5f_default Created 
+ Network lumina_nav04_review_20261126_0c2bed5f_default Created 
+ Container lumina_nav04_review_20261126_0c2bed5f-db-1 Creating 
+ Container lumina_nav04_review_20261126_0c2bed5f-db-1 Created 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-f9ffc5593d73 Creating 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-f9ffc5593d73 Created 
+OK: banco vazio para provisionamento explícito.
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-6a5ea77ebf29 Creating 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-6a5ea77ebf29 Created 
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 50d77a928a7c, create clinics and users tables
+INFO  [alembic.runtime.migration] Running upgrade 50d77a928a7c -> 7a1d9e3b4c5d, create patients, dentists and appointments
+INFO  [alembic.runtime.migration] Running upgrade 7a1d9e3b4c5d -> 8c2f4a1b6d7e, create medical records and clinical evolutions
+INFO  [alembic.runtime.migration] Running upgrade 8c2f4a1b6d7e -> 9d3e5f7a1b2c, add separate clinical access password
+INFO  [alembic.runtime.migration] Running upgrade 9d3e5f7a1b2c -> a6e8f0b2c4d6, Unifica o esquema e adiciona vínculos clínicos auditáveis.
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-63513bf536ce Creating 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-63513bf536ce Created 
+OK: banco=lumina_dev; PostgreSQL=16.15; revisão=a6e8f0b2c4d6; catálogo conferido.
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Creating 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Created 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Creating 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Created 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Starting 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Started 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Waiting 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Healthy 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Starting 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Started 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Waiting 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Waiting 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-1 Healthy 
+ Container lumina_nav04_review_20261126_0c2bed5f-frontend-1 Healthy 
+NAME                                               IMAGE                                            COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+lumina_nav04_review_20261126_0c2bed5f-api-1        lumina_nav04_review_20261126_0c2bed5f-api        "uvicorn app.main:ap…"   api        12 seconds ago   Up 11 seconds (healthy)   127.0.0.1:18147->8000/tcp
+lumina_nav04_review_20261126_0c2bed5f-db-1         postgres:16-alpine                               "docker-entrypoint.s…"   db         22 seconds ago   Up 21 seconds (healthy)   127.0.0.1:55486->5432/tcp
+lumina_nav04_review_20261126_0c2bed5f-frontend-1   lumina_nav04_review_20261126_0c2bed5f-frontend   "/docker-entrypoint.…"   frontend   11 seconds ago   Up 5 seconds (healthy)    127.0.0.1:18146->80/tcp
+OK: banco=lumina_dev; PostgreSQL=16.15; revisão=a6e8f0b2c4d6; catálogo conferido.
+HTTP 18147/health: 200
+HTTP 18146/: 200

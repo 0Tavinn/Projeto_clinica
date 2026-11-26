@@ -1,0 +1,10 @@
+{
+  "project": "lumina_nav04_20261126_8d19c4",
+  "containers_removed": true,
+  "volume_removed": true,
+  "network_removed": true,
+  "daily_unchanged_ids_images_mounts_started_health": true,
+  "daily_services": 3,
+  "only_execution_image_tags_removed": true,
+  "buildkit_cache_preserved": true
+}

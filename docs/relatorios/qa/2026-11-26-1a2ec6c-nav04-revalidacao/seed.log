@@ -1,0 +1,22 @@
+ Container lumina_nav04_review_20261126_0c2bed5f-db-1 Running 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-305f0d1aa984 Creating 
+ Container lumina_nav04_review_20261126_0c2bed5f-api-run-305f0d1aa984 Created 
+OK: banco=lumina_dev; PostgreSQL=16.15; revisão=a6e8f0b2c4d6; catálogo conferido.
+BEGIN
+DO
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 3
+INSERT 0 3
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 2
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+COMMIT

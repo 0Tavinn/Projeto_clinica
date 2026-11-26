@@ -1,0 +1,23 @@
+Browser tab: 3, Title: "Lumina Odonto", URL: "http://localhost:18146/".
+0 AXWebArea Lumina Odonto, URL: localhost:18146/
+	1 container root
+		2 container
+			3 text Lumina ODONTO GESTÃO ODONTOLÓGICA
+			4 heading Cuidado inteligente para cada sorriso., Value: 1
+				5 text Cuidado inteligente
+				6 text para cada sorriso.
+			7 text Gestão simples, segura e próxima da sua clínica.
+		8 container
+			9 heading Acesso da clínica, Value: 2
+				10 text Acesso da clínica
+			11 text Entre com o usuário cadastrado pela administração.
+			12 container
+				13 text E-mail
+				14 text field (settable) E-mail
+			15 container
+				16 text Senha
+				17 text field (settable) Senha
+			18 button Entrar
+			19 text Acesso destinado a usuários autorizados.
+
+The focused UI element is 0 AXWebArea Lumina Odonto, URL: localhost:18146/

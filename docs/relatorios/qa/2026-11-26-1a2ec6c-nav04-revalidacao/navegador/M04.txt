@@ -1,0 +1,62 @@
+Browser tab: 3, Title: "Lumina Odonto", URL: "http://localhost:18146/".
+0 AXWebArea Lumina Odonto, URL: localhost:18146/
+	1 container
+		2 pop up button (collapsed) Description: Abrir menu, Secondary Actions: Expand
+		3 text Lumina ODONTO
+		4 heading Pacientes, Value: 1
+			5 text Pacientes
+		6 text Dados ativos da clínica, sincronizados com a API.
+		7 button Novo paciente
+		8 text field (settable)
+		9 text 3 pacientes ativos
+		10 table
+			11 row
+				12 cell
+					13 text NOME
+				14 cell
+					15 text CPF
+				16 cell
+					17 text TELEFONE
+				18 cell
+					19 text AÇÕES
+			20 row
+				21 cell
+					22 button Paciente Fictício Ativo
+					23 container
+						24 text Prontuário nº  DEMO-001
+				25 cell
+					26 text 000.000.000-11
+				27 cell
+					28 text —
+				29 cell
+					30 button Ver
+					31 button  Editar
+					32 button Inativar
+			33 row
+				34 cell
+					35 button Paciente Fictício Revogado
+					36 container
+						37 text Prontuário nº  DEMO-002
+				38 cell
+					39 text 000.000.000-12
+				40 cell
+					41 text —
+				42 cell
+					43 button Ver
+					44 button  Editar
+					45 button Inativar
+			46 row
+				47 cell
+					48 button Paciente Fictício Sem Vínculo
+					49 container
+						50 text Prontuário nº  DEMO-003
+				51 cell
+					52 text 000.000.000-13
+				53 cell
+					54 text —
+				55 cell
+					56 button Ver
+					57 button  Editar
+					58 button Inativar
+
+The focused UI element is 2 pop up button (collapsed) Description: Abrir menu, Secondary Actions: Expand

@@ -1,0 +1,10 @@
+{
+  "head": "1a2ec6c519272840e31acf89996f882a9aaa71d7",
+  "export": "git archive HEAD backend frontend scripts compose.yml .env.example + explicit overlay of uncommitted frontend files",
+  "sha256": {
+    "frontend/src/App.tsx": "552515058ed4cea3f2041479a17fe5e5354a07122df6b0bdd7cf27d9d8e04c70",
+    "frontend/src/AppNavigation.tsx": "29f80a0bc307f39ef28a6bf620dc00f602d4753987f7becbfbbe8819fa8b6606",
+    "frontend/src/AppNavigation.css": "0143800ef3e42f1f00c52345e016abde684599734061db45796e983bcc60dd8d"
+  },
+  "revision_note": "Final includes explicit Tab boundary handling after intermediate browser observation."
+}

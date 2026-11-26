@@ -1,0 +1,8 @@
+[
+  {
+    "level": "error",
+    "message": "Error: prompt() is not supported.\n    at Fe (http://localhost:18146/assets/index-CX62xV2E.js:9:72513)\n    at onNavigate (http://localhost:18146/assets/index-CX62xV2E.js:9:72865)\n    at onClick (http://localhost:18146/assets/index-CX62xV2E.js:9:75526)\n    at Vf (http://localhost:18146/assets/index-CX62xV2E.js:8:138766)\n    at http://localhost:18146/assets/index-CX62xV2E.js:8:143498\n    at Mn (http://localhost:18146/assets/index-CX62xV2E.js:8:15183)\n    at Kf (http://localhost:18146/assets/index-CX62xV2E.js:8:139993)\n    at yh (http://localhost:18146/assets/index-CX62xV2E.js:9:42561)\n    at _h (http://localhost:18146/assets/index-CX62xV2E.js:9:42383)",
+    "timestamp": "2026-11-26T17:28:33.841Z",
+    "url": "http://localhost:18146/assets/index-CX62xV2E.js"
+  }
+]

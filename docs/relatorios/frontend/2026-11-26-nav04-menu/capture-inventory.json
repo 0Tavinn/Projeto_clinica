@@ -1,0 +1,202 @@
+[
+  {
+    "file": "F01-reception-shift-tab.jpg",
+    "format": "JPEG",
+    "bytes": 53450,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F02-tab-wrap-close.jpg",
+    "format": "JPEG",
+    "bytes": 53282,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F03-close-keyboard.jpg",
+    "format": "JPEG",
+    "bytes": 62308,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F04-reception-agenda.jpg",
+    "format": "JPEG",
+    "bytes": 62240,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F05-backdrop-close.jpg",
+    "format": "JPEG",
+    "bytes": 62198,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F06-close-button.jpg",
+    "format": "JPEG",
+    "bytes": 62405,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F07-reception-desktop-resize.jpg",
+    "format": "JPEG",
+    "bytes": 74100,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F08-reception-desktop-patients.jpg",
+    "format": "JPEG",
+    "bytes": 80091,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F09-reception-desktop-dashboard.jpg",
+    "format": "JPEG",
+    "bytes": 88979,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F10-back-to-mobile.jpg",
+    "format": "JPEG",
+    "bytes": 68371,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F11-scroll-restored.jpg",
+    "format": "JPEG",
+    "bytes": 70223,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F12-reception-mobile-logout.jpg",
+    "format": "JPEG",
+    "bytes": 71789,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F13-dentist-mobile-menu.jpg",
+    "format": "JPEG",
+    "bytes": 59902,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "F14-dentist-consultations.jpg",
+    "format": "JPEG",
+    "bytes": 67006,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "M01-reception-open-375.jpg",
+    "format": "JPEG",
+    "bytes": 84672,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "M02-reception-focus-wrap.jpg",
+    "format": "JPEG",
+    "bytes": 92942,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "M03-reception-focus-page.jpg",
+    "format": "JPEG",
+    "bytes": 92942,
+    "dimensions": [
+      1536,
+      912
+    ],
+    "full_window": true
+  },
+  {
+    "file": "M04-reception-escape.jpg",
+    "format": "JPEG",
+    "bytes": 53504,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "M05-reception-escape-restores-focus.jpg",
+    "format": "JPEG",
+    "bytes": 62725,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  },
+  {
+    "file": "M06-keyboard-adjustment.jpg",
+    "format": "JPEG",
+    "bytes": 53763,
+    "dimensions": [
+      1095,
+      906
+    ],
+    "full_window": true
+  }
+]

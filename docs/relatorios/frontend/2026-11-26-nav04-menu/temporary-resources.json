@@ -1,0 +1,76 @@
+[
+  {
+    "id": "9f1bacf81ae8290611437b9e83464cc7cf6a7f6097a9d679ba2da093d87f7ace",
+    "name": "/lumina_nav04_20261126_8d19c4-frontend-1",
+    "image": "sha256:180a6e3b99166fd7f5fe2ec657f1bbe191cf81d4fba4ce6fbb9be21993f87437",
+    "labels": {
+      "com.docker.compose.config-hash": "3ae4a30a81b53b253f0675429018637463d4f6668d45e16d0127209ac5717d39",
+      "com.docker.compose.container-number": "1",
+      "com.docker.compose.depends_on": "api:service_healthy:false",
+      "com.docker.compose.image": "sha256:e3f68b97c5f631116d6a6cc2054ad11e2149ace3f6ca6a774f5a1bd5b5017b89",
+      "com.docker.compose.oneoff": "False",
+      "com.docker.compose.project": "lumina_nav04_20261126_8d19c4",
+      "com.docker.compose.project.config_files": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source/compose.yml",
+      "com.docker.compose.project.environment_file": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source/.env",
+      "com.docker.compose.project.working_dir": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source",
+      "com.docker.compose.service": "frontend",
+      "com.docker.compose.version": "5.7.0",
+      "desktop.docker.io/wsl-distro": "Ubuntu",
+      "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>",
+      "org.opencontainers.image.revision": "1a2ec6c519272840e31acf89996f882a9aaa71d7-nav04-uncommitted"
+    },
+    "mounts": []
+  },
+  {
+    "id": "2a75b41e930846b87c76b3938adce8b599981eac5dcda2bbc14e03354730791b",
+    "name": "/lumina_nav04_20261126_8d19c4-api-1",
+    "image": "sha256:d77ffbaa951b98601c18747267e03be24dd85258d2eb5ec89eb284ea4c17e8ff",
+    "labels": {
+      "com.docker.compose.config-hash": "9eae5f9b1cb497222c24d7c078491a79313949eddcbb6c287ac96149ff3c6377",
+      "com.docker.compose.container-number": "1",
+      "com.docker.compose.depends_on": "",
+      "com.docker.compose.image": "sha256:d555e4e83c82ffd1c6d0ffa99c5be366eb412777d9c7a03d9bd99bf63eb9b7e1",
+      "com.docker.compose.oneoff": "False",
+      "com.docker.compose.project": "lumina_nav04_20261126_8d19c4",
+      "com.docker.compose.project.config_files": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source/compose.yml",
+      "com.docker.compose.project.environment_file": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source/.env",
+      "com.docker.compose.project.working_dir": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source",
+      "com.docker.compose.service": "api",
+      "com.docker.compose.version": "5.7.0",
+      "desktop.docker.io/wsl-distro": "Ubuntu",
+      "org.opencontainers.image.revision": "1a2ec6c519272840e31acf89996f882a9aaa71d7-nav04-uncommitted"
+    },
+    "mounts": []
+  },
+  {
+    "id": "1f655df14d585cac5e52a6c518556390f524f91b544a6cca97c60de2c3236dcd",
+    "name": "/lumina_nav04_20261126_8d19c4-db-1",
+    "image": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+    "labels": {
+      "com.docker.compose.config-hash": "48b66fa974ef4ee18756430dfb89f7ce97b43be0d012f32f95d136b9e3d337c2",
+      "com.docker.compose.container-number": "1",
+      "com.docker.compose.depends_on": "",
+      "com.docker.compose.image": "sha256:cbf42f0edc946c0bc1b8eeed62403734e1f25dc67a3491455d07a92fdb558b28",
+      "com.docker.compose.oneoff": "False",
+      "com.docker.compose.project": "lumina_nav04_20261126_8d19c4",
+      "com.docker.compose.project.config_files": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source/compose.yml",
+      "com.docker.compose.project.environment_file": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source/.env",
+      "com.docker.compose.project.working_dir": "/home/paulinho/Work/Projeto_clinica/.local/nav04-menu-20261126_8d19c4/source",
+      "com.docker.compose.service": "db",
+      "com.docker.compose.version": "5.7.0",
+      "desktop.docker.io/wsl-distro": "Ubuntu"
+    },
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "lumina_nav04_20261126_8d19c4_postgres_data",
+        "Source": "/var/lib/docker/volumes/lumina_nav04_20261126_8d19c4_postgres_data/_data",
+        "Destination": "/var/lib/postgresql/data",
+        "Driver": "local",
+        "Mode": "rw",
+        "RW": true,
+        "Propagation": ""
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+BEGIN
+INSERT 0 1
+COMMIT
+     role      | count 
+---------------+-------
+ DENTIST       |     1
+ RECEPTIONIST  |     1
+ ADMINISTRATOR |     1
+(3 rows)
+

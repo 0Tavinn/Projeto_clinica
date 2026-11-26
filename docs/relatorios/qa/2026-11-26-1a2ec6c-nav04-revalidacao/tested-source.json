@@ -1,0 +1,10 @@
+{
+  "base_commit": "1a2ec6c519272840e31acf89996f882a9aaa71d7",
+  "branch": "feat/paralelismo-agendamento",
+  "overlay_sha256": {
+    "frontend/src/App.tsx": "552515058ed4cea3f2041479a17fe5e5354a07122df6b0bdd7cf27d9d8e04c70",
+    "frontend/src/AppNavigation.tsx": "29f80a0bc307f39ef28a6bf620dc00f602d4753987f7becbfbbe8819fa8b6606",
+    "frontend/src/AppNavigation.css": "0143800ef3e42f1f00c52345e016abde684599734061db45796e983bcc60dd8d"
+  },
+  "all_frontend_files_overlay_explicit": true
+}

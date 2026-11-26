@@ -1,0 +1,15 @@
+{"node": "v22.23.3", "npm": "10.9.9"}
+
+> lumina-odonto-frontend@0.1.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 1887 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.45 kB │ gzip:  0.29 kB
+dist/assets/index-CzXWBZzm.css   21.42 kB │ gzip:  5.32 kB
+dist/assets/index-QNC0eGr2.js   277.62 kB │ gzip: 84.26 kB
+
+✓ built in 287ms

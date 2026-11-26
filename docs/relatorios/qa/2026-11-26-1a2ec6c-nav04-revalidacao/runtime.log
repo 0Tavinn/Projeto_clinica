@@ -1,0 +1,3 @@
+3.12.16 (main, Nov 24 2026, 05:00:06) [GCC 14.2.0]
+{'fastapi': '0.141.1', 'sqlalchemy': '2.0.52', 'pydantic': '2.13.5', 'uvicorn': '0.52.4', 'numpy': '2.2.6', 'pyopencl': '2025.2.7'}
+engine=sequential

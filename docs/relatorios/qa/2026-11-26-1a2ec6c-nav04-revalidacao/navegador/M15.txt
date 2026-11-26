@@ -1,0 +1,36 @@
+Browser tab: 3, Title: "Lumina Odonto", URL: "http://localhost:18146/".
+0 AXWebArea Lumina Odonto, URL: localhost:18146/
+	1 container root
+		2 container
+			3 text Lumina ODONTO
+			4 button Dashboard
+			5 button Pacientes
+			6 button Prontuários
+			7 button Consultas
+			8 text DF Dentista Fictício Dentista
+			9 button Sair
+		10 container
+			11 heading Olá, Dentista, Value: 1
+				12 text Olá, Dentista
+			13 text Você está conectado como Dentista.
+			14 text PACIENTES ATIVOS
+			15 text 3
+			16 text Dados carregados da API SEU PERFIL
+			17 text Dentista
+			18 text Permissões aplicadas EQUIPE
+			19 text —
+			20 text Acesso administrativo ACESSO RÁPIDO
+			21 heading Módulos da Sprint 04, Value: 2
+				22 text Módulos da Sprint 04
+			23 button Gerenciar pacientes
+			24 text SESSÃO AUTENTICADA
+			25 heading Dentista Fictício, Value: 2
+				26 text Dentista Fictício
+			27 text dentista.demo@example.com
+			28 container
+				29 text # 1
+			30 text Clínica vinculada
+			31 text Ativa
+			32 text Sessão validada pela API
+
+The focused UI element is 0 AXWebArea Lumina Odonto, URL: localhost:18146/
