@@ -1,0 +1,4 @@
+STAGE build
+STAGE real_http
+QA_EXECUTION_FAILURE {"stage": "http", "exception_type": "RuntimeError"}
+QA_RUN_FINISHED {"failure": {"stage": "http", "exception_type": "RuntimeError"}, "evidence": "/home/paulinho/Work/lumina-qa-evidence/2026-11-26-vinculos-qa-3a6efdc8da"}

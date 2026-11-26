@@ -1,0 +1,59 @@
+QA_CASE {"id": "L01-own-active-scope", "expected": "somente6 ativos vinculados do proprio dentista", "obtained": {"http": 200, "visible_count": 6, "default_limit": 50}, "status": "aprovado"}
+QA_CASE {"id": "L02-minimal-dto", "expected": "cinco campos;sem CPF/contato/notas/credenciais", "obtained": {"all_exactly_five_fields": true, "items_checked": 7}, "status": "aprovado"}
+QA_CASE {"id": "L03-admin-link-empty-record", "expected": "vinculo manual sem consulta/evolucao aparece", "obtained": {"http": 200, "appointments": 0, "evolutions": 0, "records": 1}, "status": "aprovado"}
+QA_CASE {"id": "L04-read-no-create-nullable", "expected": "legado sem prontuario retorna null;GET nao cria", "obtained": {"http": 200, "nullable": true, "record_count_unchanged": true}, "status": "aprovado"}
+QA_CASE {"id": "L05-other-dentist", "expected": "lista restrita ao proprio contexto", "obtained": {"http": 200, "scope_matches": true}, "status": "aprovado"}
+QA_CASE {"id": "L05-other-clinic", "expected": "lista restrita ao proprio contexto", "obtained": {"http": 200, "scope_matches": true}, "status": "aprovado"}
+QA_CASE {"id": "L06-guessed-Revoked", "expected": "403 sem identificacao", "obtained": {"http": 403, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "L06-guessed-OtherDentist", "expected": "403 sem identificacao", "obtained": {"http": 403, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "L06-guessed-NoLink", "expected": "403 sem identificacao", "obtained": {"http": 403, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "L06-guessed-Foreign", "expected": "403 sem identificacao", "obtained": {"http": 403, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "L07-inactive-patient", "expected": "404;paciente inativo sem identificacao", "obtained": {"http": 404, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "L08-client-dentist-ignored", "expected": "dentista derivado da sessao;query nao amplia escopo", "obtained": {"http": 200, "client_selector_did_not_change_scope": true}, "status": "aprovado"}
+QA_CASE {"id": "P01-cursor", "expected": "cursor crescente;sem duplicar;sem total/offset inventados", "obtained": {"pages": 3, "unique_count": 6, "ascending_no_duplicates": true}, "status": "aprovado"}
+QA_CASE {"id": "P02-after-last", "expected": "pagina vazia terminal", "obtained": "terminal empty", "status": "aprovado"}
+QA_CASE {"id": "P03-search-name", "expected": "busca literal em nome/numero", "obtained": {"http": 200, "exact_expected_id_set": true}, "status": "aprovado"}
+QA_CASE {"id": "P03-search-record-number", "expected": "busca literal em nome/numero", "obtained": {"http": 200, "exact_expected_id_set": true}, "status": "aprovado"}
+QA_CASE {"id": "P03-search-percent", "expected": "busca literal em nome/numero", "obtained": {"http": 200, "exact_expected_id_set": true}, "status": "aprovado"}
+QA_CASE {"id": "P03-search-underscore", "expected": "busca literal em nome/numero", "obtained": {"http": 200, "exact_expected_id_set": true}, "status": "aprovado"}
+QA_CASE {"id": "P03-search-escape-bang", "expected": "busca literal em nome/numero", "obtained": {"http": 200, "exact_expected_id_set": true}, "status": "aprovado"}
+QA_CASE {"id": "P04-invalid-limit-zero", "expected": "422 sem eco", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "P04-invalid-limit-over", "expected": "422 sem eco", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "P04-invalid-limit-text", "expected": "422 sem eco", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "P04-invalid-after-negative", "expected": "422 sem eco", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "P04-invalid-q-empty", "expected": "422 sem eco", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "P04-invalid-q-space", "expected": "422 sem eco", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "P04-invalid-q-long", "expected": "422 sem eco", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "A01-absent", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-wrong-type", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-invalid", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-admin-access", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-reception-access", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-admin-clinical", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-reception-clinical", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-expired", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [401, 401]}, "status": "aprovado"}
+QA_CASE {"id": "A01-no-professional", "expected": "ambas rotas recusam perfil/token", "obtained": {"http": [403, 403]}, "status": "aprovado"}
+QA_CASE {"id": "A02-inactive-user", "expected": "ambas rotas negam estado inativo atual", "obtained": {"http": [401, 401], "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "A02-inactive-clinic", "expected": "ambas rotas negam estado inativo atual", "obtained": {"http": [403, 403], "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "M01-admin-enriched-array", "expected": "array legado com campos antigos e nomes/flags", "obtained": {"http": 200, "array": true, "legacy_fields_retained": true, "enriched_fields": true}, "status": "aprovado"}
+QA_CASE {"id": "M02-admin-filters-offset", "expected": "filtros antigos;limit/offset mantidos", "obtained": {"http": [200, 200], "offset_preserved": true}, "status": "aprovado"}
+QA_CASE {"id": "M03-admin-only-recep", "expected": "403", "obtained": {"http": 403, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "M03-admin-only-d1", "expected": "403", "obtained": {"http": 403, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "M04-clinic-isolation", "expected": "lista e mutacao administrativa isoladas", "obtained": {"http": 200, "foreign_mutation": 404, "rows_own_clinic": true}, "status": "aprovado"}
+QA_CASE {"id": "M05-revoke-InactivePatient", "expected": "inativo identificavel;revogacao200 com evento/auditoria;dados preservados", "obtained": {"http": 200, "flags": [false, true], "state": "REVOKED", "event_increment": 1, "audit_increment": 1, "clinical_data_unchanged": true}, "status": "aprovado"}
+QA_CASE {"id": "M06-inactive-InactivePatient-GRANTED", "expected": "concessao/reativacao inativa recusada", "obtained": {"http": 404, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "M06-inactive-InactivePatient-REACTIVATED", "expected": "concessao/reativacao inativa recusada", "obtained": {"http": 404, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "M05-revoke-InactiveDentist", "expected": "inativo identificavel;revogacao200 com evento/auditoria;dados preservados", "obtained": {"http": 200, "flags": [true, false], "state": "REVOKED", "event_increment": 1, "audit_increment": 1, "clinical_data_unchanged": true}, "status": "aprovado"}
+QA_CASE {"id": "M06-inactive-InactiveDentist-GRANTED", "expected": "concessao/reativacao inativa recusada", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "M06-inactive-InactiveDentist-REACTIVATED", "expected": "concessao/reativacao inativa recusada", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "M07-no-clinical-password-grant", "expected": "regra atual permite conceder a profissional ativo sem senha clinica", "obtained": {"http_expected": 200, "criterion": "comportamento implementado;nao nova decisao clinica"}, "status": "aprovado"}
+QA_CASE {"id": "M08-appointment-lifecycle", "expected": "cancelamento preserva;consulta antiga nao reabre;novo agendamento reativa", "obtained": {"http_sequence": [200, 200, 200, 200, 200, 403, 201, 200], "scheduled_at_timezone": "+00:00;fixture"}, "status": "aprovado"}
+QA_CASE {"id": "C01-revocation-list", "expected": "espera real;revalidacao apos commit;sem identificacao indevida", "obtained": {"http": 200, "empty_page": true, "cursor_advanced": true, "following_tail_found": true, "waiters": [{"pid": 101, "wait_event_type": "Lock", "wait_event": "transactionid"}], "link_state": "REVOKED"}, "status": "aprovado"}
+QA_CASE {"id": "C01-revocation-detail", "expected": "espera real;revalidacao apos commit;sem identificacao indevida", "obtained": {"http": 403, "no_echo": true, "waiters": [{"pid": 101, "wait_event_type": "Lock", "wait_event": "transactionid"}], "link_state": "REVOKED"}, "status": "aprovado"}
+QA_CASE {"id": "C01-session-loss-list", "expected": "espera real;revalidacao apos commit;sem identificacao indevida", "obtained": {"http": 401, "waiters": [{"pid": 101, "wait_event_type": "Lock", "wait_event": "transactionid"}], "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "C01-session-loss-detail", "expected": "espera real;revalidacao apos commit;sem identificacao indevida", "obtained": {"http": 401, "waiters": [{"pid": 101, "wait_event_type": "Lock", "wait_event": "transactionid"}], "no_echo": true}, "status": "aprovado"}
+QA_CASE {"id": "N01-legacy-opencl-search", "expected": "busca antiga realOpenCL e permissao preservadas", "obtained": {"cpu_http": 200, "opencl_http": 200, "engine": "opencl", "equal_results": true, "denied_http": 403}, "status": "aprovado"}
+QA_CASE {"id": "N02-minimal-after-content-list", "expected": "conteudo clinico/rascunhos continuam foraDTO", "obtained": "exact_fields_only", "status": "aprovado"}
+QA_CASE {"id": "N02-minimal-after-content-detail", "expected": "conteudo clinico/rascunhos continuam foraDTO", "obtained": "exact_fields_only", "status": "aprovado"}
+QA_CASE {"id": "N03-new-route-error", "expected": "422 sem eco dequery/nome/id sensivel", "obtained": {"http": 422, "no_echo": true}, "status": "aprovado"}
+{"final_cases": 58, "counts": {"aprovado": 58, "reprovado": 0, "bloqueado": 0}}

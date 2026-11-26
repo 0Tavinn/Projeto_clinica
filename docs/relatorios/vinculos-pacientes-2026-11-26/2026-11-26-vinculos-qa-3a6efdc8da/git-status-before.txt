@@ -1,0 +1,15 @@
+ M docs/relatorios/prontuario-correcoes-qa-2026-11-26/README.md
+ M lumina_odonto/FRONTEND.md
+ M lumina_odonto/README.md
+ M lumina_odonto/app/crud.py
+ M lumina_odonto/app/logging_policy.py
+ M lumina_odonto/app/main.py
+ M lumina_odonto/docs/frontend/authentication-and-search.md
+ M lumina_odonto/docs/frontend/records-and-evolutions.md
+ M lumina_odonto/tests/test_logging_policy.py
+?? lumina_odonto/app/clinical_patients.py
+?? lumina_odonto/app/clinical_patients_repository.py
+?? lumina_odonto/app/clinical_patients_schemas.py
+?? lumina_odonto/app/clinical_patients_service.py
+?? lumina_odonto/docs/frontend/clinical-patients-and-links.md
+?? lumina_odonto/tests/test_clinical_patients.py

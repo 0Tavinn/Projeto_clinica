@@ -1,0 +1,13 @@
+{
+  "candidate_equal": true,
+  "original_all_40_equal": true,
+  "git_equal": true,
+  "inventory_equal": true,
+  "historical_qa_equal": true,
+  "backend_evidence_equal": true,
+  "external_n05_package_equal": true,
+  "historical_qa_25_equal": true,
+  "tracked_index_entries_equal": true,
+  "all_owned_removed": true,
+  "ephemeral_secrets_file_removed": true
+}

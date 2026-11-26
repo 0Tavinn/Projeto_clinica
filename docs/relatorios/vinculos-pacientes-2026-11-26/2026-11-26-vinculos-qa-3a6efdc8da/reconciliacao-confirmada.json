@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-26",
+  "type": "adendo documental;sem testes novos",
+  "recognized_by": "Tech Lead,conforme mensagem de coordenacao",
+  "backend_report_correction_confirmed": true,
+  "backend_report_sha256_observed": "44bddf1931a110e1d093256a8f30793e446e3dc6af8c8318b1cd9b302300b85f",
+  "source31_unchanged": true,
+  "source_service_sha256": "52b2de0a70f08482ec3187dca765f101957caef47232c7e88e5241b169caaf55",
+  "original_qa_artifacts_preserved": {
+    "relatorio.md": "08d68d5f1931494337a0a173a2f9cc8a98455a1c2be735c1b196b2b44721a1a4",
+    "resumo-cassiano.md": "c5fbe79049006fdb0d1dcdf54aad83107151ad2bc8e068f96652ee95382c87a4",
+    "matriz.csv": "171a629c518cef3759f22072c5a751c75d625f0beac89e5395746579691922b4",
+    "http-results.json": "63cd57336ea05625a7cc3d6d25c81b91c711c6807d0e3f01dccae5a102ee3488",
+    "tests.log": "4a10989a47f47cc758c48afab3806ecb2d5447d6574edac8190302f5c82b8390",
+    "source-reconciliation.json": "bb8bed4118d8adf8542d2ceb308ea51de011dd3c8268c734e4ca9ff7b6250a0e",
+    "manifesto-evidencias-sha256.json": "97568f40a70e7ef4c4744255ae029df201b2eae00959be519f3b4b5a460a66b1"
+  }
+}

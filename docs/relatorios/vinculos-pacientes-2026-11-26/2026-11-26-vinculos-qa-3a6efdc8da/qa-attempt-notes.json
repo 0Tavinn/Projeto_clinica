@@ -1,0 +1,8 @@
+{
+  "attempt1": "ModuleNotFoundError app no cliente antes de requisicoesHTTP;limpeza e preservacao confirmadas",
+  "qa_adjustments": [
+    "PYTHONPATH=/app:/qa somente no cliente QA",
+    "noecho ignora token vazio/ausente;corrigido antes de executar essas assercoes"
+  ],
+  "application_changed": false
+}

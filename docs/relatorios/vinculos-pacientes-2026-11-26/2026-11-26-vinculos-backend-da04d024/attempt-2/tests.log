@@ -1,0 +1,36 @@
+..........FFFF..................                                         [100%]
+=================================== FAILURES ===================================
+_ test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients?q=[redacted-test-value]-/api/v1/clinical/patients-1.0] _
+tests/test_logging_policy.py:43: in test_access_keeps_operational_fields_without_values
+    assert route in caplog.text
+E   assert '/api/v1/clinical/patients' in 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.0" 422\n'
+E    +  where 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.0" 422\n' = <_pytest.logging.LogCaptureFixture object at 0x76b613253620>.text
+------------------------------ Captured log call -------------------------------
+INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.0" 422
+_ test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients?q=[redacted-test-value]-/api/v1/clinical/patients-1.1] _
+tests/test_logging_policy.py:43: in test_access_keeps_operational_fields_without_values
+    assert route in caplog.text
+E   assert '/api/v1/clinical/patients' in 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.1" 422\n'
+E    +  where 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.1" 422\n' = <_pytest.logging.LogCaptureFixture object at 0x76b6133edfd0>.text
+------------------------------ Captured log call -------------------------------
+INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.1" 422
+_ test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients/123?q=[redacted-test-value]-/api/v1/clinical/patients/{patient_id}-1.0] _
+tests/test_logging_policy.py:43: in test_access_keeps_operational_fields_without_values
+    assert route in caplog.text
+E   assert '/api/v1/clinical/patients/{patient_id}' in 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.0" 422\n'
+E    +  where 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.0" 422\n' = <_pytest.logging.LogCaptureFixture object at 0x76b61348b1d0>.text
+------------------------------ Captured log call -------------------------------
+INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.0" 422
+_ test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients/123?q=[redacted-test-value]-/api/v1/clinical/patients/{patient_id}-1.1] _
+tests/test_logging_policy.py:43: in test_access_keeps_operational_fields_without_values
+    assert route in caplog.text
+E   assert '/api/v1/clinical/patients/{patient_id}' in 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.1" 422\n'
+E    +  where 'INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.1" 422\n' = <_pytest.logging.LogCaptureFixture object at 0x76b6133ecaa0>.text
+------------------------------ Captured log call -------------------------------
+INFO     uvicorn.access:test_logging_policy.py:38 - - "GET [unmatched] HTTP/1.1" 422
+=========================== short test summary info ============================
+FAILED tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients?q=[redacted-test-value]-/api/v1/clinical/patients-1.0]
+FAILED tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients?q=[redacted-test-value]-/api/v1/clinical/patients-1.1]
+FAILED tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients/123?q=[redacted-test-value]-/api/v1/clinical/patients/{patient_id}-1.0]
+FAILED tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients/123?q=[redacted-test-value]-/api/v1/clinical/patients/{patient_id}-1.1]
+4 failed, 28 passed, 1 warning in 1.84s

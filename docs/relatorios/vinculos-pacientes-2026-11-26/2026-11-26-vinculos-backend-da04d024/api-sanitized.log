@@ -1,0 +1,113 @@
+INFO:     server_event=process_started
+INFO:     server_event=startup_waiting
+INFO:     server_event=startup_complete
+INFO:     server_event=server_event
+INFO:     - - "GET /health HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "DELETE /api/v1/patients/{patient_id} HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 403 Forbidden
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 403 Forbidden
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 403 Forbidden
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 403 Forbidden
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 404 Not Found
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 403 Forbidden
+INFO:     - - "DELETE /api/v1/users/{user_id} HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/access-links HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 404 Not Found
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 404 Not Found
+INFO:     - - "GET /api/v1/access-links HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/access-links HTTP/1.1" 403 Forbidden
+INFO:     - - "GET /api/v1/access-links HTTP/1.1" 403 Forbidden
+INFO:     - - "GET /api/v1/access-links HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 409 Conflict
+INFO:     - - "POST /api/v1/appointments HTTP/1.1" 201 Created
+INFO:     - - "DELETE /api/v1/appointments/{appointment_id} HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "PATCH /api/v1/appointments/{appointment_id} HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 403 Forbidden
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients/{patient_id} HTTP/1.1" 403 Forbidden
+INFO:     - - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     - - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 403 Forbidden
+INFO:     - - "GET /api/v1/clinical/patients HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/patients HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/dentists HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/access-links HTTP/1.1" 200 OK

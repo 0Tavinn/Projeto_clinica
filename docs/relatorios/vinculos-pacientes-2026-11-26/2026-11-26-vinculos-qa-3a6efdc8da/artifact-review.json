@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-26",
+  "matrix_rows": 111,
+  "missing_evidence_paths": [],
+  "qa_helpers_syntax_ok": true,
+  "documented_shell_syntax_ok": true,
+  "source31_still_matches": true,
+  "git_status_head_stage_still_match": true,
+  "cleanup_counts": {
+    "container": 7,
+    "volume": 2,
+    "network": 2,
+    "image": 2
+  },
+  "distribution_scan_issues": {},
+  "note": "somente conferencia de artefatos apos a rodada funcional"
+}

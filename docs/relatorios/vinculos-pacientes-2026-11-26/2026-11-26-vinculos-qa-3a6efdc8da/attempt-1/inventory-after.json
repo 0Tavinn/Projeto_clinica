@@ -1,0 +1,157 @@
+{
+  "containers": [
+    {
+      "id": "62cc04840e1d978b0ce9f2a7c88918cb5194197ae290c34ed8dc6da4af4cc34f",
+      "name": "/lumina_ui_20261111175549_186409-db-1",
+      "image": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+      "started": "2026-11-22T21:30:04.718863714Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "649d0f843b768388fe15c2d0b7419f97c6450e74c3ce97369f3997a142db5208",
+      "name": "/lumina_execucao_20261029-frontend-1",
+      "image": "sha256:dd881124470b42949b7e7f1aacd3201b4d0709ba726e01e82422b5795b74668a",
+      "started": "2026-11-24T10:29:02.032330393Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "688b86ac508bc170e311d0de0446b54fc4abff8382e788e43666f43e754e4d56",
+      "name": "/lumina_ui_20261111175549_186409-api-1",
+      "image": "sha256:0c754540e5dfd37e4478d31fd92b75e88b983baaeef020146d638a9a0bb757bd",
+      "started": "2026-11-24T10:29:02.023757195Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "693e3dea15b892f24d23dd39d82ac73124b006f14d1ae79d66f06e84236edda0",
+      "name": "/lumina_s07_review_20261023-api-1",
+      "image": "sha256:7a337ee53ef7de4ff2d9c44a3184d6420103b951bcdf3d4f99d1d8e0eea34363",
+      "started": "2026-11-24T10:29:02.046982533Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "707faf023bae09778cb5f0022a873bff33d80886f1f8950a75218c886734be6c",
+      "name": "/lumina_pr18_tarcisio-frontend-1",
+      "image": "sha256:59f9d41187e9cc539c7dc651ef3f52efc43dd0c2edb9c72f793dcfbf9e7a7c2a",
+      "started": "2026-11-26T08:04:30.303338667Z",
+      "restarts": 0,
+      "state": "running",
+      "ports": {
+        "80/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18088"
+          }
+        ]
+      }
+    },
+    {
+      "id": "70ba70e2dcd69489d697ef259001a147214bb3d4141f4b1e72daee8e8df59739",
+      "name": "/lumina_execucao_20261029-api-1",
+      "image": "sha256:175e359be949326d5f4bcf67d547e163f31ac448c67fdd3b1e5301d7d997b55b",
+      "started": "2026-11-24T10:29:02.03076836Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "721644b7b567fe5118d0966c86894c8b76a8cfffcb363aadb65708b5738e0cf7",
+      "name": "/lumina_pr18_tarcisio-db-1",
+      "image": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+      "started": "2026-11-26T08:04:30.255209195Z",
+      "restarts": 0,
+      "state": "running",
+      "ports": {
+        "5432/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "55438"
+          }
+        ]
+      }
+    },
+    {
+      "id": "7d8a74daae7a8aac1cc27a3ae8fa1ec447d466ecf441c12fccce1aa45736e2df",
+      "name": "/lumina_pr18_tarcisio-api-1",
+      "image": "sha256:7c45c4dac8cdd6fac1feea341ab4a86850622cd6b623003ab156f014d3830eee",
+      "started": "2026-11-26T08:04:30.236786689Z",
+      "restarts": 0,
+      "state": "running",
+      "ports": {
+        "8000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18089"
+          }
+        ]
+      }
+    },
+    {
+      "id": "b9c153a16acd68c807d91dc51dd485fe7461aca439bfe5916bf628ffd371fd8c",
+      "name": "/lumina_ui_20261111175549_186409-frontend-1",
+      "image": "sha256:cfac8752fa5e46d24853f1d28685db3b295ebd6da4caba8ef7331570f665d2ad",
+      "started": "2026-11-24T10:29:02.022060183Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "bd2848a675bc4fd71c89d472caae3319934dd7d82348ca2c60442c21faa78bdf",
+      "name": "/lumina_s07_review_20261023-frontend-1",
+      "image": "sha256:6e7521f0ee49dd77326090d1c354f2011dfde04312a9db9c98b29eb6c8d91cea",
+      "started": "2026-11-24T10:29:02.037121098Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "dc8a982f34b703b527134f485019b7e5e46cfdc62542522766988e23550f4e69",
+      "name": "/lumina_execucao_20261029-db-1",
+      "image": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+      "started": "2026-10-29T22:51:41.76424059Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    },
+    {
+      "id": "dd3be361f80f6c0a942b15b6328c5930c9d86096e7d3025c3af0b3fbedb1f0c3",
+      "name": "/lumina_s07_review_20261023-db-1",
+      "image": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+      "started": "2026-10-26T20:26:40.167809011Z",
+      "restarts": 0,
+      "state": "exited",
+      "ports": {}
+    }
+  ],
+  "volume": [
+    "15731c688b35a9cb0b7cf9d74911121156fa9c649842e2e40f8f00ae7c5d8f99",
+    "5070f979d3ca71d87779c2de788299512ec40849bf7af2701f91e8fcab67afe6",
+    "81c65cd2c20f6e9c33438cf0fe35c30e5a374cb14fb1bcfa3d0fcc7a865d9d9b",
+    "8be29a6abab83acdfbbf21b8d25161d2c35b289d4cfb8011ab5f622c94a5b5e9",
+    "904c806960259f7a5875ad2d7f3c510fa5c30f99d5e2b743e990aeb02ee93e41",
+    "abb12cbdc85e01cc619fca2fe130d9a4d19b2298997e3da0bb8c8dc9e3630792",
+    "b2f338df84d2c649e0a9eb0d4bc78f7f7129cb40e78a0aca0b82ba5a47fd1edd",
+    "e0f31dc3d4708ffc50565b4ab68bf6e6731959102e590aaa962183ccceac971a",
+    "e5f74a29e2cecef01cd689b99cfc0c9e91d909e7bc659447b3d0037dfa4a0510",
+    "lumina_execucao_20261029_postgres_data",
+    "lumina_pr18_tarcisio_postgres_data",
+    "lumina_s07_docker_review_20261023",
+    "lumina_ui_20261111175549_186409_postgres_data"
+  ],
+  "network": [
+    "bridge",
+    "host",
+    "lumina_execucao_20261029_network",
+    "lumina_pr18_tarcisio_default",
+    "lumina_s07_docker_review_network_20261023",
+    "lumina_ui_20261111175549_186409_network",
+    "none"
+  ]
+}

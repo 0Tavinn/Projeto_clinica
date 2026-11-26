@@ -1,0 +1,11 @@
+{
+  "sentinel_absent": true,
+  "clinical_list_route_registered": true,
+  "clinical_detail_route_registered": true,
+  "admin_links_route_preserved": true,
+  "status_422_present": true,
+  "status_401_present": true,
+  "status_403_present": true,
+  "traceback_absent": true,
+  "original_cmd": true
+}

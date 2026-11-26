@@ -1,0 +1,12 @@
+{
+  "added_paths": [
+    "/api/v1/clinical/patients",
+    "/api/v1/clinical/patients/{patient_id}"
+  ],
+  "removed_paths": [],
+  "prior_operations_equal": true,
+  "expected_added": [
+    "/api/v1/clinical/patients",
+    "/api/v1/clinical/patients/{patient_id}"
+  ]
+}
