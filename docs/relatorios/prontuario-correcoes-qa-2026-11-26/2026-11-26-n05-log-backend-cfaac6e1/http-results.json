@@ -1,0 +1,105 @@
+{
+  "cases": [
+    {
+      "id": "fixture-evolution",
+      "http": 201,
+      "passed": true
+    },
+    {
+      "id": "valid-cpu",
+      "http": 200,
+      "passed": true,
+      "authorized_content_allowed": true,
+      "engine": "cpu",
+      "authorized_result_present": true
+    },
+    {
+      "id": "valid-opencl",
+      "http": 200,
+      "passed": true,
+      "authorized_content_allowed": true,
+      "engine": "opencl",
+      "authorized_result_present": true
+    },
+    {
+      "id": "valid-auto",
+      "http": 200,
+      "passed": true,
+      "authorized_content_allowed": true,
+      "engine": "opencl",
+      "authorized_result_present": true
+    },
+    {
+      "id": "422-missing-patient",
+      "http": 422,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "422-encoded-unicode",
+      "http": 422,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "422-parameter-name",
+      "http": 422,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "422-invalid-patient",
+      "http": 422,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "422-invalid-engine",
+      "http": 422,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "422-invalid-body",
+      "http": 422,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "401-missing-auth",
+      "http": 401,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "401-invalid-token",
+      "http": 401,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "403-no-link",
+      "http": 403,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "404-unknown",
+      "http": 404,
+      "passed": true,
+      "authorized_content_allowed": false
+    },
+    {
+      "id": "path-template",
+      "http": 200,
+      "passed": true,
+      "authorized_content_allowed": true
+    },
+    {
+      "id": "400-malformed-http",
+      "http": 400,
+      "passed": true
+    }
+  ],
+  "postgres": "16.16 (Debian 16.16-1.pgdg13+1)"
+}

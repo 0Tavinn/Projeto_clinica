@@ -1,0 +1,11 @@
+{
+  "id": "REG-persistence-restart",
+  "expected": "reinicio dos mesmos containers com volume proprio preserva todos os dados e credenciais",
+  "obtained": {
+    "all_table_snapshots_equal": true,
+    "tables": 10,
+    "same_container_ids": true,
+    "type": "process/container restart; nao recriacao"
+  },
+  "status": "aprovado"
+}

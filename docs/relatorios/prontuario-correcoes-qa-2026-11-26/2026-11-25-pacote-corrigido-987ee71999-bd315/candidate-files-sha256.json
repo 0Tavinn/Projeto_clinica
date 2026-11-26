@@ -1,0 +1,22 @@
+{
+  "pyproject.toml": "7ae415e24c129e726b0215444bfbcb8f5d7c8df57a2f905cbbd874fffc6f3f6f",
+  "QA_CORRECOES.md": "fde05d58503abff0b8f7c1b9bb40056f26a706407a119d199d82b052999ec459",
+  "Dockerfile": "d61fc8f8683ac81d5e808cc81560bb56c28e54295f4122ba7f2c372ed27d1691",
+  ".gitignore": "4294c9d73fb73a73d01ed9be4b28174143beab10ed96259b5a7bc755ee4ec700",
+  ".dockerignore": "ef331b6b52998695441b5ff893b96ff21cfdcefe1fc45d680f79403032cc5f5d",
+  "README.md": "8db4d57cc5dae9ba94647995ae4658a0adb7b04917bf4c1ddff1b8d8d9d00590",
+  "docker-compose.yml": "8632a7ad23b58d695657e89d4181627341f4206df661e9272977f14168cca213",
+  ".env.example": "85f5a7e6d283e69c5df42259a03f26acaa342027a389e0645e3443dcbd47b793",
+  "sql/check_clinical_schema.sql": "9007fc2d78e392a05f34487bd21a8e40470ebceb89cf9f0a8ede5c95b808c0d2",
+  "sql/schema.sql": "2ca830bda08ba3711f69408fe5848a5fd3304156373020f90310b04e746eda81",
+  "sql/seed_demo.sql": "71247459c83cd9cdfe939f90adc4412153a0e7d44185f9660486c759f071aabd",
+  "sql/fixture_9d3e5f7a1b2c.sql": "9c01f7b876685aac8d3fd8e4d7e02de67ce92460b4eaec445209390a5852fb54",
+  "app/opencl_search.py": "fcfb8d4d409f46c2f0fa2d2ecb7b907213075bcd3f286373225d3e3212fbc107",
+  "app/crud.py": "50b17df262c976f6e68529aa34af3d8bd9742f95baaabbe927656b9c4f87e4a0",
+  "app/main.py": "bdf12da0bd33bf5fbf36aed44c965ecdac7d14fe44c6895f2189b3ea52dbca36",
+  "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "app/config.py": "a2bd80e6e11300b80dad4f4af8e0c6d8578648c14ee444ffe49c26046617788c",
+  "tests/test_opencl.py": "aa267c3b0973e6ae2091ebe8b6a8e2db9aa0df92f2da15c8f6ff3e38f3912dd6",
+  "tests/test_qa_contract.py": "f4cdf07661e880bb872bde6a39e8af8096d153866ca9bbdb6fe6176655d6eb05",
+  "app/kernels/contains.cl": "d05363c850191518c7e790684eb2983b3bab85ca819f341d3e01a772ccf7a9bc"
+}

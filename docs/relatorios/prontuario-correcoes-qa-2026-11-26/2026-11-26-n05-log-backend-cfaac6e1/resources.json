@@ -1,0 +1,12 @@
+{
+  "label": "lumina.n05.qa",
+  "tag": "lumina-n05-888e1f537235",
+  "names": {
+    "image": "lumina-n05-888e1f537235:source",
+    "network": "lumina-n05-888e1f537235-net",
+    "volume": "lumina-n05-888e1f537235-data",
+    "db": "lumina-n05-888e1f537235-db",
+    "api": "lumina-n05-888e1f537235-api",
+    "driver": "lumina-n05-888e1f537235-driver"
+  }
+}

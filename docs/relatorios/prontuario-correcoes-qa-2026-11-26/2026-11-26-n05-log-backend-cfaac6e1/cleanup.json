@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "container",
+    "name": "lumina-n05-888e1f537235-driver",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-888e1f537235-api",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-888e1f537235-db",
+    "removed": true
+  },
+  {
+    "kind": "volume",
+    "name": "lumina-n05-888e1f537235-data",
+    "removed": true
+  },
+  {
+    "kind": "network",
+    "name": "lumina-n05-888e1f537235-net",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-n05-888e1f537235:source",
+    "removed": true
+  }
+]

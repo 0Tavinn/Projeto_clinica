@@ -1,0 +1,28 @@
+INFO:     server_event=process_started
+INFO:     server_event=startup_waiting
+INFO:     server_event=startup_complete
+INFO:     server_event=server_event
+INFO:     - - "GET /health HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     - - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 200 OK
+/app/app/opencl_search.py:73: RepeatedKernelRetrieval: Kernel 'contains_bytes' has been retrieved more than once. Each retrieval creates a new, independent kernel, at possibly considerable expense. To avoid the expense, reuse the retrieved kernel instance. To avoid this warning, use cl.Kernel(prg, name).
+  kernel = self.program.contains_bytes
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 200 OK
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "POST /api/v1/evolutions HTTP/1.1" 422 Unprocessable Entity
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 403 Forbidden
+INFO:     - - "GET [unmatched] HTTP/1.1" 404 Not Found
+INFO:     - - "GET /api/v1/patients/{patient_id}/record HTTP/1.1" 200 OK
+WARNING:  server_event=invalid_http_request
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 401 Unauthorized
+INFO:     - - "GET /api/v1/clinical/search HTTP/1.1" 500 Internal Server Error
+ERROR:    server_event=server_error

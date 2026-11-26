@@ -1,0 +1,10 @@
+{
+  "Projeto_clinica": {
+    "head": "e49a3ce22f899ad64d971a50e8d7fd9c99cb5b3a",
+    "branch": "feat/paralelismo-agendamento"
+  },
+  "Projeto_clinica_clinical_2fa": {
+    "head": "e49a3ce22f899ad64d971a50e8d7fd9c99cb5b3a",
+    "branch": "detached HEAD"
+  }
+}

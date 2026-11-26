@@ -1,0 +1,6 @@
+{
+  "README.md": "modified",
+  "app/main.py": "modified",
+  "app/logging_policy.py": "added",
+  "tests/test_logging_policy.py": "added"
+}

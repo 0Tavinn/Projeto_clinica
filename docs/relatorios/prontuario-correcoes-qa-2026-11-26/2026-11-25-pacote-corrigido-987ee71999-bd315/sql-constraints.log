@@ -1,0 +1,4 @@
+BEGIN
+DO
+NOTICE:  OK: versões, prontuário único, agenda, evolução, auditoria e idempotência
+ROLLBACK

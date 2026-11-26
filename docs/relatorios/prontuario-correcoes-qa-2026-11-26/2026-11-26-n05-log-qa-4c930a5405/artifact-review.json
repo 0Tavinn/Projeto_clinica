@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-26",
+  "matrix_rows": 75,
+  "missing_evidence_paths": [],
+  "qa_helpers_syntax_ok": true,
+  "documented_shell_syntax_ok": true,
+  "candidate_manifest": "e3b28488163b174758f7e3782dbe916b0cc1cf8120cadf5a3cd5da79200e2825",
+  "provenance_corrected": "agente de Backend preparou copiaN05;pacote anterior deTarcisio segundo Paulo",
+  "historical_artifacts_unchanged": true
+}

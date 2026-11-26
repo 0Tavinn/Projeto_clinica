@@ -1,0 +1,11 @@
+{
+  "candidate_22_equal_after_complement": true,
+  "original_40_equal_after_complement": true,
+  "method_resources_removed": {
+    "inventory_equal": true,
+    "all_own_removed": true
+  },
+  "git_still_equal": true,
+  "historical_qa_still_equal": true,
+  "backend_evidence_still_equal": true
+}

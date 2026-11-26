@@ -1,0 +1,22 @@
+{
+  "groups": {
+    "contrato": {
+      "aprovado": 1
+    },
+    "fornecido-anterior": {
+      "aprovado": 18
+    },
+    "fornecido-focado": {
+      "aprovado": 8
+    },
+    "http": {
+      "aprovado": 25
+    },
+    "logs": {
+      "aprovado": 23
+    }
+  },
+  "counting": "25 objetivos HTTP finais;23 assercoes transversais sobre seus logs;1 contrato;26 testes fornecidos=18 anteriores+8 focados. Nao somar como cenarios distintos. Tentativas excluidas.74 casos antigos nao repetidos.",
+  "product_failures": 0,
+  "remaining_nonexecuted": "frontend;upgrade;publicacao;configuracoes externas;decisoes clinicas"
+}

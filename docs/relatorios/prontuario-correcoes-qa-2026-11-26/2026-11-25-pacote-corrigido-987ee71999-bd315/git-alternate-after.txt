@@ -1,0 +1,4 @@
+?? docs/relatorios/opencl-1795632915_6782/
+?? docs/relatorios/opencl-1795633113_7ecc7819-fc4/
+?? docs/relatorios/opencl-1795639829_1da7510d-118/
+?? docs/relatorios/qa/2026-11-25-f8f10c5-opencl-agenda/baseline-pr18/

@@ -1,0 +1,1 @@
+{"platform": "Portable Computing Language", "device": "cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H", "type": "2", "driver": "6.0+debian", "opencl": "OpenCL 3.0 PoCL HSTR: cpu-x86_64-pc-linux-gnu-haswell", "pyopencl": "2026.1.5", "numpy": "2.5.5"}

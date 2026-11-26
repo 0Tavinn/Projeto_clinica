@@ -1,0 +1,32 @@
+{
+  "package_all_40_files_equal": true,
+  "main": {
+    "head_unchanged": true,
+    "status_unchanged": true,
+    "index_raw_unchanged": true,
+    "index_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current_branch": "feat/paralelismo-agendamento"
+  },
+  "alternate": {
+    "head_unchanged": true,
+    "status_unchanged": true,
+    "index_raw_unchanged": true,
+    "index_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current_branch": ""
+  },
+  "containers": {
+    "same_inventory": true,
+    "added": [],
+    "removed": []
+  },
+  "volumes": {
+    "same_inventory": true,
+    "added": [],
+    "removed": []
+  },
+  "networks": {
+    "same_inventory": true,
+    "added": [],
+    "removed": []
+  }
+}

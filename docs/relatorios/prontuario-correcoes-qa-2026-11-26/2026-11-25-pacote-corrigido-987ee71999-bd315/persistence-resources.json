@@ -1,0 +1,27 @@
+[
+  {
+    "name": "lumina-corrected-qa-6ba8c93e83-api",
+    "id": "eea1b5d781938357a1373eb3d6dec2fe8b0b42f082f2dcb7dbc939593829d9fa",
+    "before_started_at": "2026-11-25T23:28:43.956012011Z",
+    "mounts": [],
+    "after_started_at": "2026-11-25T23:40:20.251094163Z",
+    "same_container_id": true
+  },
+  {
+    "name": "lumina-corrected-qa-6ba8c93e83-db",
+    "id": "306ea3f9c886752f3ec5cd1e8ee044e774d411c9df7e16edb1b61b774cc729fb",
+    "before_started_at": "2026-11-25T23:28:38.480447048Z",
+    "mounts": [
+      {
+        "name": null,
+        "destination": "/docker-entrypoint-initdb.d/001-schema.sql"
+      },
+      {
+        "name": "lumina-corrected-qa-6ba8c93e83-data",
+        "destination": "/var/lib/postgresql/data"
+      }
+    ],
+    "after_started_at": "2026-11-25T23:40:21.060566843Z",
+    "same_container_id": true
+  }
+]

@@ -1,0 +1,484 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 372B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 1.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 82B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 49.62kB 0.0s done
+#5 DONE 0.1s
+
+#6 [1/7] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#6 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#6 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.1s done
+#6 CACHED
+
+#7 [2/7] WORKDIR /app
+#7 DONE 0.1s
+
+#8 [3/7] RUN apt-get update && apt-get install -y --no-install-recommends ocl-icd-libopencl1 pocl-opencl-icd && rm -rf /var/lib/apt/lists/*
+#8 1.187 Hit:1 http://deb.debian.org/debian trixie InRelease
+#8 1.204 Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+#8 1.356 Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+#8 1.662 Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9679 kB]
+#8 29.00 Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [1108 B]
+#8 29.22 Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [311 kB]
+#8 30.23 Fetched 10.1 MB in 30s (342 kB/s)
+#8 30.23 Reading package lists...
+#8 31.39 Reading package lists...
+#8 32.40 Building dependency tree...
+#8 32.62 Reading state information...
+#8 32.97 The following additional packages will be installed:
+#8 32.97   binutils binutils-common binutils-x86-64-linux-gnu clang-18 libasan8
+#8 32.97   libatomic1 libbinutils libc-dev-bin libc6-dev libclang-common-18-dev
+#8 32.97   libclang-cpp18 libclang1-18 libcrypt-dev libctf-nobfd0 libctf0 libedit2
+#8 32.97   libgc1 libgcc-14-dev libgomp1 libgprofng0 libhwasan0 libhwloc15 libitm1
+#8 32.97   libjansson4 libllvm18 libllvmspirvlib18.1 liblsan0 libobjc-14-dev libobjc4
+#8 32.97   libpocl2-common libpocl2t64 libquadmath0 libsframe1 libstdc++-14-dev
+#8 32.97   libtsan2 libubsan1 libxml2 libz3-4 linux-libc-dev llvm-18-linker-tools
+#8 32.97   llvm-spirv-18 rpcsvc-proto
+#8 32.98 Suggested packages:
+#8 32.98   binutils-doc gprofng-gui binutils-gold clang-18-doc wasi-libc libc-devtools
+#8 32.98   glibc-doc manpages-dev libhwloc-contrib-plugins libstdc++-14-doc
+#8 32.98 Recommended packages:
+#8 32.98   llvm-18-dev python3 manpages manpages-dev libclang-rt-18-dev
+#8 32.98   libhwloc-plugins
+#8 33.20 The following NEW packages will be installed:
+#8 33.20   binutils binutils-common binutils-x86-64-linux-gnu clang-18 libasan8
+#8 33.20   libatomic1 libbinutils libc-dev-bin libc6-dev libclang-common-18-dev
+#8 33.20   libclang-cpp18 libclang1-18 libcrypt-dev libctf-nobfd0 libctf0 libedit2
+#8 33.20   libgc1 libgcc-14-dev libgomp1 libgprofng0 libhwasan0 libhwloc15 libitm1
+#8 33.20   libjansson4 libllvm18 libllvmspirvlib18.1 liblsan0 libobjc-14-dev libobjc4
+#8 33.20   libpocl2-common libpocl2t64 libquadmath0 libsframe1 libstdc++-14-dev
+#8 33.20   libtsan2 libubsan1 libxml2 libz3-4 linux-libc-dev llvm-18-linker-tools
+#8 33.20   llvm-spirv-18 ocl-icd-libopencl1 pocl-opencl-icd rpcsvc-proto
+#8 33.35 0 upgraded, 44 newly installed, 0 to remove and 3 not upgraded.
+#8 33.35 Need to get 97.8 MB of archives.
+#8 33.35 After this operation, 497 MB of additional disk space will be used.
+#8 33.35 Get:1 http://deb.debian.org/debian trixie/main amd64 libsframe1 amd64 2.44-3 [78.4 kB]
+#8 33.56 Get:2 http://deb.debian.org/debian trixie/main amd64 binutils-common amd64 2.44-3 [2509 kB]
+#8 39.78 Get:3 http://deb.debian.org/debian trixie/main amd64 libbinutils amd64 2.44-3 [534 kB]
+#8 40.92 Get:4 http://deb.debian.org/debian trixie/main amd64 libgprofng0 amd64 2.44-3 [808 kB]
+#8 42.71 Get:5 http://deb.debian.org/debian trixie/main amd64 libctf-nobfd0 amd64 2.44-3 [156 kB]
+#8 42.97 Get:6 http://deb.debian.org/debian trixie/main amd64 libctf0 amd64 2.44-3 [88.6 kB]
+#8 43.16 Get:7 http://deb.debian.org/debian trixie/main amd64 libjansson4 amd64 2.14-2+b3 [39.8 kB]
+#8 43.19 Get:8 http://deb.debian.org/debian trixie/main amd64 binutils-x86-64-linux-gnu amd64 2.44-3 [1014 kB]
+#8 45.81 Get:9 http://deb.debian.org/debian trixie/main amd64 binutils amd64 2.44-3 [265 kB]
+#8 46.55 Get:10 http://deb.debian.org/debian trixie/main amd64 libedit2 amd64 3.1-20250104-1 [93.8 kB]
+#8 46.79 Get:11 http://deb.debian.org/debian trixie/main amd64 libxml2 amd64 2.12.7+dfsg+really2.9.14-2.1+deb13u3 [700 kB]
+#8 48.71 Get:12 http://deb.debian.org/debian trixie/main amd64 libz3-4 amd64 4.13.3-1 [8560 kB]
+#8 73.79 Get:13 http://deb.debian.org/debian trixie/main amd64 libllvm18 amd64 1:18.1.8-18+b1 [25.0 MB]
+#8 127.8 Get:14 http://deb.debian.org/debian trixie/main amd64 libclang-cpp18 amd64 1:18.1.8-18+b1 [12.5 MB]
+#8 134.1 Get:15 http://deb.debian.org/debian trixie/main amd64 libgomp1 amd64 14.2.0-19 [137 kB]
+#8 134.2 Get:16 http://deb.debian.org/debian trixie/main amd64 libitm1 amd64 14.2.0-19 [26.0 kB]
+#8 134.2 Get:17 http://deb.debian.org/debian trixie/main amd64 libatomic1 amd64 14.2.0-19 [9308 B]
+#8 134.2 Get:18 http://deb.debian.org/debian trixie/main amd64 libasan8 amd64 14.2.0-19 [2725 kB]
+#8 135.9 Get:19 http://deb.debian.org/debian trixie/main amd64 liblsan0 amd64 14.2.0-19 [1204 kB]
+#8 136.4 Get:20 http://deb.debian.org/debian trixie/main amd64 libtsan2 amd64 14.2.0-19 [2460 kB]
+#8 138.2 Get:21 http://deb.debian.org/debian trixie/main amd64 libubsan1 amd64 14.2.0-19 [1074 kB]
+#8 138.7 Get:22 http://deb.debian.org/debian trixie/main amd64 libhwasan0 amd64 14.2.0-19 [1488 kB]
+#8 139.8 Get:23 http://deb.debian.org/debian trixie/main amd64 libquadmath0 amd64 14.2.0-19 [145 kB]
+#8 139.9 Get:24 http://deb.debian.org/debian trixie/main amd64 libgcc-14-dev amd64 14.2.0-19 [2672 kB]
+#8 141.8 Get:25 http://deb.debian.org/debian trixie/main amd64 libc-dev-bin amd64 2.41-12+deb13u5 [60.5 kB]
+#8 141.9 Get:26 http://deb.debian.org/debian-security trixie-security/main amd64 linux-libc-dev all 6.12.118-1 [3102 kB]
+#8 143.3 Get:27 http://deb.debian.org/debian trixie/main amd64 libcrypt-dev amd64 1:4.4.38-1 [119 kB]
+#8 143.4 Get:28 http://deb.debian.org/debian trixie/main amd64 rpcsvc-proto amd64 1.4.3-1 [63.3 kB]
+#8 143.4 Get:29 http://deb.debian.org/debian trixie/main amd64 libc6-dev amd64 2.41-12+deb13u5 [1991 kB]
+#8 144.4 Get:30 http://deb.debian.org/debian trixie/main amd64 libstdc++-14-dev amd64 14.2.0-19 [2376 kB]
+#8 147.5 Get:31 http://deb.debian.org/debian trixie/main amd64 libgc1 amd64 1:8.2.8-1 [247 kB]
+#8 147.6 Get:32 http://deb.debian.org/debian trixie/main amd64 libobjc4 amd64 14.2.0-19 [43.3 kB]
+#8 147.6 Get:33 http://deb.debian.org/debian trixie/main amd64 libobjc-14-dev amd64 14.2.0-19 [173 kB]
+#8 147.7 Get:34 http://deb.debian.org/debian trixie/main amd64 libclang-common-18-dev amd64 1:18.1.8-18+b1 [732 kB]
+#8 148.2 Get:35 http://deb.debian.org/debian trixie/main amd64 llvm-18-linker-tools amd64 1:18.1.8-18+b1 [1260 kB]
+#8 150.3 Get:36 http://deb.debian.org/debian trixie/main amd64 libclang1-18 amd64 1:18.1.8-18+b1 [7166 kB]
+#8 155.8 Get:37 http://deb.debian.org/debian trixie/main amd64 clang-18 amd64 1:18.1.8-18+b1 [117 kB]
+#8 155.9 Get:38 http://deb.debian.org/debian trixie/main amd64 libhwloc15 amd64 2.12.0-4 [164 kB]
+#8 156.0 Get:39 http://deb.debian.org/debian trixie/main amd64 libllvmspirvlib18.1 amd64 18.1.11-1 [863 kB]
+#8 159.1 Get:40 http://deb.debian.org/debian trixie/main amd64 libpocl2-common all 6.0-6 [91.8 kB]
+#8 159.2 Get:41 http://deb.debian.org/debian trixie/main amd64 llvm-spirv-18 amd64 18.1.11-1 [463 kB]
+#8 159.4 Get:42 http://deb.debian.org/debian trixie/main amd64 libpocl2t64 amd64 6.0-6 [14.4 MB]
+#8 177.9 Get:43 http://deb.debian.org/debian trixie/main amd64 ocl-icd-libopencl1 amd64 2.3.3-1 [42.9 kB]
+#8 178.0 Get:44 http://deb.debian.org/debian trixie/main amd64 pocl-opencl-icd amd64 6.0-6 [27.1 kB]
+#8 178.5 debconf: unable to initialize frontend: Dialog
+#8 178.5 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#8 178.5 debconf: falling back to frontend: Readline
+#8 178.5 debconf: unable to initialize frontend: Readline
+#8 178.5 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/x86_64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8, <STDIN> line 44.)
+#8 178.5 debconf: falling back to frontend: Teletype
+#8 178.5 debconf: unable to initialize frontend: Teletype
+#8 178.5 debconf: (This frontend requires a controlling tty.)
+#8 178.5 debconf: falling back to frontend: Noninteractive
+#8 180.5 Fetched 97.8 MB in 2min 25s (675 kB/s)
+#8 180.6 Selecting previously unselected package libsframe1:amd64.
+#8 180.6 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5657 files and directories currently installed.)
+#8 180.7 Preparing to unpack .../00-libsframe1_2.44-3_amd64.deb ...
+#8 180.7 Unpacking libsframe1:amd64 (2.44-3) ...
+#8 180.7 Selecting previously unselected package binutils-common:amd64.
+#8 180.7 Preparing to unpack .../01-binutils-common_2.44-3_amd64.deb ...
+#8 180.7 Unpacking binutils-common:amd64 (2.44-3) ...
+#8 180.9 Selecting previously unselected package libbinutils:amd64.
+#8 180.9 Preparing to unpack .../02-libbinutils_2.44-3_amd64.deb ...
+#8 180.9 Unpacking libbinutils:amd64 (2.44-3) ...
+#8 181.0 Selecting previously unselected package libgprofng0:amd64.
+#8 181.0 Preparing to unpack .../03-libgprofng0_2.44-3_amd64.deb ...
+#8 181.0 Unpacking libgprofng0:amd64 (2.44-3) ...
+#8 181.1 Selecting previously unselected package libctf-nobfd0:amd64.
+#8 181.1 Preparing to unpack .../04-libctf-nobfd0_2.44-3_amd64.deb ...
+#8 181.1 Unpacking libctf-nobfd0:amd64 (2.44-3) ...
+#8 181.1 Selecting previously unselected package libctf0:amd64.
+#8 181.1 Preparing to unpack .../05-libctf0_2.44-3_amd64.deb ...
+#8 181.2 Unpacking libctf0:amd64 (2.44-3) ...
+#8 181.2 Selecting previously unselected package libjansson4:amd64.
+#8 181.2 Preparing to unpack .../06-libjansson4_2.14-2+b3_amd64.deb ...
+#8 181.2 Unpacking libjansson4:amd64 (2.14-2+b3) ...
+#8 181.2 Selecting previously unselected package binutils-x86-64-linux-gnu.
+#8 181.2 Preparing to unpack .../07-binutils-x86-64-linux-gnu_2.44-3_amd64.deb ...
+#8 181.2 Unpacking binutils-x86-64-linux-gnu (2.44-3) ...
+#8 181.3 Selecting previously unselected package binutils.
+#8 181.4 Preparing to unpack .../08-binutils_2.44-3_amd64.deb ...
+#8 181.4 Unpacking binutils (2.44-3) ...
+#8 181.4 Selecting previously unselected package libedit2:amd64.
+#8 181.4 Preparing to unpack .../09-libedit2_3.1-20250104-1_amd64.deb ...
+#8 181.4 Unpacking libedit2:amd64 (3.1-20250104-1) ...
+#8 181.4 Selecting previously unselected package libxml2:amd64.
+#8 181.4 Preparing to unpack .../10-libxml2_2.12.7+dfsg+really2.9.14-2.1+deb13u3_amd64.deb ...
+#8 181.4 Unpacking libxml2:amd64 (2.12.7+dfsg+really2.9.14-2.1+deb13u3) ...
+#8 181.5 Selecting previously unselected package libz3-4:amd64.
+#8 181.5 Preparing to unpack .../11-libz3-4_4.13.3-1_amd64.deb ...
+#8 181.5 Unpacking libz3-4:amd64 (4.13.3-1) ...
+#8 182.0 Selecting previously unselected package libllvm18:amd64.
+#8 182.0 Preparing to unpack .../12-libllvm18_1%3a18.1.8-18+b1_amd64.deb ...
+#8 182.0 Unpacking libllvm18:amd64 (1:18.1.8-18+b1) ...
+#8 182.7 Selecting previously unselected package libclang-cpp18.
+#8 182.7 Preparing to unpack .../13-libclang-cpp18_1%3a18.1.8-18+b1_amd64.deb ...
+#8 182.7 Unpacking libclang-cpp18 (1:18.1.8-18+b1) ...
+#8 183.2 Selecting previously unselected package libgomp1:amd64.
+#8 183.2 Preparing to unpack .../14-libgomp1_14.2.0-19_amd64.deb ...
+#8 183.2 Unpacking libgomp1:amd64 (14.2.0-19) ...
+#8 183.2 Selecting previously unselected package libitm1:amd64.
+#8 183.2 Preparing to unpack .../15-libitm1_14.2.0-19_amd64.deb ...
+#8 183.2 Unpacking libitm1:amd64 (14.2.0-19) ...
+#8 183.3 Selecting previously unselected package libatomic1:amd64.
+#8 183.3 Preparing to unpack .../16-libatomic1_14.2.0-19_amd64.deb ...
+#8 183.3 Unpacking libatomic1:amd64 (14.2.0-19) ...
+#8 183.3 Selecting previously unselected package libasan8:amd64.
+#8 183.3 Preparing to unpack .../17-libasan8_14.2.0-19_amd64.deb ...
+#8 183.3 Unpacking libasan8:amd64 (14.2.0-19) ...
+#8 183.6 Selecting previously unselected package liblsan0:amd64.
+#8 183.6 Preparing to unpack .../18-liblsan0_14.2.0-19_amd64.deb ...
+#8 183.6 Unpacking liblsan0:amd64 (14.2.0-19) ...
+#8 183.8 Selecting previously unselected package libtsan2:amd64.
+#8 183.8 Preparing to unpack .../19-libtsan2_14.2.0-19_amd64.deb ...
+#8 183.8 Unpacking libtsan2:amd64 (14.2.0-19) ...
+#8 184.0 Selecting previously unselected package libubsan1:amd64.
+#8 184.0 Preparing to unpack .../20-libubsan1_14.2.0-19_amd64.deb ...
+#8 184.0 Unpacking libubsan1:amd64 (14.2.0-19) ...
+#8 184.2 Selecting previously unselected package libhwasan0:amd64.
+#8 184.2 Preparing to unpack .../21-libhwasan0_14.2.0-19_amd64.deb ...
+#8 184.2 Unpacking libhwasan0:amd64 (14.2.0-19) ...
+#8 184.4 Selecting previously unselected package libquadmath0:amd64.
+#8 184.4 Preparing to unpack .../22-libquadmath0_14.2.0-19_amd64.deb ...
+#8 184.4 Unpacking libquadmath0:amd64 (14.2.0-19) ...
+#8 184.5 Selecting previously unselected package libgcc-14-dev:amd64.
+#8 184.5 Preparing to unpack .../23-libgcc-14-dev_14.2.0-19_amd64.deb ...
+#8 184.5 Unpacking libgcc-14-dev:amd64 (14.2.0-19) ...
+#8 184.7 Selecting previously unselected package libc-dev-bin.
+#8 184.7 Preparing to unpack .../24-libc-dev-bin_2.41-12+deb13u5_amd64.deb ...
+#8 184.7 Unpacking libc-dev-bin (2.41-12+deb13u5) ...
+#8 184.7 Selecting previously unselected package linux-libc-dev.
+#8 184.7 Preparing to unpack .../25-linux-libc-dev_6.12.118-1_all.deb ...
+#8 184.7 Unpacking linux-libc-dev (6.12.118-1) ...
+#8 185.3 Selecting previously unselected package libcrypt-dev:amd64.
+#8 185.3 Preparing to unpack .../26-libcrypt-dev_1%3a4.4.38-1_amd64.deb ...
+#8 185.3 Unpacking libcrypt-dev:amd64 (1:4.4.38-1) ...
+#8 185.4 Selecting previously unselected package rpcsvc-proto.
+#8 185.4 Preparing to unpack .../27-rpcsvc-proto_1.4.3-1_amd64.deb ...
+#8 185.4 Unpacking rpcsvc-proto (1.4.3-1) ...
+#8 185.4 Selecting previously unselected package libc6-dev:amd64.
+#8 185.4 Preparing to unpack .../28-libc6-dev_2.41-12+deb13u5_amd64.deb ...
+#8 185.5 Unpacking libc6-dev:amd64 (2.41-12+deb13u5) ...
+#8 185.6 Selecting previously unselected package libstdc++-14-dev:amd64.
+#8 185.6 Preparing to unpack .../29-libstdc++-14-dev_14.2.0-19_amd64.deb ...
+#8 185.6 Unpacking libstdc++-14-dev:amd64 (14.2.0-19) ...
+#8 185.9 Selecting previously unselected package libgc1:amd64.
+#8 185.9 Preparing to unpack .../30-libgc1_1%3a8.2.8-1_amd64.deb ...
+#8 185.9 Unpacking libgc1:amd64 (1:8.2.8-1) ...
+#8 186.0 Selecting previously unselected package libobjc4:amd64.
+#8 186.0 Preparing to unpack .../31-libobjc4_14.2.0-19_amd64.deb ...
+#8 186.0 Unpacking libobjc4:amd64 (14.2.0-19) ...
+#8 186.0 Selecting previously unselected package libobjc-14-dev:amd64.
+#8 186.0 Preparing to unpack .../32-libobjc-14-dev_14.2.0-19_amd64.deb ...
+#8 186.0 Unpacking libobjc-14-dev:amd64 (14.2.0-19) ...
+#8 186.1 Selecting previously unselected package libclang-common-18-dev:amd64.
+#8 186.1 Preparing to unpack .../33-libclang-common-18-dev_1%3a18.1.8-18+b1_amd64.deb ...
+#8 186.1 Unpacking libclang-common-18-dev:amd64 (1:18.1.8-18+b1) ...
+#8 186.2 Selecting previously unselected package llvm-18-linker-tools.
+#8 186.2 Preparing to unpack .../34-llvm-18-linker-tools_1%3a18.1.8-18+b1_amd64.deb ...
+#8 186.2 Unpacking llvm-18-linker-tools (1:18.1.8-18+b1) ...
+#8 186.4 Selecting previously unselected package libclang1-18.
+#8 186.4 Preparing to unpack .../35-libclang1-18_1%3a18.1.8-18+b1_amd64.deb ...
+#8 186.4 Unpacking libclang1-18 (1:18.1.8-18+b1) ...
+#8 186.8 Selecting previously unselected package clang-18.
+#8 186.8 Preparing to unpack .../36-clang-18_1%3a18.1.8-18+b1_amd64.deb ...
+#8 186.8 Unpacking clang-18 (1:18.1.8-18+b1) ...
+#8 186.9 Selecting previously unselected package libhwloc15:amd64.
+#8 186.9 Preparing to unpack .../37-libhwloc15_2.12.0-4_amd64.deb ...
+#8 186.9 Unpacking libhwloc15:amd64 (2.12.0-4) ...
+#8 186.9 Selecting previously unselected package libllvmspirvlib18.1:amd64.
+#8 186.9 Preparing to unpack .../38-libllvmspirvlib18.1_18.1.11-1_amd64.deb ...
+#8 186.9 Unpacking libllvmspirvlib18.1:amd64 (18.1.11-1) ...
+#8 187.1 Selecting previously unselected package libpocl2-common.
+#8 187.1 Preparing to unpack .../39-libpocl2-common_6.0-6_all.deb ...
+#8 187.1 Unpacking libpocl2-common (6.0-6) ...
+#8 187.1 Selecting previously unselected package llvm-spirv-18.
+#8 187.1 Preparing to unpack .../40-llvm-spirv-18_18.1.11-1_amd64.deb ...
+#8 187.1 Unpacking llvm-spirv-18 (18.1.11-1) ...
+#8 187.2 Selecting previously unselected package libpocl2t64:amd64.
+#8 187.2 Preparing to unpack .../41-libpocl2t64_6.0-6_amd64.deb ...
+#8 187.2 Unpacking libpocl2t64:amd64 (6.0-6) ...
+#8 187.8 Selecting previously unselected package ocl-icd-libopencl1:amd64.
+#8 187.8 Preparing to unpack .../42-ocl-icd-libopencl1_2.3.3-1_amd64.deb ...
+#8 187.8 Unpacking ocl-icd-libopencl1:amd64 (2.3.3-1) ...
+#8 187.8 Selecting previously unselected package pocl-opencl-icd:amd64.
+#8 187.8 Preparing to unpack .../43-pocl-opencl-icd_6.0-6_amd64.deb ...
+#8 187.9 Unpacking pocl-opencl-icd:amd64 (6.0-6) ...
+#8 187.9 Setting up libedit2:amd64 (3.1-20250104-1) ...
+#8 187.9 Setting up binutils-common:amd64 (2.44-3) ...
+#8 187.9 Setting up linux-libc-dev (6.12.118-1) ...
+#8 188.0 Setting up libctf-nobfd0:amd64 (2.44-3) ...
+#8 188.0 Setting up libgomp1:amd64 (14.2.0-19) ...
+#8 188.0 Setting up libsframe1:amd64 (2.44-3) ...
+#8 188.0 Setting up libjansson4:amd64 (2.14-2+b3) ...
+#8 188.0 Setting up libz3-4:amd64 (4.13.3-1) ...
+#8 188.0 Setting up rpcsvc-proto (1.4.3-1) ...
+#8 188.0 Setting up libpocl2-common (6.0-6) ...
+#8 188.0 Setting up libquadmath0:amd64 (14.2.0-19) ...
+#8 188.1 Setting up libhwloc15:amd64 (2.12.0-4) ...
+#8 188.1 Setting up libatomic1:amd64 (14.2.0-19) ...
+#8 188.1 Setting up libclang-common-18-dev:amd64 (1:18.1.8-18+b1) ...
+#8 188.1 Setting up libgc1:amd64 (1:8.2.8-1) ...
+#8 188.1 Setting up libubsan1:amd64 (14.2.0-19) ...
+#8 188.1 Setting up ocl-icd-libopencl1:amd64 (2.3.3-1) ...
+#8 188.1 Setting up libhwasan0:amd64 (14.2.0-19) ...
+#8 188.1 Setting up libcrypt-dev:amd64 (1:4.4.38-1) ...
+#8 188.2 Setting up libasan8:amd64 (14.2.0-19) ...
+#8 188.2 Setting up libtsan2:amd64 (14.2.0-19) ...
+#8 188.2 Setting up libbinutils:amd64 (2.44-3) ...
+#8 188.2 Setting up libc-dev-bin (2.41-12+deb13u5) ...
+#8 188.2 Setting up libxml2:amd64 (2.12.7+dfsg+really2.9.14-2.1+deb13u3) ...
+#8 188.3 Setting up liblsan0:amd64 (14.2.0-19) ...
+#8 188.3 Setting up libitm1:amd64 (14.2.0-19) ...
+#8 188.3 Setting up libllvm18:amd64 (1:18.1.8-18+b1) ...
+#8 188.3 Setting up libctf0:amd64 (2.44-3) ...
+#8 188.3 Setting up libclang1-18 (1:18.1.8-18+b1) ...
+#8 188.3 Setting up libobjc4:amd64 (14.2.0-19) ...
+#8 188.3 Setting up libgprofng0:amd64 (2.44-3) ...
+#8 188.3 Setting up llvm-18-linker-tools (1:18.1.8-18+b1) ...
+#8 188.4 Setting up libc6-dev:amd64 (2.41-12+deb13u5) ...
+#8 188.4 Setting up libllvmspirvlib18.1:amd64 (18.1.11-1) ...
+#8 188.4 Setting up libgcc-14-dev:amd64 (14.2.0-19) ...
+#8 188.4 Setting up libclang-cpp18 (1:18.1.8-18+b1) ...
+#8 188.4 Setting up libstdc++-14-dev:amd64 (14.2.0-19) ...
+#8 188.4 Setting up binutils-x86-64-linux-gnu (2.44-3) ...
+#8 188.4 Setting up binutils (2.44-3) ...
+#8 188.4 Setting up libobjc-14-dev:amd64 (14.2.0-19) ...
+#8 188.4 Setting up llvm-spirv-18 (18.1.11-1) ...
+#8 188.5 Setting up clang-18 (1:18.1.8-18+b1) ...
+#8 188.5 Setting up libpocl2t64:amd64 (6.0-6) ...
+#8 188.5 Setting up pocl-opencl-icd:amd64 (6.0-6) ...
+#8 188.5 Processing triggers for libc-bin (2.41-12+deb13u5) ...
+#8 DONE 188.8s
+
+#9 [4/7] COPY pyproject.toml .
+#9 DONE 0.1s
+
+#10 [5/7] RUN pip install --no-cache-dir ".[dev]"
+#10 2.255 Processing /app
+#10 2.259   Installing build dependencies: started
+#10 4.992   Installing build dependencies: finished with status 'done'
+#10 4.997   Getting requirements to build wheel: started
+#10 5.305   Getting requirements to build wheel: finished with status 'done'
+#10 5.309   Preparing metadata (pyproject.toml): started
+#10 5.557   Preparing metadata (pyproject.toml): finished with status 'done'
+#10 5.785 Collecting fastapi<1,>=0.115 (from lumina-odonto-atualizado==1.0.0)
+#10 5.859   Downloading fastapi-0.165.0-py3-none-any.whl.metadata (27 kB)
+#10 5.950 Collecting uvicorn>=0.30 (from uvicorn[standard]>=0.30->lumina-odonto-atualizado==1.0.0)
+#10 5.978   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#10 6.691 Collecting sqlalchemy<3,>=2.0 (from lumina-odonto-atualizado==1.0.0)
+#10 6.723   Downloading sqlalchemy-2.1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.7 kB)
+#10 6.857 Collecting psycopg>=3.2 (from psycopg[binary]>=3.2->lumina-odonto-atualizado==1.0.0)
+#10 6.901   Downloading psycopg-3.3.9-py3-none-any.whl.metadata (4.4 kB)
+#10 7.658 Collecting pydantic>=2.9 (from lumina-odonto-atualizado==1.0.0)
+#10 7.682   Downloading pydantic-2.14.4-py3-none-any.whl.metadata (143 kB)
+#10 8.384 Collecting pydantic-settings>=2.5 (from lumina-odonto-atualizado==1.0.0)
+#10 8.414   Downloading pydantic_settings-2.16.3-py3-none-any.whl.metadata (4.0 kB)
+#10 8.472 Collecting PyJWT>=2.9 (from lumina-odonto-atualizado==1.0.0)
+#10 8.496   Downloading pyjwt-2.15.1-py3-none-any.whl.metadata (3.5 kB)
+#10 8.541 Collecting pwdlib>=0.2 (from pwdlib[argon2]>=0.2->lumina-odonto-atualizado==1.0.0)
+#10 8.563   Downloading pwdlib-0.4.2-py3-none-any.whl.metadata (6.2 kB)
+#10 8.856 Collecting pyopencl>=2024.1 (from lumina-odonto-atualizado==1.0.0)
+#10 8.958   Downloading pyopencl-2026.1.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (4.7 kB)
+#10 9.359 Collecting numpy>=2.0 (from lumina-odonto-atualizado==1.0.0)
+#10 9.391   Downloading numpy-2.5.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+#10 9.503 Collecting pytest>=8 (from lumina-odonto-atualizado==1.0.0)
+#10 9.523   Downloading pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+#10 9.568 Collecting httpx>=0.27 (from lumina-odonto-atualizado==1.0.0)
+#10 9.589   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#10 9.686 Collecting starlette>=1.6.0 (from fastapi<1,>=0.115->lumina-odonto-atualizado==1.0.0)
+#10 9.710   Downloading starlette-1.10.0-py3-none-any.whl.metadata (6.6 kB)
+#10 9.775 Collecting anyio>=4.1.0 (from fastapi<1,>=0.115->lumina-odonto-atualizado==1.0.0)
+#10 9.799   Downloading anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+#10 9.836 Collecting typing-extensions>=4.8.0 (from fastapi<1,>=0.115->lumina-odonto-atualizado==1.0.0)
+#10 9.855   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#10 9.891 Collecting typing-inspection>=0.4.2 (from fastapi<1,>=0.115->lumina-odonto-atualizado==1.0.0)
+#10 9.922   Downloading typing_inspection-0.4.5-py3-none-any.whl.metadata (2.6 kB)
+#10 9.957 Collecting annotated-doc>=0.0.2 (from fastapi<1,>=0.115->lumina-odonto-atualizado==1.0.0)
+#10 9.982   Downloading annotated_doc-0.0.7-py3-none-any.whl.metadata (6.4 kB)
+#10 10.04 Collecting opentelemetry-api>=1.44.0 (from fastapi<1,>=0.115->lumina-odonto-atualizado==1.0.0)
+#10 10.06   Downloading opentelemetry_api-1.45.2-py3-none-any.whl.metadata (1.4 kB)
+#10 10.10 Collecting certifi (from httpx>=0.27->lumina-odonto-atualizado==1.0.0)
+#10 10.13   Downloading certifi-2026.11.20-py3-none-any.whl.metadata (2.5 kB)
+#10 10.19 Collecting httpcore==1.* (from httpx>=0.27->lumina-odonto-atualizado==1.0.0)
+#10 10.22   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#10 10.26 Collecting idna (from httpx>=0.27->lumina-odonto-atualizado==1.0.0)
+#10 10.28   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#10 10.32 Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.27->lumina-odonto-atualizado==1.0.0)
+#10 10.34   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#10 10.79 Collecting psycopg-binary==3.3.9 (from psycopg[binary]>=3.2->lumina-odonto-atualizado==1.0.0)
+#10 10.81   Downloading psycopg_binary-3.3.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+#10 10.87 Collecting argon2-cffi>=23.1.0 (from pwdlib[argon2]>=0.2->lumina-odonto-atualizado==1.0.0)
+#10 10.89   Downloading argon2_cffi-25.1.0-py3-none-any.whl.metadata (4.1 kB)
+#10 10.93 Collecting annotated-types>=0.6.0 (from pydantic>=2.9->lumina-odonto-atualizado==1.0.0)
+#10 10.95   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#10 12.63 Collecting pydantic-core==2.50.5 (from pydantic>=2.9->lumina-odonto-atualizado==1.0.0)
+#10 12.65   Downloading pydantic_core-2.50.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.6 kB)
+#10 12.72 Collecting python-dotenv>=1.2.2 (from pydantic-settings>=2.5->lumina-odonto-atualizado==1.0.0)
+#10 12.74   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#10 12.84 Collecting platformdirs>=4.6 (from pyopencl>=2024.1->lumina-odonto-atualizado==1.0.0)
+#10 12.86   Downloading platformdirs-4.14.8-py3-none-any.whl.metadata (5.7 kB)
+#10 12.99 Collecting pytools>=2025.1.6 (from pyopencl>=2024.1->lumina-odonto-atualizado==1.0.0)
+#10 13.01   Downloading pytools-2026.1.1-py3-none-any.whl.metadata (2.9 kB)
+#10 13.04 Collecting iniconfig>=2 (from pytest>=8->lumina-odonto-atualizado==1.0.0)
+#10 13.07   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+#10 13.12 Collecting packaging>=24 (from pytest>=8->lumina-odonto-atualizado==1.0.0)
+#10 13.14   Downloading packaging-26.4-py3-none-any.whl.metadata (3.5 kB)
+#10 13.18 Collecting pluggy<2,>=1.6 (from pytest>=8->lumina-odonto-atualizado==1.0.0)
+#10 13.21   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+#10 13.25 Collecting pygments>=2.15 (from pytest>=8->lumina-odonto-atualizado==1.0.0)
+#10 13.28   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+#10 13.34 Collecting click>=7.0 (from uvicorn>=0.30->uvicorn[standard]>=0.30->lumina-odonto-atualizado==1.0.0)
+#10 13.37   Downloading click-8.5.1-py3-none-any.whl.metadata (2.6 kB)
+#10 13.50 Collecting httptools>=0.8.0 (from uvicorn[standard]>=0.30->lumina-odonto-atualizado==1.0.0)
+#10 13.52   Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#10 13.61 Collecting pyyaml>=5.1 (from uvicorn[standard]>=0.30->lumina-odonto-atualizado==1.0.0)
+#10 13.63   Downloading pyyaml-6.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.3 kB)
+#10 13.74 Collecting uvloop>=0.15.1 (from uvicorn[standard]>=0.30->lumina-odonto-atualizado==1.0.0)
+#10 13.76   Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+#10 13.94 Collecting watchfiles>=0.20 (from uvicorn[standard]>=0.30->lumina-odonto-atualizado==1.0.0)
+#10 13.97   Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#10 14.30 Collecting websockets>=13.0 (from uvicorn[standard]>=0.30->lumina-odonto-atualizado==1.0.0)
+#10 14.32   Downloading websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#10 14.38 Collecting argon2-cffi-bindings (from argon2-cffi>=23.1.0->pwdlib[argon2]>=0.2->lumina-odonto-atualizado==1.0.0)
+#10 14.41   Downloading argon2_cffi_bindings-26.2.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (7.6 kB)
+#10 14.64 Collecting siphash24>=1.6 (from pytools>=2025.1.6->pyopencl>=2024.1->lumina-odonto-atualizado==1.0.0)
+#10 14.66   Downloading siphash24-1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+#10 15.06 Collecting cffi>=1.0.1 (from argon2-cffi-bindings->argon2-cffi>=23.1.0->pwdlib[argon2]>=0.2->lumina-odonto-atualizado==1.0.0)
+#10 15.09   Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+#10 15.14 Collecting pycparser (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi>=23.1.0->pwdlib[argon2]>=0.2->lumina-odonto-atualizado==1.0.0)
+#10 15.20   Downloading pycparser-3.12-py3-none-any.whl.metadata (9.7 kB)
+#10 15.25 Downloading fastapi-0.165.0-py3-none-any.whl (159 kB)
+#10 15.33 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#10 15.38 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#10 15.44 Downloading numpy-2.5.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (15.7 MB)
+#10 25.83    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.7/15.7 MB 1.5 MB/s eta 0:00:00
+#10 25.85 Downloading psycopg-3.3.9-py3-none-any.whl (219 kB)
+#10 25.99 Downloading psycopg_binary-3.3.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.9 MB)
+#10 28.30    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.9/3.9 MB 1.7 MB/s eta 0:00:00
+#10 28.32 Downloading pwdlib-0.4.2-py3-none-any.whl (9.9 kB)
+#10 28.35 Downloading pydantic-2.14.4-py3-none-any.whl (494 kB)
+#10 28.58 Downloading pydantic_core-2.50.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.3 MB)
+#10 29.90    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 1.7 MB/s eta 0:00:00
+#10 29.92 Downloading pydantic_settings-2.16.3-py3-none-any.whl (82 kB)
+#10 30.00 Downloading pyjwt-2.15.1-py3-none-any.whl (33 kB)
+#10 30.11 Downloading pyopencl-2026.1.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (822 kB)
+#10 30.50    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 822.5/822.5 kB 2.3 MB/s eta 0:00:00
+#10 30.53 Downloading pytest-9.2.0-py3-none-any.whl (411 kB)
+#10 30.91 Downloading sqlalchemy-2.1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.7 MB)
+#10 35.04    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 1.3 MB/s eta 0:00:00
+#10 35.06 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#10 35.11 Downloading annotated_doc-0.0.7-py3-none-any.whl (5.3 kB)
+#10 35.13 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#10 35.16 Downloading anyio-4.16.0-py3-none-any.whl (134 kB)
+#10 35.24 Downloading argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+#10 35.27 Downloading click-8.5.1-py3-none-any.whl (126 kB)
+#10 35.36 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#10 35.40 Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (552 kB)
+#10 35.63    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 552.8/552.8 kB 2.4 MB/s eta 0:00:00
+#10 35.65 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#10 35.70 Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+#10 35.72 Downloading opentelemetry_api-1.45.2-py3-none-any.whl (60 kB)
+#10 35.77 Downloading packaging-26.4-py3-none-any.whl (140 kB)
+#10 35.88 Downloading platformdirs-4.14.8-py3-none-any.whl (94 kB)
+#10 35.94 Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+#10 35.98 Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#10 36.83    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 1.4 MB/s eta 0:00:00
+#10 36.85 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#10 36.88 Downloading pytools-2026.1.1-py3-none-any.whl (99 kB)
+#10 36.94 Downloading pyyaml-6.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (849 kB)
+#10 37.77    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 849.2/849.2 kB 882.0 kB/s eta 0:00:00
+#10 37.81 Downloading starlette-1.10.0-py3-none-any.whl (80 kB)
+#10 37.95 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#10 38.08 Downloading typing_inspection-0.4.5-py3-none-any.whl (14 kB)
+#10 38.14 Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+#10 41.03    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 1.5 MB/s eta 0:00:00
+#10 41.06 Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+#10 41.27 Downloading websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (226 kB)
+#10 41.40 Downloading certifi-2026.11.20-py3-none-any.whl (127 kB)
+#10 41.52 Downloading siphash24-1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (102 kB)
+#10 41.59 Downloading argon2_cffi_bindings-26.2.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (26 kB)
+#10 41.63 Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+#10 41.91 Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+#10 42.08 Building wheels for collected packages: lumina-odonto-atualizado
+#10 42.08   Building wheel for lumina-odonto-atualizado (pyproject.toml): started
+#10 42.43   Building wheel for lumina-odonto-atualizado (pyproject.toml): finished with status 'done'
+#10 42.43   Created wheel for lumina-odonto-atualizado: filename=lumina_odonto_atualizado-1.0.0-py3-none-any.whl size=1291 sha256=34f93b0fab6120e13a80281aeffa89efd4c38a198a1f2639c59eac2bdbafa84d
+#10 42.43   Stored in directory: /tmp/pip-ephem-wheel-cache-p4g8opwb/wheels/54/1b/b7/aa63e25c8f14f4f2ae7b04e6097bdecb770e455c5c1ee0a600
+#10 42.43 Successfully built lumina-odonto-atualizado
+#10 42.55 Installing collected packages: websockets, uvloop, typing-extensions, siphash24, pyyaml, python-dotenv, PyJWT, pygments, pycparser, pwdlib, psycopg-binary, pluggy, platformdirs, packaging, numpy, iniconfig, idna, httptools, h11, click, certifi, annotated-types, annotated-doc, uvicorn, typing-inspection, sqlalchemy, pytools, pytest, pydantic-core, psycopg, opentelemetry-api, httpcore, cffi, anyio, watchfiles, starlette, pyopencl, pydantic, httpx, argon2-cffi-bindings, pydantic-settings, fastapi, argon2-cffi, lumina-odonto-atualizado
+#10 51.77 Successfully installed PyJWT-2.15.1 annotated-doc-0.0.7 annotated-types-0.8.0 anyio-4.16.0 argon2-cffi-25.1.0 argon2-cffi-bindings-26.2.0 certifi-2026.11.20 cffi-2.1.1 click-8.5.1 fastapi-0.165.0 h11-0.16.0 httpcore-1.0.9 httptools-0.9.0 httpx-0.28.1 idna-3.20 iniconfig-2.3.1 lumina-odonto-atualizado-1.0.0 numpy-2.5.5 opentelemetry-api-1.45.2 packaging-26.4 platformdirs-4.14.8 pluggy-1.7.0 psycopg-3.3.9 psycopg-binary-3.3.9 pwdlib-0.4.2 pycparser-3.12 pydantic-2.14.4 pydantic-core-2.50.5 pydantic-settings-2.16.3 pygments-2.21.0 pyopencl-2026.1.5 pytest-9.2.0 python-dotenv-1.2.4 pytools-2026.1.1 pyyaml-6.0.4 siphash24-1.9 sqlalchemy-2.1.9 starlette-1.10.0 typing-extensions-4.16.0 typing-inspection-0.4.5 uvicorn-0.54.0 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.4
+#10 51.77 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#10 51.96 
+#10 51.96 [notice] A new release of pip is available: 25.0.1 -> 26.3
+#10 51.96 [notice] To update, run: pip install --upgrade pip
+#10 DONE 52.4s
+
+#11 [6/7] COPY app/ app/
+#11 DONE 0.1s
+
+#12 [7/7] COPY tests/ tests/
+#12 DONE 0.0s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 20.1s done
+#13 exporting manifest sha256:161a166528eeaf46d0aa4c7135b2b1e7a27284acd0712a2bd46df126d97cf314 0.0s done
+#13 exporting config sha256:b4cb93c2193548f7a81d2b48da3f3dc648caedb9b18fa6776f76df7626d46314 0.0s done
+#13 exporting attestation manifest sha256:df7cf6ed659780f59223c56023d9b3c3046c133b77ad8b362e36b41d36fa577f 0.0s done
+#13 exporting manifest list sha256:12b82a6b985742e7eb8a4e36b0aeb8f5d49280ace9a995c490e51d329ab5b9a6 0.0s done
+#13 naming to docker.io/library/lumina-corrected-qa-6ba8c93e83:source done
+#13 unpacking to docker.io/library/lumina-corrected-qa-6ba8c93e83:source
+#13 unpacking to docker.io/library/lumina-corrected-qa-6ba8c93e83:source 5.7s done
+#13 DONE 25.9s

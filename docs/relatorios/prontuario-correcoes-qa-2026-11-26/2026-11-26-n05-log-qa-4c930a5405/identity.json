@@ -1,0 +1,11 @@
+{
+  "source": "/home/paulinho/Work/lumina_odonto_correcao_N05_20261126",
+  "git": false,
+  "manifest_sha256": "e3b28488163b174758f7e3782dbe916b0cc1cf8120cadf5a3cd5da79200e2825",
+  "canonical_json_style": "compact",
+  "logical_files": 22,
+  "provenance": "Pacote anterior recebido de Tarcisio segundo Paulo; copia N05 preparada pelo agente de Backend sob coordenacao do Tech Lead e autorizacao de Paulo, conforme repasse. Sem autoria Git comprovada.",
+  "start_utc": "2026-11-26T08:34:46.555618+00:00",
+  "baseline_qa": "/home/paulinho/Work/lumina-qa-evidence/2026-11-25-pacote-corrigido-987ee71999-bd315",
+  "backend_evidence": "/home/paulinho/Work/lumina-qa-evidence/2026-11-26-n05-log-backend-cfaac6e1"
+}

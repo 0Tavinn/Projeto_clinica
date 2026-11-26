@@ -1,0 +1,57 @@
+{
+  "date": "2026-11-26",
+  "purpose": "revisao de artefatos; nenhum teste funcional executado",
+  "matrix_rows": 101,
+  "counts": {
+    "independente": {
+      "aprovado": 73,
+      "reprovado": 1
+    },
+    "fornecido": {
+      "aprovado": 18
+    },
+    "pendente": {
+      "nao executado": 2,
+      "bloqueado": 7
+    }
+  },
+  "evidence_paths_missing": [],
+  "qa_helpers_syntax_ok": [
+    "instrumentation_probe.py",
+    "setup_and_core.py",
+    "final_probe_reproduce.py",
+    "concurrency_probe.py",
+    "final_probe.py",
+    "core_probe.py",
+    "cleanup_qa.py",
+    "qa_common.py",
+    "snapshot_db.py",
+    "reset_probe.py",
+    "persistence_verify.py",
+    "fixture.py",
+    "advanced_probe.py",
+    "status_probe.py",
+    "appointment_race_final.py",
+    "instrumented_server.py",
+    "concurrency_replay.py"
+  ],
+  "shell_syntax_checks": [
+    {
+      "block": 1,
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "block": 2,
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "block": 3,
+      "exit": 0,
+      "stderr": ""
+    }
+  ],
+  "candidate_all_40_files_still_equal": true,
+  "ephemeral_env_absent": true
+}

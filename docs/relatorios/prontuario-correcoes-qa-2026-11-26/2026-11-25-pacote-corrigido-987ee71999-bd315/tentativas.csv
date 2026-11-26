@@ -1,0 +1,72 @@
+id,status,expected,obtained,evidence
+A-health,aprovado,health200 conectado ao banco,"{""http"": 200}",core_probe.py.log
+A-openapi,aprovado,OpenAPI200,"{""http"": 200}",core_probe.py.log
+REG-noauth,aprovado,401,"{""http"": 401}",core_probe.py.log
+REG-login-not-clinical,aprovado,401,"{""http"": 401}",core_probe.py.log
+REG-admin-unlock,aprovado,403,"{""http"": 403}",core_probe.py.log
+REG-reception-clinical,aprovado,401,"{""http"": 401}",core_probe.py.log
+REG-noprof,aprovado,403,"{""http"": 403}",core_probe.py.log
+REG-inactive-login,aprovado,401,"{""http"": 401}",core_probe.py.log
+REG-foreign,aprovado,nega outra clinica,"""acesso negado""",core_probe.py.log
+REG-no-link,aprovado,403,"{""http"": 403}",core_probe.py.log
+REG-get-pure,aprovado,GET nao cria,"{""http"": 200, ""count_before"": 12, ""count_after"": 12}",core_probe.py.log
+REG-private-list,aprovado,rascunho ausente para outro dentista,"""rascunho privado na lista""",core_probe.py.log
+REG-private-detail,aprovado,403,"{""http"": 403}",core_probe.py.log
+REG-other-author,aprovado,403,"{""http"": 403}",core_probe.py.log
+REG-empty-description,aprovado,422,"{""http"": 422}",core_probe.py.log
+REG-optional-appointment,aprovado,422 para consulta incompatível,"{""http"": 422}",core_probe.py.log
+N07-invalid-types,aprovado,12 entradas invalidas422; sem mutacao,"{""http"": [422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422], ""version"": 1, ""state"": ""DRAFT""}",core_probe.py.log
+N07-current,aprovado,200 versao atual,"{""http"": 200}",core_probe.py.log
+N07-stale-edit,aprovado,409,"{""http"": 409}",core_probe.py.log
+N07-stale-finalize,aprovado,409,"{""http"": 409}",core_probe.py.log
+REG-finalize,aprovado,200 sem consulta obrigatoria,"{""http"": 200}",core_probe.py.log
+REG-shared-finalized,aprovado,200 dentista vinculado,"{""http"": 200}",core_probe.py.log
+REG-finalized-edit,aprovado,403,"{""http"": 403}",core_probe.py.log
+N05-validation-body,aprovado,422 sem sentinela ou ctx/input indevidos,"[{""http"": 422, ""echo"": false, ""useful_loc"": true}, {""http"": 422, ""echo"": false, ""useful_loc"": true}, {""http"": 422, ""echo"": false, ""useful_loc"": true}, {""http"": 422, ""echo"": false, ""useful_loc"": true}, {""http"": 422, ""echo"": false, ""useful_loc"": true}]",core_probe.py.log
+N05-user-update,aprovado,200 sem hashes/sessao,"{""http"": 200, ""forbidden_keys"": []}",core_probe.py.log
+N06-patient-scope,aprovado,somente patient_id solicitado,"""ids restritos ao paciente""",core_probe.py.log
+N06-invalid-or-unlinked,aprovado,ausente/invalido422; semvinculo403,"[422, 422, 422, 422, 403]",core_probe.py.log
+N06-foreign,aprovado,403ou404 sem outra clinica,"""outra clinica negada""",core_probe.py.log
+N08-empty-normalized,aprovado,12 casos422 em todos motores; sem503,"[422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422]",core_probe.py.log
+REG-real-opencl,aprovado,kernel real e igualdade CPU,"{""cpu_http"": 200, ""opencl_http"": 200, ""engine"": ""opencl"", ""same_results"": true}",core_probe.py.log
+N02-CRUD-DTO,aprovado,"201/200 coerentes, scheduled_period foraDTO","{""http"": [201, 200, 200, 200, 200, 200], ""range_exposed"": false, ""persisted"": ""CANCELED""}",core_probe.py.log
+REG-durable-link,aprovado,cancelamento preserva; antiga nao reativa; nova reativa,"{""after_cancel"": 200, ""old_update"": 200, ""after_old"": 403, ""new"": 201, ""after_new"": 200}",core_probe.py.log
+N04-revoke-inactive-and-no-password,aprovado,200;REVOKED;evento/auditoria atomicos,"[{""mode"": ""patient_inactive"", ""http"": 200, ""state"": ""REVOKED"", ""events_total_delta"": 1, ""revocation_events"": 1, ""audit"": 1}, {""mode"": ""dentist_inactive"", ""http"": 200, ""state"": ""REVOKED"", ""events_total_delta"": 1, ""revocation_events"": 2, ""audit"": 2}, {""mode"": ""no_clinical_password"", ""http"": 200, ""state"": ""REVOKED"", ""events_total_delta"": 1, ""revocation_events"": 3, ""audit"": 3}]",core_probe.py.log
+N04-grant-eligibility,aprovado,inativos nao recebem reativacao,"{""inactive_patient"": 404, ""inactive_dentist"": 422}",core_probe.py.log
+N01-lock-cpu,aprovado,403 apos revogacao confirmada durante espera real,"{""engine_requested"": ""cpu"", ""http"": 403, ""state"": ""REVOKED"", ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}], ""results_exposed"": false}",concurrency-replay.log
+N01-lock-opencl,aprovado,403 apos revogacao confirmada durante espera real,"{""engine_requested"": ""opencl"", ""http"": 403, ""state"": ""REVOKED"", ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}], ""results_exposed"": false}",concurrency-replay.log
+REG-inactivation-wait-user,aprovado,nega segundo estado atual apos espera,"{""kind"": ""user"", ""http"": 401, ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}], ""policy"": ""implementacao observada; D06/limites clinicos nao aprovados por este teste""}",concurrency-replay.log
+REG-inactivation-wait-clinic,aprovado,nega segundo estado atual apos espera,"{""kind"": ""clinic"", ""http"": 403, ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}], ""policy"": ""implementacao observada; D06/limites clinicos nao aprovados por este teste""}",concurrency-replay.log
+REG-inactivation-wait-patient,aprovado,nega segundo estado atual apos espera,"{""kind"": ""patient"", ""http"": 404, ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}], ""policy"": ""implementacao observada; D06/limites clinicos nao aprovados por este teste""}",concurrency-replay.log
+REG-revoke-edit,aprovado,403 e conteudo/estado/versao intactos,"{""http"": 403, ""unchanged"": true, ""state"": ""DRAFT"", ""version"": 1, ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}]}",concurrency-replay.log
+REG-revoke-finalize,aprovado,403 e conteudo/estado/versao intactos,"{""http"": 403, ""unchanged"": true, ""state"": ""DRAFT"", ""version"": 1, ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}]}",concurrency-replay.log
+N07-two-edits-winner,aprovado,200/409;um incremento;texto igual ao vencedor,"{""http"": [200, 409], ""version"": 2, ""winner_content_matches"": true, ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}, {""pid"": 50, ""wait_event_type"": ""Lock"", ""wait_event"": ""tuple""}]}",concurrency-replay.log
+REG-edit-versus-finalize,aprovado,FINALIZED versao2;edicao403 sem sobrescrever,"{""finalize_http"": 200, ""edit_http"": 403, ""version"": 2, ""state"": ""FINALIZED"", ""notes_unchanged"": true, ""waiters"": [{""pid"": 41, ""wait_event_type"": ""Lock"", ""wait_event"": ""tuple""}, {""pid"": 50, ""wait_event_type"": ""Lock"", ""wait_event"": ""transactionid""}]}",concurrency-replay.log
+REG-appointment-race,reprovado,201/409;uma consulta/vinculo/evento,"{""http"": [409, 409], ""appointments"": 0, ""links"": 0, ""events"": 0, ""link_matches_winner"": false}",concurrency-replay.log
+N01-compute-cpu,aprovado,403 apos revogacao no fim do calculo real antes da rechecagem,"{""http"": 403, ""telemetry"": {""mode"": ""normal"", ""events"": [{""point"": ""after_actual_cpu_comparison_before_return_to_route"", ""revoked_rows"": 1}], ""device"": ""cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H"", ""platform"": ""Portable Computing Language"", ""instrumentation"": ""proxy_only; original contains.cl enqueued""}, ""results_exposed"": false}",instrumentation-probe.log
+N01-compute-real-opencl,aprovado,revogacao commit com evento RUNNING e resposta403,"{""http"": 403, ""telemetry"": {""mode"": ""normal"", ""events"": [{""point"": ""real_contains_bytes_event_after_enqueue"", ""event_before_commit"": 1, ""event_after_commit"": 1, ""revocation_committed_while_event_running"": true, ""revoked_rows"": 1, ""kernel_really_completed"": true}], ""device"": ""cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H"", ""platform"": ""Portable Computing Language"", ""instrumentation"": ""proxy_only; original contains.cl enqueued""}, ""inflight_proven"": true, ""results_exposed"": false}",instrumentation-probe.log
+REG-unavailable-external,aprovado,forcado503;automaticoCPU;harness declarado,"{""forced_http"": 503, ""auto_http"": 200, ""auto_engine"": ""cpu""}",instrumentation-probe.log
+REG-pagination-1005,aprovado,paginas1000/5;next_offset;IDs iguais;rascunhos ocultos,"{""pages"": [{""engine"": ""cpu"", ""offset"": 0, ""total_page"": 1000, ""next_offset"": 1000, ""count"": 1000}, {""engine"": ""cpu"", ""offset"": 1000, ""total_page"": 5, ""next_offset"": null, ""count"": 5}, {""engine"": ""opencl"", ""offset"": 0, ""total_page"": 1000, ""next_offset"": 1000, ""count"": 1000}, {""engine"": ""opencl"", ""offset"": 1000, ""total_page"": 5, ""next_offset"": null, ""count"": 5}], ""unique_visible"": 1005, ""hidden_drafts_returned"": false}",advanced_probe.py.log
+REG-concurrent-opencl-http,aprovado,8 buscas OpenCL concorrentes iguais,"{""http"": [200, 200, 200, 200, 200, 200, 200, 200], ""equal_ids"": true, ""count_per_page"": 1000}",advanced_probe.py.log
+REG-page-total-semantics,aprovado,total=0 e proxima pagina de candidatos explicita,"{""http"": 200, ""total_page"": 0, ""next_offset"": 1000}",advanced_probe.py.log
+REG-kernel-unicode,aprovado,"CPU/OpenCL iguais, vazios validos sem erro de buffer","{""device"": ""cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H"", ""terms_compared"": 7, ""empty_lists_and_strings"": true}",advanced_probe.py.log
+REG-byte-budget-unicode,aprovado,limiteaceito;acima413 em todos motores,"{""at_2000000_bytes"": [200, 200], ""at_2000004_bytes"": [413, 413, 413]}",advanced_probe.py.log
+REG-patient-rollback,aprovado,falha sem paciente ou prontuario residual,"{""http"": 500, ""patients_before"": 12, ""patients_after"": 12}",advanced_probe.py.log
+REG-patient-duplicate,aprovado,201/409 umpaciente/prontuario,"{""http"": [201, 409], ""records"": 1}",advanced_probe.py.log
+REG-evolution-rollback,aprovado,estado/versao/conteudo intactos apos falha relacionada,"{""http"": 500, ""state"": ""DRAFT"", ""version"": 1, ""notes_unchanged"": true}",advanced_probe.py.log
+REG-server-authorship-time,aprovado,autor e horarios do servidor,"{""http"": 201, ""correct_author"": true, ""state"": ""DRAFT"", ""forged_time_used"": false}",advanced_probe.py.log
+N05-validation-query-response,aprovado,422 sem eco do termo clinico,"{""http"": 422, ""echo"": false}",advanced_probe.py.log
+REG-passwords-distinct-create,aprovado,422 se senhas de login/clinica iguais,"{""http"": 422}",reset_probe.py.log
+REG-reset-login-equals-clinical,aprovado,422,"{""http"": 422}",reset_probe.py.log
+REG-reset-clinical-equals-login,aprovado,422,"{""http"": 422}",reset_probe.py.log
+REG-reset-foreign-target,aprovado,404,"{""http"": 404}",reset_probe.py.log
+REG-reset-nonadmin,aprovado,403,"{""http"": 403}",reset_probe.py.log
+REG-reset-login-invalidates,aprovado,reset invalida tokens e senha antigos; novo login funciona,"{""reset"": 200, ""old_access"": 401, ""old_clinical"": 401, ""old_password"": 401, ""session_increment"": 1, ""new_login_unlock"": true}",reset_probe.py.log
+REG-reset-clinical-invalidates,aprovado,reset clinico invalida somente liberacao correspondente,"{""reset"": 200, ""old_clinical"": 401, ""login_still_valid"": 200, ""clinical_increment"": 1, ""new_unlock"": true}",reset_probe.py.log
+REG-expired-clinical,aprovado,401,"{""http"": 401}",reset_probe.py.log
+REG-invalid-token,aprovado,401,"{""http"": 401}",reset_probe.py.log
+N04-preserve-clinical-history,aprovado,revogacao administrativa preserva prontuario e evolucoes;um evento;leitura403,"{""http"": 200, ""record_equal"": true, ""evolutions_equal"": true, ""evolutions_count"": 3, ""event_increment"": 1, ""revoked_read_http"": 403, ""reactivated_http"": 200}",final_probe.py.log
+REG-status-durable-link,bloqueado,ausencia/conclusao preservam vinculo persistente,"{""script_exception_type"": ""KeyError""}",final_probe.py.log
+N04-cross-clinic-admin,aprovado,admin de outra clinica nao concede/revoga/reativa,"{""http"": [404, 404, 404], ""link_unchanged"": true}",final_probe.py.log
+REG-status-durable-link,aprovado,ausencia/conclusao preservam vinculo persistente,"{""http"": [200, 200], ""checks"": [{""appointment_state"": ""NO_SHOW"", ""link_state"": ""ACTIVE"", ""read_http"": 200}, {""appointment_state"": ""COMPLETED"", ""link_state"": ""ACTIVE"", ""read_http"": 200}], ""criterion"": ""politica nova de vinculo duradouro; nao confirma fluxo antigo D02-D04""}",status_probe.py.log
+REG-appointment-race,aprovado,201/409;uma consulta/vinculo/evento,"{""http"": [201, 409], ""appointments"": 1, ""links"": 1, ""events"": 1, ""link_matches_winner"": true}",appointment-race-final.log

@@ -1,0 +1,232 @@
+INFO:     172.22.0.4:37944 - "GET /health HTTP/1.1" 200 OK
+INFO:     172.22.0.4:37950 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:37966 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:37974 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:37984 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:37992 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:38002 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:38018 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:38032 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:38036 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:38040 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:38056 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:38060 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38062 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38072 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38076 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38088 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38096 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38100 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38110 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38122 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38136 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38142 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38154 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38156 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38162 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48410 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48426 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48436 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48446 - "GET /health HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48454 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48456 - "GET /api/v1/patients/5/record HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:48462 - "GET /api/v1/patients/5/record HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:48466 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48478 - "GET /api/v1/patients/5/record HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:48486 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48498 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:48504 - "GET /api/v1/patients/5/record HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48506 - "GET /api/v1/patients/13/record HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48508 - "GET /api/v1/patients/5/record HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48516 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:48522 - "GET /api/v1/patients/5/evolutions HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48534 - "GET /api/v1/evolutions/10 HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48546 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48552 - "POST /api/v1/evolutions HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48564 - "POST /api/v1/evolutions HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48574 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48578 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48588 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48592 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48594 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48600 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48604 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48616 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48626 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48628 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48644 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48650 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48664 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48676 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 409 Conflict
+INFO:     172.22.0.4:48680 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 409 Conflict
+INFO:     172.22.0.4:48688 - "POST /api/v1/evolutions/10/finalize HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48694 - "GET /api/v1/evolutions/10 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48706 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48712 - "POST /api/v1/evolutions HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48726 - "PATCH /api/v1/evolutions/10 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48732 - "POST /api/v1/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48744 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48746 - "POST /api/v1/users HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48752 - "PATCH /api/v1/users/8 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48756 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:48762 - "GET /api/v1/clinical/search?patient_id=5&q=acao&engine_name=cpu HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48768 - "GET /api/v1/clinical/search?q=acao&engine_name=cpu HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48772 - "GET /api/v1/clinical/search?q=acao&engine_name=cpu&patient_id=0 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48786 - "GET /api/v1/clinical/search?q=acao&engine_name=cpu&patient_id=-1 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48788 - "GET /api/v1/clinical/search?q=acao&engine_name=cpu&patient_id=bad HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48792 - "GET /api/v1/clinical/search?q=acao&engine_name=cpu&patient_id=13 HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48798 - "GET /api/v1/clinical/search?patient_id=5&q=acao HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:48802 - "GET /api/v1/clinical/search?patient_id=5&engine_name=cpu HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48812 - "GET /api/v1/clinical/search?patient_id=5&engine_name=cpu&q= HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48814 - "GET /api/v1/clinical/search?patient_id=5&engine_name=cpu&q=+++ HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48816 - "GET /api/v1/clinical/search?patient_id=5&engine_name=cpu&q=%CC%81 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48822 - "GET /api/v1/clinical/search?patient_id=5&engine_name=auto HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48834 - "GET /api/v1/clinical/search?patient_id=5&engine_name=auto&q= HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48848 - "GET /api/v1/clinical/search?patient_id=5&engine_name=auto&q=+++ HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48858 - "GET /api/v1/clinical/search?patient_id=5&engine_name=auto&q=%CC%81 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48868 - "GET /api/v1/clinical/search?patient_id=5&engine_name=opencl HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48878 - "GET /api/v1/clinical/search?patient_id=5&engine_name=opencl&q= HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48890 - "GET /api/v1/clinical/search?patient_id=5&engine_name=opencl&q=+++ HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48894 - "GET /api/v1/clinical/search?patient_id=5&engine_name=opencl&q=%CC%81 HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:48896 - "GET /api/v1/clinical/search?patient_id=5&q=A%C3%87%C3%83O&engine_name=cpu HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48912 - "GET /api/v1/clinical/search?patient_id=5&q=A%C3%87%C3%83O&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48920 - "POST /api/v1/appointments HTTP/1.1" 201 Created
+INFO:     172.22.0.4:48936 - "GET /api/v1/appointments HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48948 - "GET /api/v1/appointments/7 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48950 - "GET /api/v1/appointments?patient_id=7&dentist_id=3 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48966 - "PATCH /api/v1/appointments/7 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48972 - "DELETE /api/v1/appointments/7 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48988 - "GET /api/v1/patients/7/record HTTP/1.1" 200 OK
+INFO:     172.22.0.4:48998 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49010 - "PATCH /api/v1/appointments/7 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49012 - "GET /api/v1/patients/7/record HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:49014 - "POST /api/v1/appointments HTTP/1.1" 201 Created
+INFO:     172.22.0.4:49030 - "GET /api/v1/patients/7/record HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49036 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49038 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49046 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49050 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49052 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49064 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49080 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:49088 - "POST /api/v1/admin/access HTTP/1.1" 404 Not Found
+INFO:     172.22.0.4:49104 - "POST /api/v1/admin/access HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:49106 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33358 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33362 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33364 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33380 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33390 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33392 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33396 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33402 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33408 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33414 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:33428 - "GET /api/v1/clinical/search?patient_id=10&q=acao&engine_name=cpu HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:33444 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33460 - "GET /api/v1/clinical/search?patient_id=10&q=acao&engine_name=opencl HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:33462 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33476 - "GET /api/v1/clinical/search?patient_id=10&q=acao&engine_name=opencl HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:33484 - "GET /api/v1/clinical/search?patient_id=10&q=acao&engine_name=opencl HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:33496 - "GET /api/v1/clinical/search?patient_id=10&q=acao&engine_name=opencl HTTP/1.1" 404 Not Found
+INFO:     172.22.0.4:33502 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:33508 - "PATCH /api/v1/evolutions/13 HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:33514 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33530 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:33544 - "POST /api/v1/evolutions/14/finalize HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:33552 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33560 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:33562 - "PATCH /api/v1/evolutions/15 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33578 - "PATCH /api/v1/evolutions/15 HTTP/1.1" 409 Conflict
+INFO:     172.22.0.4:33582 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:33592 - "POST /api/v1/evolutions/16/finalize HTTP/1.1" 200 OK
+INFO:     172.22.0.4:33608 - "PATCH /api/v1/evolutions/16 HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:33612 - "POST /api/v1/appointments HTTP/1.1" 201 Created
+INFO:     172.22.0.4:33626 - "POST /api/v1/appointments HTTP/1.1" 409 Conflict
+INFO:     172.22.0.4:47310 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47324 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47326 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47330 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47334 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47350 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47360 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47376 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47386 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47398 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:47400 - "POST /api/v1/admin/access HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45586 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45592 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45598 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45614 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45630 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45646 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45662 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45674 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45676 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45682 - "GET /api/v1/clinical/search?patient_id=11&q=A%C3%87%C3%83O&engine_name=cpu&offset=0 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45698 - "GET /api/v1/clinical/search?patient_id=11&q=A%C3%87%C3%83O&engine_name=cpu&offset=1000 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45700 - "GET /api/v1/clinical/search?patient_id=11&q=A%C3%87%C3%83O&engine_name=opencl&offset=0 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45706 - "GET /api/v1/clinical/search?patient_id=11&q=A%C3%87%C3%83O&engine_name=opencl&offset=1000 HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45724 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45720 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45740 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45754 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45766 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45770 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45782 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45790 - "GET /api/v1/clinical/search?patient_id=11&q=acao&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45804 - "GET /api/v1/clinical/search?patient_id=11&q=nunca-corresponde&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45814 - "GET /api/v1/clinical/search?patient_id=9&q=naoexiste&engine_name=cpu HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45826 - "GET /api/v1/clinical/search?patient_id=9&q=naoexiste&engine_name=opencl HTTP/1.1" 200 OK
+INFO:     172.22.0.4:45828 - "GET /api/v1/clinical/search?patient_id=9&q=naoexiste&engine_name=cpu HTTP/1.1" 413 Request Entity Too Large
+INFO:     172.22.0.4:45832 - "GET /api/v1/clinical/search?patient_id=9&q=naoexiste&engine_name=auto HTTP/1.1" 413 Request Entity Too Large
+INFO:     172.22.0.4:45840 - "GET /api/v1/clinical/search?patient_id=9&q=naoexiste&engine_name=opencl HTTP/1.1" 413 Request Entity Too Large
+INFO:     172.22.0.4:45842 - "POST /api/v1/patients HTTP/1.1" 500 Internal Server Error
+INFO:     172.22.0.4:45850 - "POST /api/v1/patients HTTP/1.1" 201 Created
+INFO:     172.22.0.4:45858 - "POST /api/v1/patients HTTP/1.1" 409 Conflict
+INFO:     172.22.0.4:45864 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:45874 - "PATCH /api/v1/evolutions/2026 HTTP/1.1" 500 Internal Server Error
+INFO:     172.22.0.4:45882 - "POST /api/v1/evolutions HTTP/1.1" 201 Created
+INFO:     172.22.0.4:45898 - "GET /api/v1/clinical/search?q=<query-sentinel> HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:38466 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38468 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38484 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38488 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38496 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38506 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38522 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38530 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38544 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38556 - "POST /api/v1/users HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:38568 - "POST /api/v1/admin/users/8/reset-login-password HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:38576 - "POST /api/v1/auth/reset-clinical-password HTTP/1.1" 422 Unprocessable Entity
+INFO:     172.22.0.4:38580 - "POST /api/v1/admin/users/9/reset-login-password HTTP/1.1" 404 Not Found
+INFO:     172.22.0.4:38588 - "POST /api/v1/admin/users/8/reset-login-password HTTP/1.1" 403 Forbidden
+INFO:     172.22.0.4:38598 - "POST /api/v1/admin/users/8/reset-login-password HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38600 - "GET /api/v1/auth/me HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38616 - "GET /api/v1/patients/5/record HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38618 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38624 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38638 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38642 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38648 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38656 - "POST /api/v1/auth/reset-clinical-password HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38666 - "GET /api/v1/patients/5/record HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38674 - "GET /api/v1/auth/me HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38684 - "POST /api/v1/auth/clinical-unlock HTTP/1.1" 200 OK
+INFO:     172.22.0.4:38698 - "GET /api/v1/patients/5/record HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38714 - "GET /api/v1/patients/5/record HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38718 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38734 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38746 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38756 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38760 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38762 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38776 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     172.22.0.4:38782 - "POST /api/v1/auth/login HTTP/1.1" 401 Unauthorized
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+ERROR:    Exception in ASGI application
+ERROR:    Exception in ASGI application

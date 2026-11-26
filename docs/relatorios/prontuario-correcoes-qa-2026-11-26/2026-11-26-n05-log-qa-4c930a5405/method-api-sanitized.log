@@ -1,0 +1,6 @@
+INFO:     - - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     - - "OTHER /health HTTP/1.1" 405 Method Not Allowed
+INFO:     server_event=process_started
+INFO:     server_event=startup_waiting
+INFO:     server_event=startup_complete
+INFO:     server_event=server_event

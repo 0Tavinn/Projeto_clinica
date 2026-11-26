@@ -1,0 +1,22 @@
+[
+  {
+    "file": "README.md",
+    "before": "8db4d57cc5dae9ba94647995ae4658a0adb7b04917bf4c1ddff1b8d8d9d00590",
+    "after": "371b6908fffce04294040e6c5d8853e10041bb1cab81898e64e118a2e3320faf"
+  },
+  {
+    "file": "app/logging_policy.py",
+    "before": null,
+    "after": "7b0fd9010a9eacf6511f87003564564e774e64bcdef0dbeae8f99dfdaffd4f5d"
+  },
+  {
+    "file": "app/main.py",
+    "before": "bdf12da0bd33bf5fbf36aed44c965ecdac7d14fe44c6895f2189b3ea52dbca36",
+    "after": "c4ba694a5ef2009a1ba07de7c3b3a2579618d9bbf4ee98f9612db097902639e6"
+  },
+  {
+    "file": "tests/test_logging_policy.py",
+    "before": null,
+    "after": "bdd2c8abecdf472ce0f2619949f9d2a334be794085c546bd05d6e69cc597ffad"
+  }
+]

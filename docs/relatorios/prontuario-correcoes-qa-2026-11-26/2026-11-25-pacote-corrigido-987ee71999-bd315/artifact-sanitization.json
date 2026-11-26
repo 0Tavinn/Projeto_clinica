@@ -1,0 +1,7 @@
+{
+  "diff_original_sha256": "bb5c05449774a71aefa2df9dbfd16fc37ece7d6dcebcd7120d64d72f196bd8a7",
+  "diff_password_hash_replacements": 3,
+  "diff_is_sanitized": true,
+  "own_source_tar_removed": "received-relevant-source.tar",
+  "reason": "nao distribuir hashes de senha do seed; originais permanecem intactos no pacote recebido; hashes por arquivo identificam a candidata"
+}
