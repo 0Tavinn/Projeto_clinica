@@ -1,3 +1,10 @@
+> **Entrega desta branch: API de prontuário corrigida.**
+> Para iniciar a API certa, siga [o ambiente de integração do prontuário](lumina_odonto/INTEGRATION.md).
+> O contrato para as interfaces está em [lumina_odonto/FRONTEND.md](lumina_odonto/FRONTEND.md).
+> Esta entrega executa `lumina_odonto/`; o serviço legado em `backend/` tem contratos diferentes.
+> A entrega da Agenda/OpenCL permanece na branch `feat/paralelismo-agendamento`.
+> Não há nova interface pronta ou merge das duas APIs nesta branch.
+
 # Lumina Odonto
 
 Sistema de gestão para clínica odontológica desenvolvido no contexto das
