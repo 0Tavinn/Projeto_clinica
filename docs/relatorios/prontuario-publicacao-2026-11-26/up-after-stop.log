@@ -1,0 +1,72 @@
+ Image lumina_prontuario_integracao-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 720B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 372B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 82B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 755B done
+#5 DONE 0.0s
+
+#6 [1/7] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#6 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#6 DONE 0.0s
+
+#7 [4/7] COPY pyproject.toml .
+#7 CACHED
+
+#8 [6/7] COPY app/ app/
+#8 CACHED
+
+#9 [2/7] WORKDIR /app
+#9 CACHED
+
+#10 [3/7] RUN apt-get update && apt-get install -y --no-install-recommends ocl-icd-libopencl1 pocl-opencl-icd && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [5/7] RUN pip install --no-cache-dir ".[dev]"
+#11 CACHED
+
+#12 [7/7] COPY tests/ tests/
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 exporting manifest sha256:3f1beb63309bd3b5fd876c90b8b1cf509e578db08adc24b4dcb4ba9ad7cc0cbe done
+#13 exporting config sha256:98277d89cfc5a25ea249004442e77ffc96874b25fb1f2f6cffa4b7f3e9fc2690 done
+#13 exporting attestation manifest sha256:a4177037659e0d2dc350b3bb13476a3877e81c685bec1226633b452d7c0bf64a
+#13 exporting attestation manifest sha256:a4177037659e0d2dc350b3bb13476a3877e81c685bec1226633b452d7c0bf64a 0.0s done
+#13 exporting manifest list sha256:e4bdfcb1a51caae72e22afc1c6c1c5bc52cf42cd78d5a77040f2ff47284ca992 0.0s done
+#13 naming to docker.io/library/lumina_prontuario_integracao-api:latest done
+#13 unpacking to docker.io/library/lumina_prontuario_integracao-api:latest done
+#13 DONE 0.2s
+
+#14 resolving provenance for metadata file
+#14 DONE 0.0s
+ Image lumina_prontuario_integracao-api Built 
+ Container lumina_prontuario_integracao-db-1 Starting 
+ Container lumina_prontuario_integracao-db-1 Started 
+ Container lumina_prontuario_integracao-db-1 Waiting 
+ Container lumina_prontuario_integracao-db-1 Healthy 
+ Container lumina_prontuario_integracao-api-1 Starting 
+ Container lumina_prontuario_integracao-api-1 Started 
+ Container lumina_prontuario_integracao-db-1 Waiting 
+ Container lumina_prontuario_integracao-api-1 Waiting 
+ Container lumina_prontuario_integracao-db-1 Healthy 
+ Container lumina_prontuario_integracao-api-1 Healthy 
+NAME                                 IMAGE                                                                     COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+lumina_prontuario_integracao-api-1   sha256:0d306968c4f3616380980722921dbfe99e5bbf18e724934a93fae486f0a8581d   "uvicorn app.main:ap…"   api       3 minutes ago   Up 5 seconds (healthy)   127.0.0.1:18100->8000/tcp
+lumina_prontuario_integracao-db-1    postgres:16-alpine                                                        "docker-entrypoint.s…"   db        3 minutes ago   Up 8 seconds (healthy)   127.0.0.1:55450->5432/tcp
+HTTP /health: 200
+HTTP /openapi.json: 200
+API clinica: http://localhost:18100/docs

@@ -1,0 +1,38 @@
+{
+  "unchanged": true,
+  "healthy": true,
+  "metadata": [
+    {
+      "id": "fe1ed78c7d7b278fe41d227b3b9cd7efb12a233da20068282ca0022b7f835ad9",
+      "image": "sha256:47f11d1b5b8c781232f154f587cf4bc852d797ac4d4bcb4178a4e6e677645e30",
+      "name": "/lumina_pr18_tarcisio-api-1",
+      "started_at": "2026-11-26T22:19:28.364050436Z",
+      "mounts": []
+    },
+    {
+      "id": "719ddf67a11c267cd0f525013113912bfe0ef628446cd17e099cd0abd7b36d3d",
+      "image": "sha256:5fb3729edfacd4ad97fba1bb0d7de6993333de3f2b93b500ff2582f926ebe6a8",
+      "name": "/lumina_pr18_tarcisio-frontend-1",
+      "started_at": "2026-11-26T22:19:34.172138412Z",
+      "mounts": []
+    },
+    {
+      "id": "721644b7b567fe5118d0966c86894c8b76a8cfffcb363aadb65708b5738e0cf7",
+      "image": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+      "name": "/lumina_pr18_tarcisio-db-1",
+      "started_at": "2026-11-26T08:04:30.255209195Z",
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "lumina_pr18_tarcisio_postgres_data",
+          "Source": "/var/lib/docker/volumes/lumina_pr18_tarcisio_postgres_data/_data",
+          "Destination": "/var/lib/postgresql/data",
+          "Driver": "local",
+          "Mode": "rw",
+          "RW": true,
+          "Propagation": ""
+        }
+      ]
+    }
+  ]
+}

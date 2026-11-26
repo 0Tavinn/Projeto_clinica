@@ -1,0 +1,11 @@
+{
+  "original_approved_files": 31,
+  "all_original_files_unchanged": true,
+  "base_commit": "94e8e22d8a3eb0b704848bccdaf235037ebb5131",
+  "new_environment_files": {
+    "compose.integration.yml": "1edb9c8c98af3c5ab1302eda345e0a0c817c12459ee07968a502df7d5f368da0",
+    "integration.env.example": "b520cf06b176f51991b63257e78cba5949c42429bb44bff8a5917b0ec16fe5b3",
+    "scripts/integration.py": "f3ca2ed1fc51bf9b7a38febf0c329e99fa7ad7528d64932d2d233333ed25ffd1",
+    "INTEGRATION.md": "a9793ca02716b04fb8a7a677f3c768cbc7a3dbe1f033f64ec0ded9b02fdba72e"
+  }
+}
