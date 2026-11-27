@@ -1,6 +1,9 @@
 > **Entrega desta branch: API de prontuário corrigida.**
 > Para iniciar a API certa, siga [o ambiente de integração do prontuário](lumina_odonto/INTEGRATION.md).
-> O contrato para as interfaces está em [lumina_odonto/FRONTEND.md](lumina_odonto/FRONTEND.md).
+> As rotas para Otávio e Caio estão no [índice de integração das interfaces](lumina_odonto/docs/frontend/README.md).
+> Veja também o [contrato do painel administrativo de vínculos](lumina_odonto/docs/frontend/administrative-links.md)
+> e o [guia geral do prontuário](lumina_odonto/FRONTEND.md).
+> A Agenda possui um [README próprio de rotas e referências](backend/app/appointments/README.md).
 > Esta entrega executa `lumina_odonto/`; o serviço legado em `backend/` tem contratos diferentes.
 > A entrega da Agenda/OpenCL permanece na branch `feat/paralelismo-agendamento`.
 > Não há nova interface pronta ou merge das duas APIs nesta branch.
@@ -15,7 +18,12 @@ cadastros de pacientes.
 Este README descreve somente o que está disponível no repositório nesta etapa.
 Funcionalidades planejadas não devem ser tratadas como concluídas.
 
-## Estado atual — Sprint 4
+## Referência histórica — Sprint 4
+
+O conteúdo desta seção e das descrições da base abaixo registra a etapa da
+Sprint 4 da API legada. Não constitui inventário atual desta branch.
+Para os contratos e o ambiente da entrega de prontuário, use os guias
+indicados no início deste README; para a Agenda, use seu README próprio.
 
 A API já oferece autenticação, controle de perfis, cadastro de usuários da
 equipe e gestão de pacientes. Não há código de front-end versionado no

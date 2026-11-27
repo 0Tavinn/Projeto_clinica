@@ -2,6 +2,34 @@
 
 Backend orientado à integração com frontend, com documentação Swagger/OpenAPI em `/docs` e contrato JSON em `/openapi.json`.
 
+## Integração das interfaces
+
+- [Índice de rotas para Otávio e Caio](docs/frontend/README.md):
+  autenticação compartilhada, prontuários do dentista e vínculos do administrador.
+- [Prontuário e evoluções — Otávio](docs/frontend/records-and-evolutions.md):
+  corpos JSON, leitura, rascunhos, `version` e finalização.
+- [Painel administrativo de vínculos — Caio](docs/frontend/administrative-links.md):
+  concessão, revogação, reativação, retornos, erros e paginação.
+- [Pacientes clínicos e metadados de vínculos](docs/frontend/clinical-patients-and-links.md).
+- [Autenticação, busca e erros](docs/frontend/authentication-and-search.md).
+- [Ambiente isolado de integração](INTEGRATION.md):
+  preparação usada no repasse de 26/11/2026, portas e dados fictícios.
+- [Agenda da API legada](../backend/app/appointments/README.md):
+  outra API e outra entrega; não basta trocar a URL do cliente.
+
+O administrador usa `access_token`; o dentista obtém `clinical_token` para
+as rotas clínicas. `user_id` não é `dentist_id`. Nas listas administrativas
+de dentistas, pacientes e vínculos, não há `q`, busca textual por nome ou
+total global. Pesquisa e contagens locais devem considerar a paginação e
+informar o alcance dos dados carregados; busca administrativa no servidor
+exige contratação adicional.
+
+Para iniciar o candidato do repasse, siga `INTEGRATION.md`. A execução
+direta do pacote avulso descrita abaixo usa outra configuração de portas;
+não misture os dois ambientes nem aplique o SQL em banco existente.
+Estes atalhos organizam contratos existentes; não representam nova execução
+de QA, alteração de API ou aceite integrado.
+
 ## Execução local em ambiente **de desenvolvimento descartável**
 
 ```bash
