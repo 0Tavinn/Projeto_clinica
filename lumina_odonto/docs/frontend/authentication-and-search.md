@@ -1,6 +1,7 @@
 # Autenticação, pesquisa e erros — contrato atual
 
 [Voltar ao guia de Otávio](../../FRONTEND.md).
+[Sessão compartilhada com Caio, logout e bloqueio clínico](shared-session.md).
 Fonte: `app/main.py`, `app/crud.py` e `app/config.py`; conferir a imagem que
 estiver efetivamente executando, não apenas o nome da porta HTTP.
 Exemplos ilustrativos com dados fictícios, não capturas de execução.
@@ -16,12 +17,12 @@ POST `/api/v1/auth/login`, JSON (não formulário OAuth):
 Resposta 200:
 
 ```json
-{"access_token": "<token-de-acesso>", "token_type": "bearer"}
+{"access_token": "<token-de-acesso>", "token_type": "bearer", "expires_in": 1800}
 ```
 
 GET `/api/v1/auth/me` com `Authorization: Bearer <access_token>` retorna
 `id`, `clinic_id`, `full_name`, `email`, `role`, `is_active`. Não retorna
-`dentist_id`. O token de entrada é emitido por 30 minutos no código atual.
+`dentist_id`. O token de entrada é emitido por 30 minutos no código atual; `expires_in` informa esse prazo em segundos.
 Os valores de minutos expostos em configuração não são lidos nessa chamada:
 não prometer prazo configurável sem revisar a implementação.
 
@@ -40,12 +41,12 @@ POST `/api/v1/auth/clinical-unlock` com o token de acesso, JSON:
 Resposta 200:
 
 ```json
-{"clinical_token": "<token-clinico>", "token_type": "bearer"}
+{"clinical_token": "<token-clinico>", "token_type": "bearer", "expires_in": 900}
 ```
 
 Usar `Authorization: Bearer <clinical_token>` nas rotas clínicas. Não enviar
 as duas senhas em cada requisição nem trocar a chave esperada de resposta
-por `access_token`. O token clínico é emitido por 15 minutos no código atual.
+por `access_token`. O token clínico é emitido por 15 minutos no código atual; `expires_in` vale 900 segundos.
 
 É necessário perfil DENTIST e cadastro profissional. O token clínico não
 substitui o de acesso em `/auth/me` ou nas rotas administrativas; o inverso

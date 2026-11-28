@@ -3,3 +3,6 @@
 .venv
 __pycache__
 .pytest_cache
+
+# Configurações privadas não devem entrar no contexto de build.
+.env.integration

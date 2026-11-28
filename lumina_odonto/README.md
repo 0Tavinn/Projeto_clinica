@@ -8,6 +8,8 @@ Backend orientado à integração com frontend, com documentação Swagger/OpenA
   autenticação compartilhada, prontuários do dentista e vínculos do administrador.
 - [Prontuário e evoluções — Otávio](docs/frontend/records-and-evolutions.md):
   corpos JSON, leitura, rascunhos, `version` e finalização.
+- [Sessão compartilhada — Caio e Otávio](docs/frontend/shared-session.md):
+  segundo login temporário, validade dos tokens, logout e bloqueio clínico.
 - [Painel administrativo de vínculos — Caio](docs/frontend/administrative-links.md):
   concessão, revogação, reativação, retornos, erros e paginação.
 - [Pacientes clínicos e metadados de vínculos](docs/frontend/clinical-patients-and-links.md).
@@ -48,7 +50,7 @@ Acesse `http://localhost:8000/docs`. A configuração do Docker utiliza `db` com
 
 | Área | Operações | Autorização |
 |---|---|---|
-| Autenticação | `POST /auth/login`, `GET /auth/me`, `POST /auth/clinical-unlock`, `POST /auth/reset-clinical-password` | Sessão; desbloqueio clínico separado |
+| Autenticação | `POST /auth/login`, `GET /auth/me`, `POST /auth/clinical-unlock`, `POST /auth/logout`, `POST /auth/clinical-lock`, `POST /auth/reset-clinical-password` | Sessão; desbloqueio clínico separado |
 | Clínicas | `GET /clinics/me`, `PATCH /clinics/me` | Leitura autenticada; alteração admin |
 | Usuários | `GET /users`, `GET /users/{id}`, `POST /users`, `PATCH /users/{id}`, `DELETE /users/{id}` (desativação) | Admin |
 | Dentistas | `GET /dentists`, `GET /dentists/{id}`, `POST /dentists`, `PATCH /dentists/{id}` | Leitura autenticada; escrita admin |

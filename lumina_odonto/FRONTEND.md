@@ -1,5 +1,6 @@
 # Guia de integração do prontuário — Otávio
 
+[Contrato de sessão compartilhada para Caio e Otávio](docs/frontend/shared-session.md).
 Conferido em **26/11/2026**, branch `fix/prontuario-correcoes-qa`.
 Base documental 67068ac; novas leituras de vínculo implementadas localmente
 em 26/11/2026. Os pareceres históricos continuam vinculados às versões originais.

@@ -122,3 +122,11 @@ obtido e evidências. Testes históricos de backend não substituem esse aceite.
 
 Ainda há lacunas documentadas para recuperação clínica administrativa e impressão
 individual/identificação histórica do autor. Não anunciar essas telas como integradas.
+
+## Sessão para integrar Vínculos e Prontuários
+
+O [contrato compartilhado de sessão](docs/frontend/shared-session.md) descreve
+o segundo login temporário, tokens separados do legado, `expires_in`,
+POST `/api/v1/auth/logout` e POST `/api/v1/auth/clinical-lock`.
+Após atualizar a branch, reconstruir a API com `python3 scripts/integration.py up`.
+O seed é somente para banco novo; não reaplicar em banco existente.

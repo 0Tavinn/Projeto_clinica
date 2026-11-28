@@ -11,6 +11,8 @@ O painel é exclusivo de ADMINISTRATOR. Faça login JSON em
 `POST /api/v1/auth/login`, confira `GET /api/v1/auth/me` e use
 `Authorization: Bearer <access_token>` nas chamadas deste documento.
 O administrador não informa a senha clínica do dentista nem usa clinical_token.
+Login, expiração e encerramento seguem o [contrato de sessão compartilhada](shared-session.md),
+que Caio e Otávio devem utilizar na mesma aplicação.
 
 1. `GET /api/v1/dentists?limit=50&offset=0`: retorna array de dentistas da clínica,
    incluindo inativos. Campos úteis: `id`, `user_id`, `full_name`, `is_active`,

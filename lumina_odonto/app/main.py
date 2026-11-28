@@ -15,6 +15,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 from app.opencl_search import OpenCLSearch, OpenCLUnavailable, sequential_search, normalize
 from app.config import settings
+from app.auth_sessions import AccessTokenResponse, ClinicalTokenResponse
 
 DATABASE_URL = settings.database_url
 JWT_SECRET = settings.jwt_secret
@@ -216,21 +217,23 @@ def health():
         connection.execute(text('SELECT 1'))
     return {'status': 'ok', 'database': 'connected'}
 
-@app.post('/api/v1/auth/login')
+@app.post('/api/v1/auth/login', response_model=AccessTokenResponse)
 def login(body: Login, db: Session = Depends(db_dep)):
     user = one(db, 'SELECT * FROM users WHERE email=:email AND is_active', email=body.email)
     require(user and hasher.verify(body.password, user['password_hash']), 401, 'Credenciais inválidas')
     clinic = one(db, 'SELECT is_active FROM clinics WHERE id=:id', id=user['clinic_id'])
     require(clinic and clinic['is_active'], 403, 'Clínica inativa')
-    return {'access_token': token(user, 'access', 30), 'token_type': 'bearer'}
+    # Expõe o prazo já aplicado no JWT, sem alterar os 30 minutos do contrato.
+    return {'access_token': token(user, 'access', 30), 'token_type': 'bearer', 'expires_in': 1800}
 
-@app.post('/api/v1/auth/clinical-unlock')
+@app.post('/api/v1/auth/clinical-unlock', response_model=ClinicalTokenResponse)
 def unlock(body: Unlock, user=Depends(access_user), db: Session = Depends(db_dep)):
     require(user['role'] == 'DENTIST', 403, 'Apenas dentistas')
     dentist_for(db, user)
     require(user['clinical_password_hash'] and hasher.verify(body.password, user['clinical_password_hash']),
             401, 'Senha clínica inválida')
-    return {'clinical_token': token(user, 'clinical', 15), 'token_type': 'bearer'}
+    # A liberação clínica segue independente do token de acesso administrativo.
+    return {'clinical_token': token(user, 'clinical', 15), 'token_type': 'bearer', 'expires_in': 900}
 
 @app.post('/api/v1/patients', status_code=201)
 def create_patient(body: PatientIn, user=Depends(access_user), db: Session = Depends(db_dep)):
@@ -419,6 +422,10 @@ def reset_clinical(body: PasswordReset, user=Depends(access_user), db: Session =
 # Registro dos módulos REST adicionais (importação tardia evita ciclo de imports).
 from app.crud import install as install_crud
 install_crud(app)
+
+# Registra o encerramento antes de capturar as rotas na política de logs.
+from app.auth_sessions import install as install_auth_sessions
+install_auth_sessions(app)
 
 # As rotas clínicas precisam constar da captura de rotas estáticas do logger.
 from app.clinical_patients import install as install_clinical_patients

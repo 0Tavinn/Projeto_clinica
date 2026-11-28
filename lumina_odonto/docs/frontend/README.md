@@ -2,7 +2,8 @@
 
 Conferência documental: **26/11/2026**, branch `fix/prontuario-correcoes-qa`,
 contratos da API publicada em `5c6ac86204d8d76cae0240088a93f2f511e721b0`.
-Este índice organiza rotas existentes; não implementa nem modifica endpoints.
+Este índice organiza as rotas. A manutenção de sessão de 28/11/2026 acrescenta
+logout, bloqueio clínico e validade explícita, conforme o [guia compartilhado](shared-session.md).
 
 ## Qual API utilizar
 
@@ -20,9 +21,11 @@ a interface da Agenda em 18088 não foi convertida em interface desta API.
 
 | Método e rota | Envio | Retorno/uso |
 | --- | --- | --- |
-| POST `/api/v1/auth/login` | JSON com `email` e `password` | 200: `access_token`, `token_type`. Não é formulário OAuth. |
+| POST `/api/v1/auth/login` | JSON com `email` e `password` | 200: `access_token`, `token_type`, `expires_in`. Não é formulário OAuth. |
+| POST `/api/v1/auth/logout` | Bearer de acesso; sem corpo | 204: encerra todas as sessões desta conta na API nova. |
+| POST `/api/v1/auth/clinical-lock` | Bearer de acesso do dentista; sem corpo | 204: bloqueia liberações clínicas, preservando o login. |
 | GET `/api/v1/auth/me` | Bearer `access_token` | 200: usuário, clínica e perfil; `id` é do usuário, não do dentista. |
-| POST `/api/v1/auth/clinical-unlock` | Bearer de acesso e JSON `password` clínica | 200: `clinical_token`, `token_type`; exclusivo do dentista. |
+| POST `/api/v1/auth/clinical-unlock` | Bearer de acesso e JSON `password` clínica | 200: `clinical_token`, `token_type`, `expires_in`; exclusivo do dentista. |
 
 Enviar `Authorization: Bearer <token>` e, nas escritas, `Content-Type: application/json`.
 O administrador usa seu **access_token** no painel de vínculos. O dentista usa
@@ -93,4 +96,5 @@ erros, pesquisa/paginação e limites, está em [administrative-links.md](admini
   permanecem lacunas documentadas; estes guias não as declaram implementadas.
 - A entrega da Agenda/OpenCL está em outra branch. Seus contratos de login,
   conclusão, cancelamento, filtros e respostas exigem harmonização futura.
-- Esta tarefa é documental: exemplos são ilustrativos, não novas execuções de QA.
+- Os exemplos são ilustrativos; os resultados da manutenção de sessão são registrados
+  em relatório próprio, sem substituir o aceite integrado da interface.
