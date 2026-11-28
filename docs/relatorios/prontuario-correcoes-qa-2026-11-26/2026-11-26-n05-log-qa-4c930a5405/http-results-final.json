@@ -1,0 +1,287 @@
+[
+  {
+    "id": "F01-authentication",
+    "expected": "login e desbloqueio normais200",
+    "obtained": {
+      "login_http": 200,
+      "unlock_http": 200
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F02-create-fixture",
+    "expected": "201;autor servidor;versao1",
+    "obtained": {
+      "http": 201,
+      "version": 1
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F03-valid-cpu",
+    "expected": "200;resultado autorizado;motor efetivo esperado",
+    "obtained": {
+      "http": 200,
+      "engine": "cpu",
+      "authorized_content_present": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F03-valid-auto",
+    "expected": "200;resultado autorizado;motor efetivo esperado",
+    "obtained": {
+      "http": 200,
+      "engine": "opencl",
+      "authorized_content_present": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F03-valid-opencl",
+    "expected": "200;resultado autorizado;motor efetivo esperado",
+    "obtained": {
+      "http": 200,
+      "engine": "opencl",
+      "authorized_content_present": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F04-original-422",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F05-unicode-encoded",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F06-double-encoded",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F07-sensitive-param-name",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F08-invalid-patient",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F09-invalid-engine",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F10-clinical-body-422",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F11-password-body-422",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F12-no-auth",
+    "expected": "401;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 401,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F13-invalid-token",
+    "expected": "401;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 401,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F14-no-link",
+    "expected": "403;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 403,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F15-unknown-route",
+    "expected": "404;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 404,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F16-unknown-unicode",
+    "expected": "404;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 404,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F17-parametrized-invalid",
+    "expected": "422;sem eco de corpo,query,nomes,headers ou tokens",
+    "obtained": {
+      "http": 422,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F18-parametrized-authorized",
+    "expected": "200;log usa template sem valor do id",
+    "obtained": {
+      "http": 200,
+      "template_expected": "/api/v1/patients/{patient_id}/record"
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F19-real-sql-error",
+    "expected": "500 sem eco;rollback;evento operacional no stderr",
+    "obtained": {
+      "http": 500,
+      "no_echo": true,
+      "evolutions_count_unchanged": true,
+      "error": "real PostgreSQL trigger; only scratch DB"
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F20-http-1.0",
+    "expected": "200;versao de request preservada em access log",
+    "obtained": {
+      "http": 200,
+      "request_http_version": "1.0",
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F20-http-1.1",
+    "expected": "200;versao de request preservada em access log",
+    "obtained": {
+      "http": 200,
+      "request_http_version": "1.1",
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F21-malformed-http",
+    "expected": "400;evento sem entrada enviada",
+    "obtained": {
+      "http": 400,
+      "no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "http-results.json; probe-execution.log",
+    "environment": "API original + PostgreSQL16.16"
+  },
+  {
+    "id": "F22-recognized-trace",
+    "expected": "TRACE aceito pelo parser;405;log OTHER /health;sem eco",
+    "obtained": {
+      "id": "F22-recognized-trace",
+      "http": 405,
+      "no_echo": true,
+      "other_method_logged": true,
+      "log_no_echo": true
+    },
+    "status": "aprovado",
+    "evidence": "method-result.json; method-api-sanitized.log",
+    "environment": "API original adicional;sem banco;HTTP405 antes de dependencias"
+  }
+]

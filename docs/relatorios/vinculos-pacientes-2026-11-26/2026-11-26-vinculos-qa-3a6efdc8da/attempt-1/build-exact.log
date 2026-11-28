@@ -1,0 +1,55 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 372B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 1.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 82B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 65.07kB done
+#5 DONE 0.0s
+
+#6 [1/7] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#6 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#6 DONE 0.0s
+
+#7 [4/7] COPY pyproject.toml .
+#7 CACHED
+
+#8 [3/7] RUN apt-get update && apt-get install -y --no-install-recommends ocl-icd-libopencl1 pocl-opencl-icd && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [2/7] WORKDIR /app
+#9 CACHED
+
+#10 [5/7] RUN pip install --no-cache-dir ".[dev]"
+#10 CACHED
+
+#11 [6/7] COPY app/ app/
+#11 DONE 0.0s
+
+#12 [7/7] COPY tests/ tests/
+#12 DONE 0.1s
+
+#13 exporting to image
+#13 exporting layers 0.1s done
+#13 exporting manifest sha256:c80283439cab72b847bba94d95837f43931cc878b1f33ca1e0cac0355e052763 0.0s done
+#13 exporting config sha256:04e0f0bfdd105783bf3cf16154eff124b8321c74842b82f44cfc37905dab24f1 0.0s done
+#13 exporting attestation manifest sha256:5530900ae232dde75d3b9e4eb70a48f1eff54550eb635e8455266f687f37e9de 0.0s done
+#13 exporting manifest list sha256:520d5707bef4391369a00ab8cace6f81d30ee354967b98fff038f59dbda551b2 0.0s done
+#13 naming to docker.io/library/lumina-links-qa-3a6efdc8da:source done
+#13 unpacking to docker.io/library/lumina-links-qa-3a6efdc8da:source
+#13 unpacking to docker.io/library/lumina-links-qa-3a6efdc8da:source 5.4s done
+#13 DONE 5.6s

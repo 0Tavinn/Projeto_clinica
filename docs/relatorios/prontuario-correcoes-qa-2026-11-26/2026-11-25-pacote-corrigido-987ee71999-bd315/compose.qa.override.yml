@@ -1,0 +1,14 @@
+services:
+  api:
+    env_file: !override
+      - /home/paulinho/Work/lumina-qa-evidence/2026-11-25-pacote-corrigido-987ee71999-bd315/.qa-ephemeral.env
+    image: lumina-corrected-qa-6ba8c93e83:source
+    ports: !reset []
+  db:
+    ports: !reset []
+volumes:
+  pgdata:
+    name: lumina-corrected-qa-6ba8c93e83-data
+networks:
+  default:
+    name: lumina-corrected-qa-6ba8c93e83-net

@@ -1,0 +1,3 @@
+QA_CASE {"id": "N04-preserve-clinical-history", "expected": "revogacao administrativa preserva prontuario e evolucoes;um evento;leitura403", "obtained": {"http": 200, "record_equal": true, "evolutions_equal": true, "evolutions_count": 3, "event_increment": 1, "revoked_read_http": 403, "reactivated_http": 200}, "status": "aprovado"}
+QA_CASE {"id": "REG-status-durable-link", "expected": "ausencia/conclusao preservam vinculo persistente", "obtained": {"script_exception_type": "KeyError"}, "status": "bloqueado"}
+QA_CASE {"id": "N04-cross-clinic-admin", "expected": "admin de outra clinica nao concede/revoga/reativa", "obtained": {"http": [404, 404, 404], "link_unchanged": true}, "status": "aprovado"}

@@ -95,6 +95,9 @@ def _make_user(
         clinic_id=clinic.id,
         email=email,
         password_hash=hash_password(password),
+        clinical_password_hash=(
+            hash_password("Prontuario@123") if role is Role.DENTIST else None
+        ),
         full_name=email.split("@")[0].title(),
         cpf=cpf,
         phone="81999990000",

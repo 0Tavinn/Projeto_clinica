@@ -1,0 +1,232 @@
+{
+  "base_commit": "0352db597452e4c68cd625118de4f5244b857dd3",
+  "restart_changed_port": true,
+  "http_cases": [
+    {
+      "case": "health",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "cors_/api/v1/auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "cors_/api/v1/auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "cors_/api/v1/auth/clinical-lock",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "cors_/api/v1/auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "cors_/api/v1/auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "cors_/api/v1/auth/clinical-lock",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "login_admin",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "login_dentista",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "create_reception_fixture",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "case": "reception_login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "reception_cannot_manage_links",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "case": "reception_cannot_lock_clinical",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "case": "reception_logout",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "case": "reception_logout_effective",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "case": "clinical_unlock",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "admin_links",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "dentist_list",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "token_kind_separation",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "case": "clinical_lock",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "case": "login_survives_clinical_lock",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "old_clinical_token_revoked",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "case": "clinical_unlock",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "logout",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "case": "old_login_revoked",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "case": "old_unlock_revoked",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "case": "logout_persists_after_restart",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "case": "other_user_survives_restart",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "login_dentista",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "new_login_after_logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "clinical_unlock",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "clinical_after_new_login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "admin_patient_selection",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "admin_dentist_selection",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "link_GRANTED",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "link_REVOKED",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "link_REACTIVATED",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "case": "logout_admin",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "case": "admin_list_rejects_revoked_session",
+      "status": 401,
+      "expected": 401
+    }
+  ],
+  "http_passed": 39,
+  "postgres": "16.15",
+  "result": "passed",
+  "containers_preserved": true,
+  "cleanup_complete": true,
+  "source_hashes": {
+    "app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app/auth_sessions.py": "5ea59212e164a303e7485b5ffbd54325b32514855795953a5246df84f1f123a5",
+    "app/clinical_patients.py": "6b5ae9e6deacdcc439428cb74aa689a9810e8707ee351ba65ec50502dc7699aa",
+    "app/clinical_patients_repository.py": "9954462cb29e4657c4ebd207e078d2e1445baa8df9f5690db38f27aa3ab2f5bb",
+    "app/clinical_patients_schemas.py": "02dc6d1b9c3cf7b891ef5839aff0c23bdafa1f31704b8a1a30c997a04916ef27",
+    "app/clinical_patients_service.py": "52b2de0a70f08482ec3187dca765f101957caef47232c7e88e5241b169caaf55",
+    "app/config.py": "a2bd80e6e11300b80dad4f4af8e0c6d8578648c14ee444ffe49c26046617788c",
+    "app/crud.py": "8991f7b6b1d2befbabe2876f71f9d7e13a1ccf868a77e15ae1a6e14fd3aca1a4",
+    "app/logging_policy.py": "2c20ccadb709bbf7b7d3a26ada47838b5fe4cd675e3e0ebc51b9bdb75bd43cc2",
+    "app/main.py": "ab5b900e8fbf83b58ccd8856d1aa4a587e73b9487eee5b13f12b9c14e3f5e17f",
+    "app/opencl_search.py": "fcfb8d4d409f46c2f0fa2d2ecb7b907213075bcd3f286373225d3e3212fbc107",
+    "tests/sessions/__init__.py": "c9a951c18099f0bbed181c39cac04d20aa44ae5106c591fcdee8b6362c6efcce",
+    "tests/sessions/conftest.py": "0473f0cf76f39b132a84c25dc995d92c8fcce65ecaaeca6b95f336b6ef89ee44",
+    "tests/sessions/support.py": "4d76d40bdcfa4c1884d9f7208f0a5ccc02ed174c6a9e338fd58cb209ffa29eaf",
+    "tests/sessions/test_concurrency.py": "4c6f182f1b250213a90860c99ef7081720039329bad0ad78228ebaee1267f874",
+    "tests/sessions/test_http.py": "fd8525b9af1dbc00f9191e4425d44e653d277e676f3e84d8e355cf0c05ac9d0a",
+    "tests/test_auth_sessions.py": "3399216cab0fe4b13469b7cab27798c24ff9a6ebef07bae57e3ff6b6fd3539bb",
+    "tests/test_clinical_patients.py": "29d83ec64f528770885f2b246cd21091f681db81414b50672c181569fda4dea8",
+    "tests/test_logging_policy.py": "36687b7b1c3ee64c2d660970975d45fa3a30b9b5ff4a5de4f07c36eb0a3a72fd",
+    "tests/test_opencl.py": "aa267c3b0973e6ae2091ebe8b6a8e2db9aa0df92f2da15c8f6ff3e38f3912dd6",
+    "tests/test_qa_contract.py": "f4cdf07661e880bb872bde6a39e8af8096d153866ca9bbdb6fe6176655d6eb05",
+    "scripts/integration.py": "f3ca2ed1fc51bf9b7a38febf0c329e99fa7ad7528d64932d2d233333ed25ffd1",
+    "scripts/session_probe.py": "9842d5592801a671a7c1ee7b01cacd69af847fb6bc35f377bc229285c62144b3",
+    "scripts/verify_sessions.py": "3b3ab2428d2503c70a254a2b765a904a9de3a79b21efdb33773077c2944effa2"
+  }
+}

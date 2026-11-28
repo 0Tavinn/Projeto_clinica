@@ -1,0 +1,177 @@
+--- original/README.md
++++ candidate/README.md
+@@ -64,3 +64,28 @@
+ ## Reteste
+ 
+ Execute `docker compose config` após copiar `.env.example`. Para testes: `docker compose run --rm api python -m pytest -q` (imagem inclui dependências de teste). Consulte `QA_CORRECOES.md`.
++
++## Política de logs da API — correção N05-LOG
++
++Ao importar app.main:app, a API instala a política de app/logging_policy.py.
++Ela se aplica ao CMD original da imagem e à execução uvicorn app.main:app,
++sem exigir configuração externa para remover querystrings.
++
++O access log mantém método, rota estática e status HTTP. Descarta valores
++da querystring, parâmetros de caminho, endereço do cliente e mensagens
++originais. Uma rota desconhecida aparece como [unmatched]. O log do servidor
++mantém eventos operacionais e o nível de gravidade, mas omite mensagens
++arbitrárias e traceback, que podem carregar termos de busca ou dados SQL.
++Isso reduz o detalhe disponível no stdout/stderr; investigar falhas exige
++reprodução controlada com dados fictícios, sem habilitar logs brutos em
++ambiente clínico.
++
++Nenhuma entrada clínica, corpo, token ou senha é adicionada aos logs por
++esta política. O contrato da busca e as respostas autorizadas permanecem
++iguais. Uma resposta200 pode conter conteúdo clínico autorizado.
++Os handlers422 continuam sanitizando erros de entrada.
++
++A política cobre os loggers Uvicorn configurados no pacote. Proxy,
++coletores externos, futuras rotas que imprimam dados e configurações de
++logging externas posteriores à importação exigem revisão própria.
++Não habilite SQL echo, dump de headers/corpos ou logs brutos da URL.
+--- original/app/logging_policy.py
++++ candidate/app/logging_policy.py
+@@ -0,0 +1,87 @@
++"""Política de logs Uvicorn sem valores clínicos de URLs ou exceções."""
++
++import logging
++
++_METHODS = {"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"}
++_SERVER_EVENTS = {
++    "Started server process [%d]": "process_started",
++    "Waiting for application startup.": "startup_waiting",
++    "Application startup complete.": "startup_complete",
++    "Shutting down": "shutdown_started",
++    "Waiting for application shutdown.": "shutdown_waiting",
++    "Application shutdown complete.": "shutdown_complete",
++    "Finished server process [%d]": "process_finished",
++    "Invalid HTTP request received.": "invalid_http_request",
++}
++
++
++class ClinicalAccessFilter(logging.Filter):
++    """Reconstrói o registro antes do formatter, descartando msg/args originais.
++
++    Usa a rota estática da aplicação, sem querystring nem valores do caminho.
++    Rotas inexistentes ficam sem o caminho arbitrário enviado pelo cliente.
++    Os cinco argumentos preservam a compatibilidade com AccessFormatter.
++    """
++
++    def __init__(self, routes):
++        super().__init__()
++        self.routes = routes
++
++    def filter(self, record):
++        method, path, status, version = "OTHER", "[unmatched]", 500, "unknown"
++        if isinstance(record.args, tuple) and len(record.args) == 5:
++            _, supplied_method, supplied_path, supplied_version, supplied_status = record.args
++            if supplied_version in ("1.0", "1.1"):
++                version = supplied_version
++            if supplied_method in _METHODS:
++                method = supplied_method
++            if isinstance(supplied_status, int) and 100 <= supplied_status <= 599:
++                status = supplied_status
++            if isinstance(supplied_path, str):
++                supplied_path = supplied_path.split("?", 1)[0]
++                for route in self.routes:
++                    if route.path_regex.fullmatch(supplied_path):
++                        path = route.path
++                        break
++        record.msg = '%s - "%s %s HTTP/%s" %d'
++        record.args = ("-", method, path, version, status)
++        record.exc_info = record.exc_text = record.stack_info = None
++        record.__dict__.pop("color_message", None)
++        return True
++
++
++class ClinicalServerFilter(logging.Filter):
++    """Mantém eventos operacionais e impede reintroduzir entradas por traceback.
++
++    Exceções podem carregar parâmetros SQL e texto clínico. O log registra
++    somente o evento e o nível; a investigação detalhada exige ensaio seguro.
++    """
++
++    def filter(self, record):
++        if record.exc_info or record.levelno >= logging.ERROR:
++            event = "server_error"
++        else:
++            event = _SERVER_EVENTS.get(record.msg, "server_event") if isinstance(record.msg, str) else "server_event"
++        record.msg = "server_event=%s"
++        record.args = (event,)
++        record.exc_info = record.exc_text = record.stack_info = None
++        record.__dict__.pop("color_message", None)
++        return True
++
++
++def install_logging_policy(app):
++    """Aplica a política também ao CMD original e ao uvicorn app.main:app.
++
++    Uvicorn configura seus loggers antes de importar a aplicação. Os filtros
++    atuam antes dos formatters e não dependem de flags externas do ensaio.
++    """
++    routes = tuple(route for route in app.routes if hasattr(route, "path_regex"))
++    for name, policy in (
++        ("uvicorn.access", ClinicalAccessFilter(routes)),
++        ("uvicorn.error", ClinicalServerFilter()),
++        ("uvicorn", ClinicalServerFilter()),
++    ):
++        logger = logging.getLogger(name)
++        logger.filters[:] = [item for item in logger.filters
++                             if not isinstance(item, type(policy))]
++        logger.addFilter(policy)
+--- original/app/main.py
++++ candidate/app/main.py
+@@ -419,3 +419,7 @@
+ # Registro dos módulos REST adicionais (importação tardia evita ciclo de imports).
+ from app.crud import install as install_crud
+ install_crud(app)
++
++# A política é instalada após registrar as rotas e antes de receber requisições.
++from app.logging_policy import install_logging_policy
++install_logging_policy(app)
+--- original/tests/test_logging_policy.py
++++ candidate/tests/test_logging_policy.py
+@@ -0,0 +1,43 @@
++"""Regressões de privacidade para registros operacionais e exceções."""
++
++import logging
++import os
++import pytest
++
++os.environ.setdefault("DATABASE_URL", "postgresql+psycopg://qa:qa@localhost/qa")
++os.environ.setdefault("JWT_SECRET", "qa-only-not-for-production-0000000000")
++from app.main import app
++
++
++@pytest.mark.parametrize("name", ["uvicorn", "uvicorn.error"])
++def test_exception_and_message_are_not_rendered(name, caplog):
++    logger = logging.getLogger(name)
++    sentinel = "PRIVATE_LOG_SENTINEL"
++    with caplog.at_level(logging.INFO):
++        try:
++            raise RuntimeError(sentinel)
++        except RuntimeError:
++            logger.error("request_url=%s", sentinel, exc_info=True)
++        logger.warning("unexpected=%s", sentinel, extra={"color_message": sentinel})
++    assert sentinel not in caplog.text
++    assert "server_error" in caplog.text
++    assert all(record.exc_info is None and record.exc_text is None
++               and record.stack_info is None for record in caplog.records)
++
++
++@pytest.mark.parametrize("version", ["1.0", "1.1"])
++@pytest.mark.parametrize("request_path,route", [
++    ("/api/v1/clinical/search?q=PRIVATE_LOG_SENTINEL", "/api/v1/clinical/search"),
++    ("/api/v1/patients/123/record?q=PRIVATE_LOG_SENTINEL", "/api/v1/patients/{patient_id}/record"),
++    ("/unknown/PRIVATE_LOG_SENTINEL?q=PRIVATE_LOG_SENTINEL", "[unmatched]"),
++])
++def test_access_keeps_operational_fields_without_values(request_path, route, version, caplog):
++    with caplog.at_level(logging.INFO):
++        logging.getLogger("uvicorn.access").info(
++            '%s - "%s %s HTTP/%s" %d',
++            "PRIVATE_LOG_SENTINEL", "GET", request_path, version, 422,
++        )
++    assert "PRIVATE_LOG_SENTINEL" not in caplog.text
++    assert route in caplog.text
++    assert "GET" in caplog.text and "422" in caplog.text
++    assert "HTTP/"+version in caplog.text

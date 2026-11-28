@@ -1,0 +1,38 @@
+{
+  "groups": {
+    "contrato": {
+      "aprovado": 1
+    },
+    "fornecido": {
+      "aprovado": 32
+    },
+    "independente": {
+      "aprovado": 58
+    },
+    "logs-transversal": {
+      "aprovado": 20
+    }
+  },
+  "independent_categories": {
+    "L": 12,
+    "P": 14,
+    "A": 11,
+    "M": 13,
+    "C": 4,
+    "N": 4
+  },
+  "provided_by_module": {
+    "tests.test_clinical_patients": 2,
+    "tests.test_logging_policy": 12,
+    "tests.test_opencl": 5,
+    "tests.test_qa_contract": 13
+  },
+  "count_method": "58 objetivos independentes;20 assercoes sobre os mesmos logs;1 contrato;32 testes fornecidos separados. Nao somar como cenarios distintos. Tentativaabortada excluida;Backend66 eQA74 antigos nao somados.",
+  "product_failures": 0,
+  "out_of_scope_not_executed": [
+    "frontend/navegador",
+    "migracao/upgrade",
+    "implantacao diaria",
+    "regressao completa da matriz antiga74"
+  ]
+}

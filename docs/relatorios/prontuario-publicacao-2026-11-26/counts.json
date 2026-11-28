@@ -1,0 +1,8 @@
+{
+  "users": 2,
+  "patients": 3,
+  "records": 3,
+  "evolutions": 2,
+  "appointments": 2,
+  "postgres": "16.15"
+}

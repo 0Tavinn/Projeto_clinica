@@ -1,0 +1,30 @@
+[
+  {
+    "kind": "network",
+    "name": "lumina-corrected-qa-6ba8c93e83-net"
+  },
+  {
+    "kind": "volume",
+    "name": "lumina-corrected-qa-6ba8c93e83-data"
+  },
+  {
+    "kind": "container",
+    "name": "lumina-corrected-qa-6ba8c93e83-db"
+  },
+  {
+    "kind": "container",
+    "name": "lumina-corrected-qa-6ba8c93e83-api"
+  },
+  {
+    "kind": "container",
+    "name": "lumina-corrected-qa-6ba8c93e83-provided-tests"
+  },
+  {
+    "kind": "container",
+    "name": "lumina-corrected-qa-6ba8c93e83-driver"
+  },
+  {
+    "kind": "container",
+    "name": "lumina-corrected-qa-6ba8c93e83-instrumented"
+  }
+]

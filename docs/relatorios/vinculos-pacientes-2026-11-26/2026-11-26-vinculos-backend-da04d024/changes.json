@@ -1,0 +1,23 @@
+{
+  "modified": [
+    "lumina_odonto/README.md",
+    "lumina_odonto/FRONTEND.md",
+    "lumina_odonto/app/crud.py",
+    "lumina_odonto/app/main.py",
+    "lumina_odonto/app/logging_policy.py",
+    "lumina_odonto/tests/test_logging_policy.py",
+    "lumina_odonto/docs/frontend/authentication-and-search.md",
+    "lumina_odonto/docs/frontend/records-and-evolutions.md"
+  ],
+  "added": [
+    "lumina_odonto/app/clinical_patients.py",
+    "lumina_odonto/app/clinical_patients_schemas.py",
+    "lumina_odonto/app/clinical_patients_repository.py",
+    "lumina_odonto/app/clinical_patients_service.py",
+    "lumina_odonto/tests/test_clinical_patients.py",
+    "lumina_odonto/docs/frontend/clinical-patients-and-links.md"
+  ],
+  "other_modified": [
+    "docs/relatorios/prontuario-correcoes-qa-2026-11-26/README.md"
+  ]
+}

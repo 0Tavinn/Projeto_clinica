@@ -22,9 +22,11 @@ import {
   ApiError,
   appointmentsApi,
   authApi,
+  clinicalAccessApi,
   dentistsApi,
   getErrorMessage,
   patientsApi,
+  recordsApi,
   usersApi,
 } from './api'
 import type {
@@ -37,6 +39,8 @@ import type {
   Dentist,
   Patient,
   PatientPayload,
+  ClinicalEvolution,
+  MedicalRecord,
   UserCreatePayload,
   UserRead,
   UserRole,
@@ -52,6 +56,7 @@ type View =
   | 'appointment-form'
   | 'appointment'
   | 'record'
+  | 'records'
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 type Tone = 'blue' | 'green' | 'gray' | 'red' | 'amber'
 type Toast = { message: string; tone: 'success' | 'error' }
@@ -287,6 +292,9 @@ export default function App() {
   const [appointmentFilters, setAppointmentFilters] = useState<AppointmentFilters>(defaultAppointmentFilters)
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
   const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null)
+  const [medicalRecord, setMedicalRecord] = useState<MedicalRecord | null>(null)
+  const [evolutions, setEvolutions] = useState<ClinicalEvolution[]>([])
+  const [loadingRecord, setLoadingRecord] = useState(false)
   const [loadingAppointments, setLoadingAppointments] = useState(false)
   const [toast, setToast] = useState<Toast | null>(null)
   const [authError, setAuthError] = useState('')
@@ -297,6 +305,7 @@ export default function App() {
   const canManageAppointments = currentUser?.role === 'ADMINISTRATOR'
     || currentUser?.role === 'RECEPTIONIST'
   const inAgenda = view === 'agenda'
+  const isDentist = currentUser?.role === 'DENTIST'
 
   function notify(message: string, tone: Toast['tone'] = 'success') {
     setToast({ message, tone })
@@ -305,6 +314,7 @@ export default function App() {
 
   function endLocalSession(message?: string) {
     authApi.logout()
+    clinicalAccessApi.clear()
     setCurrentUser(null)
     setAuthStatus('unauthenticated')
     setPatients([])
@@ -316,6 +326,8 @@ export default function App() {
     setAppointmentFilters(defaultAppointmentFilters())
     setSelectedAppointment(null)
     setEditingAppointment(null)
+    setMedicalRecord(null)
+    setEvolutions([])
     setView('dashboard')
     if (message) setAuthError(message)
   }
@@ -490,9 +502,20 @@ export default function App() {
   async function openPatient(id: number) {
     try {
       setSelectedPatient(await patientsApi.get(id))
+      if (isDentist) {
+        setLoadingRecord(true)
+        const [record, patientEvolutions] = await Promise.all([
+          recordsApi.get(id),
+          recordsApi.listEvolutions(id),
+        ])
+        setMedicalRecord(record)
+        setEvolutions(patientEvolutions)
+      }
       setView('record')
     } catch (error) {
       handleRequestError(error)
+    } finally {
+      setLoadingRecord(false)
     }
   }
 
@@ -579,6 +602,19 @@ export default function App() {
     if (nextView === 'appointment-form' && !canManageAppointments) {
       notify('Seu perfil não pode cadastrar ou alterar consultas.', 'error')
       setView('agenda')
+      return
+    }
+    if (nextView === 'records' && !isDentist) {
+      notify('Somente dentistas podem acessar os prontuários.', 'error')
+      setView('dashboard')
+      return
+    }
+    if (nextView === 'records' && isDentist) {
+      const password = window.prompt('Confirmação adicional: informe a senha do prontuário.')
+      if (!password) return
+      clinicalAccessApi.unlock(password)
+        .then(() => setView('records'))
+        .catch((error) => handleRequestError(error))
       return
     }
     setView(nextView)
@@ -669,6 +705,13 @@ export default function App() {
             onChangeStatus={changeAppointmentStatus}
           />
         )}
+        {view === 'records' && isDentist && (
+          <DentistRecords
+            patients={patients}
+            loading={loadingPatients}
+            onOpen={openPatient}
+          />
+        )}
         {view === 'appointment-form' && canManageAppointments && (
           <AppointmentForm
             initial={editingAppointment}
@@ -692,7 +735,30 @@ export default function App() {
           />
         )}
         {view === 'record' && selectedPatient && (
-          <PatientDetails patient={selectedPatient} onBack={() => navigate('patients')} />
+          <PatientDetails
+            patient={selectedPatient}
+            record={medicalRecord}
+            evolutions={evolutions}
+            loadingRecord={loadingRecord}
+            isDentist={isDentist}
+            onBack={() => navigate(isDentist ? 'records' : 'patients')}
+            onRefresh={async () => {
+              if (!isDentist) return
+              setLoadingRecord(true)
+              try {
+                const [record, patientEvolutions] = await Promise.all([
+                  recordsApi.get(selectedPatient.id),
+                  recordsApi.listEvolutions(selectedPatient.id),
+                ])
+                setMedicalRecord(record)
+                setEvolutions(patientEvolutions)
+              } catch (error) {
+                handleRequestError(error)
+              } finally {
+                setLoadingRecord(false)
+              }
+            }}
+          />
         )}
       </main>
       {toast && (
@@ -740,7 +806,12 @@ function Sidebar({
     ...(user.role === 'ADMINISTRATOR'
       ? [{ id: 'users' as View, label: 'Equipe', icon: CircleUserRound }]
       : []),
-    { id: 'agenda' as View, label: 'Agenda', icon: CalendarDays },
+    ...(user.role === 'DENTIST'
+      ? [
+        { id: 'records' as View, label: 'Prontuários', icon: Activity },
+        { id: 'agenda' as View, label: 'Consultas', icon: CalendarDays },
+      ]
+      : [{ id: 'agenda' as View, label: 'Agenda', icon: CalendarDays }]),
   ]
 
   return (
@@ -750,6 +821,7 @@ function Sidebar({
         {items.map(({ id, label, icon: Icon }) => {
           const active = id === view
             || (id === 'patients' && ['patient-form', 'record'].includes(view))
+            || (id === 'records' && view === 'record')
             || (id === 'users' && view === 'user-form')
             || (id === 'agenda' && ['appointment-form', 'appointment'].includes(view))
           return (
@@ -1271,6 +1343,7 @@ type UserFormState = {
   phone: string
   email: string
   password: string
+  clinical_password: string
   role: UserRole
   cro_number: string
   cro_state: string
@@ -1290,6 +1363,7 @@ function UserForm({
     phone: '',
     email: '',
     password: '',
+    clinical_password: '',
     role: 'RECEPTIONIST',
     cro_number: '',
     cro_state: '',
@@ -1316,6 +1390,9 @@ function UserForm({
     if (!EMAIL_PATTERN.test(form.email.trim())) nextErrors.email = 'Informe um e-mail válido.'
     if (form.password.length < 8) nextErrors.password = 'A senha deve ter pelo menos 8 caracteres.'
     if (form.password.length > 128) nextErrors.password = 'A senha deve ter no máximo 128 caracteres.'
+    if (isDentist && form.clinical_password.length < 8) {
+      nextErrors.clinical_password = 'A senha do prontuário deve ter pelo menos 8 caracteres.'
+    }
     if (form.phone.length > 20) nextErrors.phone = 'Use no máximo 20 caracteres.'
     if (isDentist) {
       if (!form.cro_number.trim()) nextErrors.cro_number = 'Informe o número do CRO.'
@@ -1333,6 +1410,7 @@ function UserForm({
       phone: form.phone.trim() || null,
       email: form.email.trim().toLowerCase(),
       password: form.password,
+      ...(isDentist ? { clinical_password: form.clinical_password } : {}),
       role: form.role,
       ...(isDentist
         ? {
@@ -1392,6 +1470,18 @@ function UserForm({
               maxLength={128}
             />
           </FormField>
+          {isDentist && (
+            <FormField label="Senha do prontuário" error={errors.clinical_password}>
+              <input
+                type="password"
+                value={form.clinical_password}
+                onChange={(event) => update('clinical_password', event.target.value)}
+                autoComplete="new-password"
+                minLength={8}
+                maxLength={128}
+              />
+            </FormField>
+          )}
           <FormField label="Perfil" error={errors.role}>
             <select value={form.role} onChange={(event) => update('role', event.target.value as UserRole)}>
               <option value="ADMINISTRATOR">Administrador</option>
@@ -1462,10 +1552,126 @@ function FormActions({
   )
 }
 
-function PatientDetails({ patient, onBack }: { patient: Patient; onBack: () => void }) {
+function DentistRecords({
+  patients,
+  loading,
+  onOpen,
+}: {
+  patients: Patient[]
+  loading: boolean
+  onOpen: (id: number) => Promise<void>
+}) {
+  const [query, setQuery] = useState('')
+  const filtered = useMemo(() => {
+    const normalized = query.trim().toLowerCase()
+    if (!normalized) return patients
+    return patients.filter((patient) => (
+      `${patient.full_name} ${patient.medical_record_number} ${patient.cpf}`.toLowerCase().includes(normalized)
+    ))
+  }, [patients, query])
+
   return (
     <>
-      <button className="back-link" onClick={onBack}><ArrowLeft size={18} /> Pacientes</button>
+      <PageHeader
+        title="Prontuários"
+        subtitle="Acesse os dados clínicos e as evoluções dos seus pacientes."
+      />
+      <div className="toolbar">
+        <label className="search-field">
+          <Search size={19} />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Pesquisar por nome, prontuário ou CPF"
+          />
+        </label>
+        <span className="result-count">{loading ? 'Carregando…' : `${filtered.length} pacientes`}</span>
+      </div>
+      <section className="panel table-panel">
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Paciente</th><th>Prontuário</th><th>Contato</th><th>Ação</th></tr></thead>
+            <tbody>
+              {!loading && filtered.map((patient) => (
+                <tr key={patient.id}>
+                  <td className="person-cell">
+                    <span className="avatar small">{initials(patient.full_name)}</span>
+                    <b>{patient.full_name}</b>
+                  </td>
+                  <td>{patient.medical_record_number}</td>
+                  <td>{patient.phone ? formatPhone(patient.phone) : 'Não informado'}</td>
+                  <td><Button variant="secondary" onClick={() => void onOpen(patient.id)}>Abrir prontuário</Button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {loading && <EmptyState message="Carregando prontuários…" />}
+          {!loading && filtered.length === 0 && <EmptyState message="Nenhum paciente encontrado." />}
+        </div>
+      </section>
+    </>
+  )
+}
+
+function PatientDetails({
+  patient,
+  record,
+  evolutions,
+  loadingRecord,
+  isDentist,
+  onBack,
+  onRefresh,
+}: {
+  patient: Patient
+  record?: MedicalRecord | null
+  evolutions?: ClinicalEvolution[]
+  loadingRecord?: boolean
+  isDentist?: boolean
+  onBack: () => void
+  onRefresh?: () => Promise<void>
+}) {
+  const [description, setDescription] = useState('')
+  const [procedure, setProcedure] = useState('')
+  const [notes, setNotes] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [formError, setFormError] = useState('')
+
+  async function createEvolution(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!description.trim() || !onRefresh) return
+    setSaving(true)
+    setFormError('')
+    try {
+      await recordsApi.createDraft({
+        patient_id: patient.id,
+        description: description.trim(),
+        procedure_performed: procedure.trim() || null,
+        notes: notes.trim() || null,
+      })
+      setDescription('')
+      setProcedure('')
+      setNotes('')
+      await onRefresh()
+    } catch (error) {
+      setFormError(getErrorMessage(error))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function finalizeEvolution(id: number) {
+    if (!onRefresh) return
+    try {
+      await recordsApi.finalize(id)
+      await onRefresh()
+    } catch (error) {
+      setFormError(getErrorMessage(error))
+    }
+  }
+
+  return (
+    <>
+      <button className="back-link" onClick={onBack}><ArrowLeft size={18} /> {isDentist ? 'Prontuários' : 'Pacientes'}</button>
       <section className="patient-hero panel">
         <span className="avatar hero-avatar">{initials(patient.full_name)}</span>
         <div>
@@ -1482,8 +1688,60 @@ function PatientDetails({ patient, onBack }: { patient: Patient; onBack: () => v
         <p>Data de nascimento: {patient.birth_date}</p>
         <p>Endereço: {patient.address ?? 'Não informado'}</p>
         <hr />
-        <p>Prontuário clínico e evoluções permanecem fora do escopo desta Sprint.</p>
+        {!isDentist && <p>Prontuário clínico e evoluções disponíveis para o perfil dentista.</p>}
       </section>
+      {isDentist && (
+        <section className="panel record-panel">
+          <div className="section-title">
+            <span className="section-number"><Activity size={16} /></span>
+            <div>
+              <h2>Prontuário clínico</h2>
+              <p>{loadingRecord ? 'Sincronizando dados clínicos…' : `Aberto em ${record?.opened_at?.slice(0, 10) ?? '—'}`}</p>
+            </div>
+          </div>
+          <p className="record-notes"><b>Observações gerais:</b> {record?.general_notes ?? 'Nenhuma observação registrada.'}</p>
+          <div className="evolution-list">
+            {(evolutions ?? []).map((evolution) => (
+              <article className="evolution-card" key={evolution.id}>
+                <div className="panel-heading">
+                  <div>
+                    <span className="eyebrow">{evolution.status === 'FINALIZED' ? 'FINALIZADA' : 'RASCUNHO'}</span>
+                    <h3>{evolution.description}</h3>
+                  </div>
+                  {evolution.status === 'DRAFT' && (
+                    <Button variant="secondary" onClick={() => void finalizeEvolution(evolution.id)}>Finalizar</Button>
+                  )}
+                </div>
+                {evolution.procedure_performed && <p><b>Procedimento:</b> {evolution.procedure_performed}</p>}
+                {evolution.notes && <p><b>Observações:</b> {evolution.notes}</p>}
+                <small>{new Date(evolution.recorded_at).toLocaleString('pt-BR')}</small>
+              </article>
+            ))}
+            {!loadingRecord && !(evolutions ?? []).length && <EmptyState message="Nenhuma evolução registrada." />}
+          </div>
+          <form className="form-grid evolution-form" onSubmit={createEvolution}>
+            <div className="section-title form-subsection full-field">
+              <span className="section-number">+</span>
+              <div><h2>Nova evolução</h2><p>Registre um atendimento como rascunho e finalize após a revisão.</p></div>
+            </div>
+            <FormField label="Descrição clínica" className="full-field">
+              <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={4} required />
+            </FormField>
+            <FormField label="Procedimento realizado">
+              <textarea value={procedure} onChange={(event) => setProcedure(event.target.value)} rows={3} />
+            </FormField>
+            <FormField label="Observações">
+              <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} />
+            </FormField>
+            {formError && <p className="form-error full-field" role="alert">{formError}</p>}
+            <div className="form-actions">
+              <Button type="submit" disabled={saving || !description.trim()}>
+                <Plus size={18} /> {saving ? 'Salvando…' : 'Salvar rascunho'}
+              </Button>
+            </div>
+          </form>
+        </section>
+      )}
     </>
   )
 }
@@ -1534,7 +1792,7 @@ function Agenda({
   return (
     <>
       <PageHeader
-        title="Agenda"
+        title={isDentist ? 'Consultas' : 'Agenda'}
         subtitle={isDentist
           ? 'Seus atendimentos, sincronizados com a API.'
           : 'Consultas da clínica, sincronizadas com a API.'}

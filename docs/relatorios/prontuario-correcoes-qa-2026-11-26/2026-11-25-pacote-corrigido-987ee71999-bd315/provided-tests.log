@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /app
+configfile: pyproject.toml
+plugins: platformdirs-4.14.8, anyio-4.16.0
+collecting ... collected 18 items
+
+tests/test_opencl.py::test_cpu_search PASSED                             [  5%]
+tests/test_opencl.py::test_cpu_rejects_empty[] PASSED                    [ 11%]
+tests/test_opencl.py::test_cpu_rejects_empty[  ] PASSED                  [ 16%]
+tests/test_opencl.py::test_cpu_rejects_empty[\u0301] PASSED              [ 22%]
+tests/test_opencl.py::test_opencl_matches_cpu_when_available PASSED      [ 27%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-2] PASSED  [ 33%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-True] PASSED [ 38%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-None] PASSED [ 44%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-0] PASSED  [ 50%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch--1] PASSED [ 55%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-2] PASSED      [ 61%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-True] PASSED   [ 66%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-None] PASSED   [ 72%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-0] PASSED      [ 77%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn--1] PASSED     [ 83%]
+tests/test_qa_contract.py::test_range_not_exposed PASSED                 [ 88%]
+tests/test_qa_contract.py::test_validation_no_echo PASSED                [ 94%]
+tests/test_qa_contract.py::test_revocation_during_compute PASSED         [100%]
+
+-------------------- generated xml file: /tmp/provided.xml ---------------------
+======================== 18 passed, 1 warning in 4.48s =========================

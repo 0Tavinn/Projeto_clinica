@@ -1,0 +1,43 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /app
+configfile: pyproject.toml
+plugins: platformdirs-4.14.8, anyio-4.16.0
+collecting ... collected 32 items
+
+tests/test_clinical_patients.py::test_new_routes_and_minimal_response_contract PASSED [  3%]
+tests/test_clinical_patients.py::test_new_routes_require_authentication PASSED [  6%]
+tests/test_logging_policy.py::test_exception_and_message_are_not_rendered[uvicorn] PASSED [  9%]
+tests/test_logging_policy.py::test_exception_and_message_are_not_rendered[uvicorn.error] PASSED [ 12%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/search?q=PRIVATE_LOG_SENTINEL-/api/v1/clinical/search-1.0] PASSED [ 15%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/search?q=PRIVATE_LOG_SENTINEL-/api/v1/clinical/search-1.1] PASSED [ 18%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/patients/123/record?q=PRIVATE_LOG_SENTINEL-/api/v1/patients/{patient_id}/record-1.0] PASSED [ 21%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/patients/123/record?q=PRIVATE_LOG_SENTINEL-/api/v1/patients/{patient_id}/record-1.1] PASSED [ 25%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/unknown/PRIVATE_LOG_SENTINEL?q=PRIVATE_LOG_SENTINEL-[unmatched]-1.0] PASSED [ 28%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/unknown/PRIVATE_LOG_SENTINEL?q=PRIVATE_LOG_SENTINEL-[unmatched]-1.1] PASSED [ 31%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients?q=PRIVATE_LOG_SENTINEL-/api/v1/clinical/patients-1.0] PASSED [ 34%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients?q=PRIVATE_LOG_SENTINEL-/api/v1/clinical/patients-1.1] PASSED [ 37%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients/123?q=PRIVATE_LOG_SENTINEL-/api/v1/clinical/patients/{patient_id}-1.0] PASSED [ 40%]
+tests/test_logging_policy.py::test_access_keeps_operational_fields_without_values[/api/v1/clinical/patients/123?q=PRIVATE_LOG_SENTINEL-/api/v1/clinical/patients/{patient_id}-1.1] PASSED [ 43%]
+tests/test_opencl.py::test_cpu_search PASSED                             [ 46%]
+tests/test_opencl.py::test_cpu_rejects_empty[] PASSED                    [ 50%]
+tests/test_opencl.py::test_cpu_rejects_empty[  ] PASSED                  [ 53%]
+tests/test_opencl.py::test_cpu_rejects_empty[\u0301] PASSED              [ 56%]
+tests/test_opencl.py::test_opencl_matches_cpu_when_available PASSED      [ 59%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-2] PASSED  [ 62%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-True] PASSED [ 65%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-None] PASSED [ 68%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch-0] PASSED  [ 71%]
+tests/test_qa_contract.py::test_strict_version[EvolutionPatch--1] PASSED [ 75%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-2] PASSED      [ 78%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-True] PASSED   [ 81%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-None] PASSED   [ 84%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn-0] PASSED      [ 87%]
+tests/test_qa_contract.py::test_strict_version[FinalizeIn--1] PASSED     [ 90%]
+tests/test_qa_contract.py::test_range_not_exposed PASSED                 [ 93%]
+tests/test_qa_contract.py::test_validation_no_echo PASSED                [ 96%]
+tests/test_qa_contract.py::test_revocation_during_compute PASSED         [100%]
+
+------------------- generated xml file: /tmp/links-tests.xml -------------------
+======================== 32 passed, 1 warning in 1.88s =========================

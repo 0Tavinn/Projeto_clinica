@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "container",
+    "name": "lumina-n05-d076600a323e-driver",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-d076600a323e-api",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-d076600a323e-db",
+    "removed": true
+  },
+  {
+    "kind": "volume",
+    "name": "lumina-n05-d076600a323e-data",
+    "removed": true
+  },
+  {
+    "kind": "network",
+    "name": "lumina-n05-d076600a323e-net",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-n05-d076600a323e:source",
+    "removed": true
+  }
+]

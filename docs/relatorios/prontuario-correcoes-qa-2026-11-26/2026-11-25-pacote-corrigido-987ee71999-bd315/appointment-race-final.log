@@ -1,0 +1,1 @@
+QA_CASE {"id": "REG-appointment-race", "expected": "201/409;uma consulta/vinculo/evento", "obtained": {"http": [201, 409], "appointments": 1, "links": 1, "events": 1, "link_matches_winner": true}, "status": "aprovado"}

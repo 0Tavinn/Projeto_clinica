@@ -1,0 +1,12 @@
+{
+  "label": "lumina.links.qa",
+  "tag": "lumina-links-1c610a7206c9",
+  "names": {
+    "image": "lumina-links-1c610a7206c9:source",
+    "network": "lumina-links-1c610a7206c9-net",
+    "volume": "lumina-links-1c610a7206c9-data",
+    "db": "lumina-links-1c610a7206c9-db",
+    "api": "lumina-links-1c610a7206c9-api",
+    "driver": "lumina-links-1c610a7206c9-driver"
+  }
+}

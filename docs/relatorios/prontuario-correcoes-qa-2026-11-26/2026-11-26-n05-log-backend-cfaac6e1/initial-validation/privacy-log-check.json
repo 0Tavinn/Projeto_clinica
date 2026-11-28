@@ -1,0 +1,13 @@
+{
+  "query_values_absent": true,
+  "access_logs_preserved": true,
+  "status_422_present": true,
+  "status_401_present": true,
+  "status_403_present": true,
+  "status_500_present": true,
+  "unknown_route_redacted": true,
+  "path_values_redacted": true,
+  "error_event_preserved": true,
+  "traceback_absent": true,
+  "original_cmd": true
+}

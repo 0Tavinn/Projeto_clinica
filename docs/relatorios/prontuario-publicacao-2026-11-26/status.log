@@ -1,0 +1,6 @@
+NAME                                 IMAGE                                                                     COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+lumina_prontuario_integracao-api-1   sha256:0d306968c4f3616380980722921dbfe99e5bbf18e724934a93fae486f0a8581d   "uvicorn app.main:ap…"   api       3 minutes ago   Up 7 seconds (healthy)   127.0.0.1:18100->8000/tcp
+lumina_prontuario_integracao-db-1    postgres:16-alpine                                                        "docker-entrypoint.s…"   db        3 minutes ago   Up 9 seconds (healthy)   127.0.0.1:55450->5432/tcp
+HTTP /health: 200
+HTTP /openapi.json: 200
+API clinica: http://localhost:18100/docs

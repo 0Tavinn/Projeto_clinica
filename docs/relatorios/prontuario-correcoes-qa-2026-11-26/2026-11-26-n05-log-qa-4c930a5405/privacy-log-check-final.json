@@ -1,0 +1,211 @@
+[
+  {
+    "id": "LOG-stdout_no_sensitive",
+    "expected": "stdout_no_sensitive=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-stderr_no_sensitive",
+    "expected": "stderr_no_sensitive=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-traceback_absent",
+    "expected": "traceback_absent=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-formatter_error_absent",
+    "expected": "formatter_error_absent=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-method_route_status_present",
+    "expected": "method_route_status_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-unknown_route_redacted",
+    "expected": "unknown_route_redacted=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-path_template_present",
+    "expected": "path_template_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-path_id_not_logged",
+    "expected": "path_id_not_logged=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-http_1_0_preserved",
+    "expected": "http_1_0_preserved=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-http_1_1_preserved",
+    "expected": "http_1_1_preserved=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-unexpected_method_redacted",
+    "expected": "unexpected_method_redacted=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": false,
+      "recognized_trace_complement": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log; method-result.json; method-api-sanitized.log"
+  },
+  {
+    "id": "LOG-invalid_http_event_present",
+    "expected": "invalid_http_event_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-server_error_event_present",
+    "expected": "server_error_event_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-startup_event_present",
+    "expected": "startup_event_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-no_query_in_access",
+    "expected": "no_query_in_access=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-status_200_present",
+    "expected": "status_200_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-status_201_present",
+    "expected": "status_201_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-status_401_present",
+    "expected": "status_401_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-status_403_present",
+    "expected": "status_403_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-status_404_present",
+    "expected": "status_404_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-status_405_present",
+    "expected": "status_405_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": false,
+      "recognized_trace_complement": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log; method-result.json; method-api-sanitized.log"
+  },
+  {
+    "id": "LOG-status_422_present",
+    "expected": "status_422_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  },
+  {
+    "id": "LOG-status_500_present",
+    "expected": "status_500_present=true no caminho realmente exercitado",
+    "obtained": {
+      "main_probe": true
+    },
+    "status": "aprovado",
+    "evidence": "privacy-log-check.json; api-stdout-sanitized.log; api-stderr-sanitized.log"
+  }
+]

@@ -1,0 +1,279 @@
+diff --git a/docs/relatorios/prontuario-correcoes-qa-2026-11-26/README.md b/docs/relatorios/prontuario-correcoes-qa-2026-11-26/README.md
+index c98db6e..cdbdbb8 100644
+--- a/docs/relatorios/prontuario-correcoes-qa-2026-11-26/README.md
++++ b/docs/relatorios/prontuario-correcoes-qa-2026-11-26/README.md
+@@ -17,7 +17,7 @@ recebido é informada por Paulo; não foi inventada autoria Git para ele.
+ 
+ O código consolidado está em `lumina_odonto/`, no commit
+ `21cefa608327fa157938308a4c9e16fbfa3a6eb4`.
+-Seus **22 arquivos correspondem byte a byte à candidata final validada**,
++Os **22 arquivos daquele commit correspondem byte a byte à candidata final validada**,
+ com manifesto canônico
+ `e3b28488163b174758f7e3782dbe916b0cc1cf8120cadf5a3cd5da79200e2825`.
+ O mapa está em [manifesto-pacote-aprovado.json](manifesto-pacote-aprovado.json).
+@@ -79,24 +79,25 @@ pode resolver versões diferentes das registradas nos relatórios.
+ 
+ ## Conferência do conteúdo versionado
+ 
+-A partir da raiz deste checkout, a comparação abaixo lê os arquivos sem
+-iniciar API ou banco:
++O manifesto abaixo identifica o snapshot histórico consolidado em
++21cefa6. As rotas clínicas acrescentadas posteriormente são uma revisão
++funcional nova e têm evidências próprias. Para verificar o pacote histórico,
++leia os blobs desse commit, independentemente das alterações atuais:
+ 
+ ```bash
+ python3 - <<'PY'
++import hashlib, json, subprocess
+ from pathlib import Path
+-import hashlib, json
+-root = Path.cwd()
+-manifest = json.loads((root / 'docs/relatorios/prontuario-correcoes-qa-2026-11-26/manifesto-pacote-aprovado.json').read_text())
++manifest = json.loads(Path('docs/relatorios/prontuario-correcoes-qa-2026-11-26/manifesto-pacote-aprovado.json').read_text())
+ for name, expected in manifest.items():
+-    assert hashlib.sha256((root / 'lumina_odonto' / name).read_bytes()).hexdigest() == expected, name
+-print(f'{len(manifest)} arquivos correspondem ao pacote aprovado.')
++    blob = subprocess.check_output(['git', 'show', '21cefa6:lumina_odonto/' + name])
++    assert hashlib.sha256(blob).hexdigest() == expected, name
++print(f'{len(manifest)} arquivos do snapshot histórico correspondem ao pacote aprovado.')
+ PY
+ ```
+ 
+-Esta conferência foi executada durante a consolidação, inclusive sobre os
+-blobs preparados para commit. Não constitui uma nova rodada funcional.
+-Nenhum arquivo de aplicação foi alterado depois da aprovação do QA.
++Essa comparação não atribui o parecer antigo ao código funcional posterior.
++As evidências originais das subpastas permanecem históricas.
+ 
+ ## O que permanece pendente
+ 
+diff --git a/lumina_odonto/FRONTEND.md b/lumina_odonto/FRONTEND.md
+index abb9db1..7cf1873 100644
+--- a/lumina_odonto/FRONTEND.md
++++ b/lumina_odonto/FRONTEND.md
+@@ -1,12 +1,15 @@
+ # Guia de integração do prontuário — Otávio
+ 
+ Conferido em **26/11/2026**, branch `fix/prontuario-correcoes-qa`.
+-Fonte: código consolidado em `21cefa6`; evidências registradas em `ae8e8ae`.
+-Este guia descreve a API de `lumina_odonto/app/main.py` e `app/crud.py`.
++Base documental 67068ac; novas leituras de vínculo implementadas localmente
++em 26/11/2026. Os pareceres históricos continuam vinculados às versões originais.
++Este guia descreve a API de lumina_odonto/app/main.py, app/crud.py e
++app/clinical_patients*.py.
+ O serviço de `backend/` tem contratos diferentes; não misturar suas rotas.
+ 
+ ## Onde começar
+ 
++- [Pacientes clínicos e vínculos](docs/frontend/clinical-patients-and-links.md).
+ - [Autenticação, pesquisa e erros](docs/frontend/authentication-and-search.md).
+ - [Prontuário e evoluções: requisições e retornos](docs/frontend/records-and-evolutions.md).
+ - [README geral da API](README.md).
+@@ -27,8 +30,8 @@ Não configurar o frontend com segredo JWT ou acesso direto ao PostgreSQL.
+ 1. Login: receber `access_token`.
+ 2. Consultar `/api/v1/auth/me` com esse token para identificar o perfil.
+ 3. Desbloquear o módulo com a senha clínica: receber `clinical_token`.
+-4. Obter `patient_id` de uma fonte autorizada. **A lista de pacientes vinculados
+-   do dentista ainda precisa de contrato/rota; ver a lacuna abaixo.**
++4. Carregar GET /api/v1/clinical/patients com token clínico e selecionar um item.
++   Usar GET /api/v1/clinical/patients/{patient_id} para identificação mínima.
+ 5. Consultar prontuário e suas evoluções com o token clínico.
+ 6. Criar rascunho, editar enviando `version` e finalizar com `version` atual.
+ 7. Pesquisar o histórico do paciente selecionado; seguir `next_offset`.
+@@ -45,6 +48,8 @@ Concluir uma consulta não é pré-condição das rotas de evolução deste paco
+ | POST `/api/v1/auth/login` | Nenhum | `email`, `password` | 200: `access_token`, `token_type` |
+ | GET `/api/v1/auth/me` | Acesso | Sem corpo | 200: usuário, clínica e perfil |
+ | POST `/api/v1/auth/clinical-unlock` | Acesso | `password` clínica | 200: `clinical_token`, `token_type` |
++| GET /api/v1/clinical/patients | Clínico | limit, after_id, q | 200: items e next_after_id |
++| GET /api/v1/clinical/patients/{patient_id} | Clínico | ID do paciente | 200: identificação mínima |
+ | GET `/api/v1/patients/{patient_id}/record` | Clínico | ID do paciente | 200: `id`, `patient_id` |
+ | GET `/api/v1/patients/{patient_id}/record/summary` | Clínico | ID do paciente | 200: registro completo de `medical_records` |
+ | PATCH `/api/v1/patients/{patient_id}/record` | Clínico | `general_notes` | 200: registro atualizado |
+@@ -66,7 +71,7 @@ corpo vazio. `care_occurred_at` pertence ao contrato anterior da Agenda e não
+ | GET `/api/v1/dentists` | Usuário autenticado, token de acesso | `limit` 1–100, padrão 50; `offset` >= 0. Inclui `user_id`, nome e `is_active`, sem filtro só de ativos. |
+ | GET `/api/v1/patients` | Admin/recepção, token de acesso | Somente pacientes ativos; retorna `medical_record_id`. `limit` e `offset`. |
+ | POST `/api/v1/patients` | Admin/recepção, token de acesso | Cria paciente e prontuário na mesma transação; retorna `patient_id` e `medical_record_id`. |
+-| GET `/api/v1/access-links` | Só admin, token de acesso | Filtros `dentist_id`, `patient_id`, `limit`, `offset`; inclui vínculos ativos/revogados. |
++| GET `/api/v1/access-links` | Só admin, token de acesso | Filtros `dentist_id`, `patient_id`, `limit`, `offset`; inclui vínculos ativos/revogados, nomes e flags atuais dos envolvidos. |
+ | POST `/api/v1/admin/access` | Só admin, token de acesso | `patient_id`, `dentist_id`, `action`: `GRANTED`, `REVOKED` ou `REACTIVATED`. |
+ | GET `/api/v1/access-events` | Só admin, token de acesso | Filtro `link_id`, `limit`, `offset`. |
+ | POST `/api/v1/admin/users/{user_id}/reset-login-password` | Só admin, token de acesso | `new_password` com pelo menos 12 caracteres; invalida sessões anteriores. |
+@@ -80,18 +85,20 @@ Listagens comuns retornam arrays, não objetos com `items` e `total`.
+ 
+ | Necessidade da interface | Situação comprovada no código | Encaminhamento |
+ |---|---|---|
+-| “Meus pacientes/prontuários” do dentista | Não há rota própria. `/patients` e seu detalhe são de admin/recepção; `/access-links` é só admin. | Backend definir consulta restrita ao dentista autenticado e à sua clínica, com identificação mínima dos pacientes autorizados. Não inventar URL nem reutilizar token de admin no navegador. |
+-| Cabeçalho com dados do paciente no painel clínico | GET do prontuário traz IDs; summary traz campos do prontuário, sem dados cadastrais do paciente. | Alinhar resposta clínica mínima autorizada com a listagem/detalhe. Não buscar cadastro com credencial de outro perfil. |
+-| Revogar vínculo e mostrar nome de paciente inativo no admin | A revogação aceita alvo inativo; listagem/detalhe comum de pacientes só inclui ativos. | Consulta administrativa que permita identificar esses alvos sem torná-los elegíveis à concessão. |
++| “Meus pacientes/prontuários” do dentista | Implementado GET /clinical/patients com token clínico, paginação e busca restritos ao próprio profissional. | Usar o novo contrato, sem credencial administrativa. |
++| Cabeçalho do painel clínico | Implementado GET /clinical/patients/{patient_id} com identificação mínima autorizada. | Obter dados cadastrais mínimos por essa rota. |
++| Nome/flags de alvos inativos na gestão do vínculo | GET /access-links acrescenta identificação e flags, mantendo array e acesso exclusivo do admin. | Exibir para gestão sem tratar inativos como elegíveis para concessão. |
+ | Admin recuperar senha clínica de outro dentista | Há reset administrativo da senha de entrada e reset clínico pelo próprio dentista. Não há reset clínico administrativo nesta candidata. | Backend/Paulo fechar contrato desse fluxo antes de implementar o botão do protótipo. |
+ | Impressão individual e identificação histórica do autor | GET da evolução traz `dentist_id`; não há rota de impressão/PDF nem nome/CRO histórico nesse DTO. | Alinhar dados e política de impressão/retificação. Não anunciar impressão integrada ou histórico profissional como comprovados. |
+ 
+-Os encaminhamentos acima não são rotas implementadas. A interface pode avançar
+-nos contratos existentes; essas lacunas impedem declarar seu fluxo completo pronto.
++As três leituras indicadas como implementadas têm contrato no novo guia.
++As lacunas de senha e impressão continuam abertas, e a interface precisa
++validar os novos fluxos na versão integrada.
+ 
+ ## Evidências e roteiro de integração
+ 
+-O QA encerrou o N05 na configuração testada, com 26 testes aprovados e 25
++A evidência histórica do QA encerrou N05 na candidata consolidada em21cefa6,
++com 26 testes aprovados e 25
+ objetivos HTTP aprovados em PostgreSQL 16.16 e OpenCL real em CPU.
+ As provas anteriores dos outros defeitos estão nos relatórios, com suas versões.
+ Não houve aceite da interface, implantação diária ou upgrade do banco.
+@@ -103,4 +110,5 @@ revogar pelo admin e verificar a recusa e a remoção do conteúdo clínico da t
+ Os comportamentos da API já testados precisam ser exercitados na interface
+ integrada, com branch/commit e evidências identificados.
+ 
+-Este guia é documental: nenhuma rota, permissão, banco ou regra foi alterada.
++Esta revisão documenta novas leituras locais. Não houve migração nem implantação;
++o parecer histórico não constitui reteste independente dessas novas rotas.
+diff --git a/lumina_odonto/README.md b/lumina_odonto/README.md
+index 02a4a63..6bd4ac6 100644
+--- a/lumina_odonto/README.md
++++ b/lumina_odonto/README.md
+@@ -26,6 +26,7 @@ Acesse `http://localhost:8000/docs`. A configuração do Docker utiliza `db` com
+ | Dentistas | `GET /dentists`, `GET /dentists/{id}`, `POST /dentists`, `PATCH /dentists/{id}` | Leitura autenticada; escrita admin |
+ | Pacientes | `GET /patients`, `GET /patients/{id}`, `POST /patients`, `PATCH /patients/{id}`, `DELETE /patients/{id}` (desativação) | Recepção/admin; desativação admin |
+ | Agenda | `GET /appointments`, `GET /appointments/{id}`, `POST /appointments`, `PATCH /appointments/{id}`, `DELETE /appointments/{id}` (cancelamento) | Recepção/admin; dentista lê sua agenda |
++| Pacientes clínicos | GET /clinical/patients, GET /clinical/patients/{patient_id} | Token clínico e vínculo ativo do próprio dentista; DTO mínimo |
+ | Prontuários | `GET /patients/{id}/record`, `GET /patients/{id}/record/summary`, `PATCH /patients/{id}/record` | Dentista com token clínico e vínculo ativo |
+ | Evoluções | `GET /patients/{id}/evolutions`, `GET /evolutions/{id}`, `POST /evolutions`, `PATCH /evolutions/{id}`, `POST /evolutions/{id}/finalize` | Dentista autorizado; somente autor edita rascunho |
+ | Acesso clínico | `POST /admin/access`, `GET /access-links`, `GET /access-events` | Admin |
+@@ -89,3 +90,6 @@ A política cobre os loggers Uvicorn configurados no pacote. Proxy,
+ coletores externos, futuras rotas que imprimam dados e configurações de
+ logging externas posteriores à importação exigem revisão própria.
+ Não habilite SQL echo, dump de headers/corpos ou logs brutos da URL.
++
++As novas leituras de identificação e o array administrativo enriquecido estão
++detalhados em [Pacientes clínicos e vínculos](docs/frontend/clinical-patients-and-links.md).
+diff --git a/lumina_odonto/app/crud.py b/lumina_odonto/app/crud.py
+index dc13336..e3aa227 100644
+--- a/lumina_odonto/app/crud.py
++++ b/lumina_odonto/app/crud.py
+@@ -271,11 +271,11 @@ def install(app):
+                      limit:int=Query(50,ge=1,le=100),offset:int=Query(0,ge=0),
+                      user=Depends(m.access_user),db=Depends(m.db_dep)):
+         require_role(user,'ADMINISTRATOR')
+-        return m.allrows(db,'''SELECT * FROM clinical_access_links WHERE clinic_id=:clinic
+-            AND (CAST(:patient AS INTEGER) IS NULL OR patient_id=:patient)
+-            AND (CAST(:dentist AS INTEGER) IS NULL OR dentist_id=:dentist)
+-            ORDER BY id LIMIT :limit OFFSET :offset''',clinic=user['clinic_id'],patient=patient_id,
+-            dentist=dentist_id,limit=limit,offset=offset)
++        from app.clinical_patients_repository import read_administrative_links
++        return read_administrative_links(
++            db,clinic_id=user['clinic_id'],patient_id=patient_id,
++            dentist_id=dentist_id,limit=limit,offset=offset)
++
+ 
+     @router.get('/access-events',tags=['Acesso clínico'])
+     def access_events(link_id:int|None=None,limit:int=Query(50,ge=1,le=100),offset:int=Query(0,ge=0),
+diff --git a/lumina_odonto/app/logging_policy.py b/lumina_odonto/app/logging_policy.py
+index 3db2a6c..ae38d6b 100644
+--- a/lumina_odonto/app/logging_policy.py
++++ b/lumina_odonto/app/logging_policy.py
+@@ -1,6 +1,7 @@
+ """Política de logs Uvicorn sem valores clínicos de URLs ou exceções."""
+ 
+ import logging
++from starlette.routing import compile_path
+ 
+ _METHODS = {"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"}
+ _SERVER_EVENTS = {
+@@ -39,9 +40,9 @@ class ClinicalAccessFilter(logging.Filter):
+                 status = supplied_status
+             if isinstance(supplied_path, str):
+                 supplied_path = supplied_path.split("?", 1)[0]
+-                for route in self.routes:
+-                    if route.path_regex.fullmatch(supplied_path):
+-                        path = route.path
++                for route_path, path_regex in self.routes:
++                    if path_regex.fullmatch(supplied_path):
++                        path = route_path
+                         break
+         record.msg = '%s - "%s %s HTTP/%s" %d'
+         record.args = ("-", method, path, version, status)
+@@ -75,7 +76,13 @@ def install_logging_policy(app):
+     Uvicorn configura seus loggers antes de importar a aplicação. Os filtros
+     atuam antes dos formatters e não dependem de flags externas do ensaio.
+     """
+-    routes = tuple(route for route in app.routes if hasattr(route, "path_regex"))
++    # FastAPI pode manter routers incluídos indiretamente em app.routes.
++    # O contrato público fornece também seus caminhos já prefixados.
++    routes = {route.path: route.path_regex for route in app.routes
++              if hasattr(route, "path_regex")}
++    for path in app.openapi()["paths"]:
++        routes.setdefault(path, compile_path(path)[0])
++    routes = tuple(routes.items())
+     for name, policy in (
+         ("uvicorn.access", ClinicalAccessFilter(routes)),
+         ("uvicorn.error", ClinicalServerFilter()),
+diff --git a/lumina_odonto/app/main.py b/lumina_odonto/app/main.py
+index a5e98a6..14aafd0 100644
+--- a/lumina_odonto/app/main.py
++++ b/lumina_odonto/app/main.py
+@@ -420,6 +420,10 @@ def reset_clinical(body: PasswordReset, user=Depends(access_user), db: Session =
+ from app.crud import install as install_crud
+ install_crud(app)
+ 
++# As rotas clínicas precisam constar da captura de rotas estáticas do logger.
++from app.clinical_patients import install as install_clinical_patients
++install_clinical_patients(app)
++
+ # A política é instalada após registrar as rotas e antes de receber requisições.
+ from app.logging_policy import install_logging_policy
+ install_logging_policy(app)
+diff --git a/lumina_odonto/docs/frontend/authentication-and-search.md b/lumina_odonto/docs/frontend/authentication-and-search.md
+index 15a52f5..e898661 100644
+--- a/lumina_odonto/docs/frontend/authentication-and-search.md
++++ b/lumina_odonto/docs/frontend/authentication-and-search.md
+@@ -57,6 +57,14 @@ dois fatores independentes. Redefinições/inativação podem invalidar tokens
+ antes do horário de expiração. Evitar logs de tokens, senha, conteúdo de
+ rascunho e URL completa de busca em ferramentas do frontend.
+ 
++## Selecionar paciente após desbloquear
++
++GET /api/v1/clinical/patients usa o mesmo clinical_token, derivando o dentista
++da sessão. Para identificar o paciente selecionado, GET
++/api/v1/clinical/patients/{patient_id}. Vínculo manual sem consulta também
++aparece. Ver [DTOs, paginação e administração](clinical-patients-and-links.md).
++O admin continua usando access_token em /access-links e /admin/access.
++
+ ## Pesquisa no histórico do paciente
+ 
+ GET `/api/v1/clinical/search?patient_id=7&q=limpeza&engine_name=auto&offset=0`
+diff --git a/lumina_odonto/docs/frontend/records-and-evolutions.md b/lumina_odonto/docs/frontend/records-and-evolutions.md
+index 14757a9..6c2fc8a 100644
+--- a/lumina_odonto/docs/frontend/records-and-evolutions.md
++++ b/lumina_odonto/docs/frontend/records-and-evolutions.md
+@@ -5,6 +5,13 @@ Fonte: `app/main.py`, `app/crud.py` e `sql/schema.sql` da candidata consolidada.
+ Todos os exemplos abaixo usam `Authorization: Bearer <clinical_token>`.
+ IDs, datas e conteúdo são fictícios; os exemplos não são capturas do QA.
+ 
++## Selecionar paciente e montar cabeçalho
++
++Usar GET /api/v1/clinical/patients e GET /api/v1/clinical/patients/{patient_id}
++com token clínico. Incluem vínculo manual e prontuário vazio, sem exigir
++consulta ou evolução. O DTO mínimo, cursor e erros estão no
++[contrato de pacientes clínicos e vínculos](clinical-patients-and-links.md).
++
+ ## Prontuário existente ou vazio
+ 
+ GET `/api/v1/patients/7/record` → 200:
+diff --git a/lumina_odonto/tests/test_logging_policy.py b/lumina_odonto/tests/test_logging_policy.py
+index b730844..a959177 100644
+--- a/lumina_odonto/tests/test_logging_policy.py
++++ b/lumina_odonto/tests/test_logging_policy.py
+@@ -30,6 +30,8 @@ def test_exception_and_message_are_not_rendered(name, caplog):
+     ("/api/v1/clinical/search?q=PRIVATE_LOG_SENTINEL", "/api/v1/clinical/search"),
+     ("/api/v1/patients/123/record?q=PRIVATE_LOG_SENTINEL", "/api/v1/patients/{patient_id}/record"),
+     ("/unknown/PRIVATE_LOG_SENTINEL?q=PRIVATE_LOG_SENTINEL", "[unmatched]"),
++    ("/api/v1/clinical/patients?q=PRIVATE_LOG_SENTINEL", "/api/v1/clinical/patients"),
++    ("/api/v1/clinical/patients/123?q=PRIVATE_LOG_SENTINEL", "/api/v1/clinical/patients/{patient_id}"),
+ ])
+ def test_access_keeps_operational_fields_without_values(request_path, route, version, caplog):
+     with caplog.at_level(logging.INFO):

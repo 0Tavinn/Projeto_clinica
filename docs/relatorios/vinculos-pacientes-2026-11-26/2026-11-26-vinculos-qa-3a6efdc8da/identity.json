@@ -1,0 +1,11 @@
+{
+  "branch": "fix/prontuario-correcoes-qa",
+  "head": "67068ac969cb7b34396b5d94e4ee09a7001ef8b4",
+  "source": "/home/paulinho/Work/Projeto_clinica/lumina_odonto",
+  "manifest_sha256": "95fb2b8e2fd21f7a5a9e125fcbb7aaeb110e74d610eb150f3a4bb7f8d33bfcd7",
+  "files": 31,
+  "local_uncommitted": true,
+  "stage_empty": true,
+  "started_utc": "2026-11-26T13:35:30.581000+00:00",
+  "provenance": "implementacao local do agente de Backend conforme repasse TechLead;nao commit publicado"
+}

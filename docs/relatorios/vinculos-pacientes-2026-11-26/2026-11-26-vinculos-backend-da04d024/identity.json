@@ -1,0 +1,17 @@
+{
+  "branch": "fix/prontuario-correcoes-qa",
+  "base": "67068ac969cb7b34396b5d94e4ee09a7001ef8b4",
+  "logical_source_files": 31,
+  "source_manifest_sha256": "95fb2b8e2fd21f7a5a9e125fcbb7aaeb110e74d610eb150f3a4bb7f8d33bfcd7",
+  "image": {
+    "id": "sha256:25b497084577a0d394332f7b5f5a54e19d6984adf4fe2d64f567bc8a50dfb6dd",
+    "cmd": [
+      "uvicorn",
+      "app.main:app",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8000"
+    ]
+  }
+}

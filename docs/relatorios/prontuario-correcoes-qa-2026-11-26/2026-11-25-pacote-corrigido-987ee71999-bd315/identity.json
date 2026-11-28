@@ -1,0 +1,30 @@
+{
+  "source": "/home/paulinho/Work/lumina_odonto_corrigido_QA/lumina_odonto_atualizado",
+  "git": false,
+  "reported_author": "Tarcisio, conforme Paulo",
+  "candidate_manifest_sha256": "987ee7199972977bc549346246d0ee5bf46d4611b9d15c3c8fc89fdfbd41fe40",
+  "relevant_files": 20,
+  "all_received_files_including_metadata": 40,
+  "excluded_for_identity": [
+    "QA_CORRECOES.md:Zone.Identifier",
+    "docker-compose.yml:Zone.Identifier",
+    "README.md:Zone.Identifier",
+    "Dockerfile:Zone.Identifier",
+    ".dockerignore:Zone.Identifier",
+    ".env.example:Zone.Identifier",
+    ".gitignore:Zone.Identifier",
+    "pyproject.toml:Zone.Identifier",
+    "sql/fixture_9d3e5f7a1b2c.sql:Zone.Identifier",
+    "sql/schema.sql:Zone.Identifier",
+    "sql/seed_demo.sql:Zone.Identifier",
+    "sql/check_clinical_schema.sql:Zone.Identifier",
+    "app/opencl_search.py:Zone.Identifier",
+    "app/crud.py:Zone.Identifier",
+    "app/__init__.py:Zone.Identifier",
+    "app/main.py:Zone.Identifier",
+    "app/config.py:Zone.Identifier",
+    "tests/test_qa_contract.py:Zone.Identifier",
+    "tests/test_opencl.py:Zone.Identifier",
+    "app/kernels/contains.cl:Zone.Identifier"
+  ]
+}

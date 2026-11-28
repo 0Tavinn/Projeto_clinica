@@ -1,0 +1,5 @@
+{
+  "equal": true,
+  "source": "HTTP current versus generated original package OpenAPI from QA25/11",
+  "baseline_sha256": "52e2e5899b0b9349ffb37731cab590ee21be30225f7524c323e7334b52c7353c"
+}

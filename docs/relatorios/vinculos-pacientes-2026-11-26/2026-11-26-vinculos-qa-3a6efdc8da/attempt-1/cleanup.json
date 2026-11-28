@@ -1,0 +1,38 @@
+[
+  {
+    "kind": "container",
+    "name": "lumina-links-qa-3a6efdc8da-driver",
+    "id": "1a20fdfd244848ca5bf2fec8c4469bd98c4fe1663c5281fdfd6a9aab19efff9f",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-links-qa-3a6efdc8da-api",
+    "id": "58102b62c1032ec74e8745d2564d6906ba77bf308d08d1d24cc2f6e25a90aed0",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-links-qa-3a6efdc8da-db",
+    "id": "bdcc8e32aa3f95e162af4aeacf91b384dfccd98c92d6aaa31335ec68eda40585",
+    "removed": true
+  },
+  {
+    "kind": "volume",
+    "name": "lumina-links-qa-3a6efdc8da-data",
+    "id": "lumina-links-qa-3a6efdc8da-data",
+    "removed": true
+  },
+  {
+    "kind": "network",
+    "name": "lumina-links-qa-3a6efdc8da-net",
+    "id": "2119bc97beffaad2e71d79bfa27b2418ebb22891ea6d90cea8bd852a1a5b98e2",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-links-qa-3a6efdc8da:source",
+    "id": "sha256:520d5707bef4391369a00ab8cace6f81d30ee354967b98fff038f59dbda551b2",
+    "removed": true
+  }
+]

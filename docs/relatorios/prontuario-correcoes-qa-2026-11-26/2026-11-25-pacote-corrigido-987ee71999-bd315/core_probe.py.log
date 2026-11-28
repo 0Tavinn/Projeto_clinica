@@ -1,0 +1,34 @@
+QA_CASE {"id": "A-health", "expected": "health200 conectado ao banco", "obtained": {"http": 200}, "status": "aprovado"}
+QA_CASE {"id": "A-openapi", "expected": "OpenAPI200", "obtained": {"http": 200}, "status": "aprovado"}
+QA_CASE {"id": "REG-noauth", "expected": "401", "obtained": {"http": 401}, "status": "aprovado"}
+QA_CASE {"id": "REG-login-not-clinical", "expected": "401", "obtained": {"http": 401}, "status": "aprovado"}
+QA_CASE {"id": "REG-admin-unlock", "expected": "403", "obtained": {"http": 403}, "status": "aprovado"}
+QA_CASE {"id": "REG-reception-clinical", "expected": "401", "obtained": {"http": 401}, "status": "aprovado"}
+QA_CASE {"id": "REG-noprof", "expected": "403", "obtained": {"http": 403}, "status": "aprovado"}
+QA_CASE {"id": "REG-inactive-login", "expected": "401", "obtained": {"http": 401}, "status": "aprovado"}
+QA_CASE {"id": "REG-foreign", "expected": "nega outra clinica", "obtained": "acesso negado", "status": "aprovado"}
+QA_CASE {"id": "REG-no-link", "expected": "403", "obtained": {"http": 403}, "status": "aprovado"}
+QA_CASE {"id": "REG-get-pure", "expected": "GET nao cria", "obtained": {"http": 200, "count_before": 12, "count_after": 12}, "status": "aprovado"}
+QA_CASE {"id": "REG-private-list", "expected": "rascunho ausente para outro dentista", "obtained": "rascunho privado na lista", "status": "aprovado"}
+QA_CASE {"id": "REG-private-detail", "expected": "403", "obtained": {"http": 403}, "status": "aprovado"}
+QA_CASE {"id": "REG-other-author", "expected": "403", "obtained": {"http": 403}, "status": "aprovado"}
+QA_CASE {"id": "REG-empty-description", "expected": "422", "obtained": {"http": 422}, "status": "aprovado"}
+QA_CASE {"id": "REG-optional-appointment", "expected": "422 para consulta incompat\u00edvel", "obtained": {"http": 422}, "status": "aprovado"}
+QA_CASE {"id": "N07-invalid-types", "expected": "12 entradas invalidas422; sem mutacao", "obtained": {"http": [422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422], "version": 1, "state": "DRAFT"}, "status": "aprovado"}
+QA_CASE {"id": "N07-current", "expected": "200 versao atual", "obtained": {"http": 200}, "status": "aprovado"}
+QA_CASE {"id": "N07-stale-edit", "expected": "409", "obtained": {"http": 409}, "status": "aprovado"}
+QA_CASE {"id": "N07-stale-finalize", "expected": "409", "obtained": {"http": 409}, "status": "aprovado"}
+QA_CASE {"id": "REG-finalize", "expected": "200 sem consulta obrigatoria", "obtained": {"http": 200}, "status": "aprovado"}
+QA_CASE {"id": "REG-shared-finalized", "expected": "200 dentista vinculado", "obtained": {"http": 200}, "status": "aprovado"}
+QA_CASE {"id": "REG-finalized-edit", "expected": "403", "obtained": {"http": 403}, "status": "aprovado"}
+QA_CASE {"id": "N05-validation-body", "expected": "422 sem sentinela ou ctx/input indevidos", "obtained": [{"http": 422, "echo": false, "useful_loc": true}, {"http": 422, "echo": false, "useful_loc": true}, {"http": 422, "echo": false, "useful_loc": true}, {"http": 422, "echo": false, "useful_loc": true}, {"http": 422, "echo": false, "useful_loc": true}], "status": "aprovado"}
+QA_CASE {"id": "N05-user-update", "expected": "200 sem hashes/sessao", "obtained": {"http": 200, "forbidden_keys": []}, "status": "aprovado"}
+QA_CASE {"id": "N06-patient-scope", "expected": "somente patient_id solicitado", "obtained": "ids restritos ao paciente", "status": "aprovado"}
+QA_CASE {"id": "N06-invalid-or-unlinked", "expected": "ausente/invalido422; semvinculo403", "obtained": [422, 422, 422, 422, 403], "status": "aprovado"}
+QA_CASE {"id": "N06-foreign", "expected": "403ou404 sem outra clinica", "obtained": "outra clinica negada", "status": "aprovado"}
+QA_CASE {"id": "N08-empty-normalized", "expected": "12 casos422 em todos motores; sem503", "obtained": [422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422, 422], "status": "aprovado"}
+QA_CASE {"id": "REG-real-opencl", "expected": "kernel real e igualdade CPU", "obtained": {"cpu_http": 200, "opencl_http": 200, "engine": "opencl", "same_results": true}, "status": "aprovado"}
+QA_CASE {"id": "N02-CRUD-DTO", "expected": "201/200 coerentes, scheduled_period foraDTO", "obtained": {"http": [201, 200, 200, 200, 200, 200], "range_exposed": false, "persisted": "CANCELED"}, "status": "aprovado"}
+QA_CASE {"id": "REG-durable-link", "expected": "cancelamento preserva; antiga nao reativa; nova reativa", "obtained": {"after_cancel": 200, "old_update": 200, "after_old": 403, "new": 201, "after_new": 200}, "status": "aprovado"}
+QA_CASE {"id": "N04-revoke-inactive-and-no-password", "expected": "200;REVOKED;evento/auditoria atomicos", "obtained": [{"mode": "patient_inactive", "http": 200, "state": "REVOKED", "events_total_delta": 1, "revocation_events": 1, "audit": 1}, {"mode": "dentist_inactive", "http": 200, "state": "REVOKED", "events_total_delta": 1, "revocation_events": 2, "audit": 2}, {"mode": "no_clinical_password", "http": 200, "state": "REVOKED", "events_total_delta": 1, "revocation_events": 3, "audit": 3}], "status": "aprovado"}
+QA_CASE {"id": "N04-grant-eligibility", "expected": "inativos nao recebem reativacao", "obtained": {"inactive_patient": 404, "inactive_dentist": 422}, "status": "aprovado"}

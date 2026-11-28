@@ -1,0 +1,23 @@
+{"id": "REG-pagination-1005", "expected": "paginas1000/5;next_offset;IDs iguais;rascunhos ocultos", "obtained": {"pages": [{"engine": "cpu", "offset": 0, "total_page": 1000, "next_offset": 1000, "count": 1000}, {"engine": "cpu", "offset": 1000, "total_page": 5, "next_offset": null, "count": 5}, {"engine": "opencl", "offset": 0, "total_page": 1000, "next_offset": 1000, "count": 1000}, {"engine": "opencl", "offset": 1000, "total_page": 5, "next_offset": null, "count": 5}], "unique_visible": 1005, "hidden_drafts_returned": false}, "status": "aprovado"}
+{"id": "REG-concurrent-opencl-http", "expected": "8 buscas OpenCL concorrentes iguais", "obtained": {"http": [200, 200, 200, 200, 200, 200, 200, 200], "equal_ids": true, "count_per_page": 1000}, "status": "aprovado"}
+{"id": "REG-page-total-semantics", "expected": "total=0 e proxima pagina de candidatos explicita", "obtained": {"http": 200, "total_page": 0, "next_offset": 1000}, "status": "aprovado"}
+{"id": "REG-kernel-unicode", "expected": "CPU/OpenCL iguais, vazios validos sem erro de buffer", "obtained": {"device": "cpu-haswell-13th Gen Intel(R) Core(TM) i5-13420H", "terms_compared": 7, "empty_lists_and_strings": true}, "status": "aprovado"}
+{"id": "REG-byte-budget-unicode", "expected": "limiteaceito;acima413 em todos motores", "obtained": {"at_2000000_bytes": [200, 200], "at_2000004_bytes": [413, 413, 413]}, "status": "aprovado"}
+{"id": "REG-patient-rollback", "expected": "falha sem paciente ou prontuario residual", "obtained": {"http": 500, "patients_before": 12, "patients_after": 12}, "status": "aprovado"}
+{"id": "REG-patient-duplicate", "expected": "201/409 umpaciente/prontuario", "obtained": {"http": [201, 409], "records": 1}, "status": "aprovado"}
+{"id": "REG-evolution-rollback", "expected": "estado/versao/conteudo intactos apos falha relacionada", "obtained": {"http": 500, "state": "DRAFT", "version": 1, "notes_unchanged": true}, "status": "aprovado"}
+{"id": "REG-server-authorship-time", "expected": "autor e horarios do servidor", "obtained": {"http": 201, "correct_author": true, "state": "DRAFT", "forged_time_used": false}, "status": "aprovado"}
+{"id": "N05-validation-query-response", "expected": "422 sem eco do termo clinico", "obtained": {"http": 422, "echo": false}, "status": "aprovado"}
+{"id": "REG-passwords-distinct-create", "expected": "422 se senhas de login/clinica iguais", "obtained": {"http": 422}, "status": "aprovado"}
+{"id": "REG-reset-login-equals-clinical", "expected": "422", "obtained": {"http": 422}, "status": "aprovado"}
+{"id": "REG-reset-clinical-equals-login", "expected": "422", "obtained": {"http": 422}, "status": "aprovado"}
+{"id": "REG-reset-foreign-target", "expected": "404", "obtained": {"http": 404}, "status": "aprovado"}
+{"id": "REG-reset-nonadmin", "expected": "403", "obtained": {"http": 403}, "status": "aprovado"}
+{"id": "REG-reset-login-invalidates", "expected": "reset invalida tokens e senha antigos; novo login funciona", "obtained": {"reset": 200, "old_access": 401, "old_clinical": 401, "old_password": 401, "session_increment": 1, "new_login_unlock": true}, "status": "aprovado"}
+{"id": "REG-reset-clinical-invalidates", "expected": "reset clinico invalida somente liberacao correspondente", "obtained": {"reset": 200, "old_clinical": 401, "login_still_valid": 200, "clinical_increment": 1, "new_unlock": true}, "status": "aprovado"}
+{"id": "REG-expired-clinical", "expected": "401", "obtained": {"http": 401}, "status": "aprovado"}
+{"id": "REG-invalid-token", "expected": "401", "obtained": {"http": 401}, "status": "aprovado"}
+{"id": "N04-preserve-clinical-history", "expected": "revogacao administrativa preserva prontuario e evolucoes;um evento;leitura403", "obtained": {"http": 200, "record_equal": true, "evolutions_equal": true, "evolutions_count": 3, "event_increment": 1, "revoked_read_http": 403, "reactivated_http": 200}, "status": "aprovado"}
+{"id": "REG-status-durable-link", "expected": "ausencia/conclusao preservam vinculo persistente", "obtained": {"script_exception_type": "KeyError"}, "status": "bloqueado"}
+{"id": "N04-cross-clinic-admin", "expected": "admin de outra clinica nao concede/revoga/reativa", "obtained": {"http": [404, 404, 404], "link_unchanged": true}, "status": "aprovado"}
+{"id": "REG-status-durable-link", "expected": "ausencia/conclusao preservam vinculo persistente", "obtained": {"http": [200, 200], "checks": [{"appointment_state": "NO_SHOW", "link_state": "ACTIVE", "read_http": 200}, {"appointment_state": "COMPLETED", "link_state": "ACTIVE", "read_http": 200}], "criterion": "politica nova de vinculo duradouro; nao confirma fluxo antigo D02-D04"}, "status": "aprovado"}

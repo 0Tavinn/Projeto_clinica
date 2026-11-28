@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "container",
+    "name": "lumina-n05-method-cbeff1ae96-driver",
+    "id": "5099de006811ee15d6dceda5d936eda9709bdb58ba42f0855965207c0a13019e",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-method-cbeff1ae96-api",
+    "id": "c3b52a1edea872f31e5c91044d9a3b79917381ac3d364e3b060aab34adc531b9",
+    "removed": true
+  },
+  {
+    "kind": "network",
+    "name": "lumina-n05-method-cbeff1ae96-net",
+    "id": "d6bd40abdf26bffa87baebdacfa5e02ae89cf70c7ae62ca5e0f687b2d794382d",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-n05-method-cbeff1ae96:source",
+    "id": "sha256:18321a1c4c831ec39597c9ded1564ce7fd3f3188e55439eed19b87425b939acf",
+    "removed": true
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "container",
+    "name": "lumina-links-1c610a7206c9-driver",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-links-1c610a7206c9-api",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-links-1c610a7206c9-db",
+    "removed": true
+  },
+  {
+    "kind": "volume",
+    "name": "lumina-links-1c610a7206c9-data",
+    "removed": true
+  },
+  {
+    "kind": "network",
+    "name": "lumina-links-1c610a7206c9-net",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-links-1c610a7206c9:source",
+    "removed": true
+  }
+]

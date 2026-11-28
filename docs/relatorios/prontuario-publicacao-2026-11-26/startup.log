@@ -1,0 +1,91 @@
+ Image lumina_prontuario_integracao-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 720B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 372B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.3s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 82B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 65.07kB 0.0s done
+#6 DONE 0.0s
+
+#7 [1/7] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#7 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#7 DONE 0.0s
+
+#8 [2/7] WORKDIR /app
+#8 CACHED
+
+#9 [4/7] COPY pyproject.toml .
+#9 CACHED
+
+#10 [6/7] COPY app/ app/
+#10 CACHED
+
+#11 [3/7] RUN apt-get update && apt-get install -y --no-install-recommends ocl-icd-libopencl1 pocl-opencl-icd && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [5/7] RUN pip install --no-cache-dir ".[dev]"
+#12 CACHED
+
+#13 [7/7] COPY tests/ tests/
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 exporting manifest sha256:3f1beb63309bd3b5fd876c90b8b1cf509e578db08adc24b4dcb4ba9ad7cc0cbe 0.0s done
+#14 exporting config sha256:98277d89cfc5a25ea249004442e77ffc96874b25fb1f2f6cffa4b7f3e9fc2690
+#14 exporting config sha256:98277d89cfc5a25ea249004442e77ffc96874b25fb1f2f6cffa4b7f3e9fc2690 0.0s done
+#14 exporting attestation manifest sha256:f0d8dccc58a30bd765eaadc1f43310f40b22fb82606221e9d26a302c5b7025ad 0.0s done
+#14 exporting manifest list sha256:0d306968c4f3616380980722921dbfe99e5bbf18e724934a93fae486f0a8581d 0.0s done
+#14 naming to docker.io/library/lumina_prontuario_integracao-api:latest done
+#14 unpacking to docker.io/library/lumina_prontuario_integracao-api:latest
+#14 unpacking to docker.io/library/lumina_prontuario_integracao-api:latest 15.0s done
+#14 DONE 15.3s
+
+#15 resolving provenance for metadata file
+#15 DONE 0.1s
+ Image lumina_prontuario_integracao-api Built 
+ Network lumina_prontuario_integracao_default Creating 
+ Volume lumina_prontuario_integracao_integration_data Creating 
+ Network lumina_prontuario_integracao_default Creating 
+ Volume lumina_prontuario_integracao_integration_data Creating 
+ Volume lumina_prontuario_integracao_integration_data Created 
+ Volume lumina_prontuario_integracao_integration_data Created 
+ Network lumina_prontuario_integracao_default Created 
+ Network lumina_prontuario_integracao_default Created 
+ Container lumina_prontuario_integracao-db-1 Creating 
+ Container lumina_prontuario_integracao-db-1 Created 
+ Container lumina_prontuario_integracao-api-1 Creating 
+ Container lumina_prontuario_integracao-api-1 Created 
+ Container lumina_prontuario_integracao-db-1 Starting 
+ Container lumina_prontuario_integracao-db-1 Started 
+ Container lumina_prontuario_integracao-db-1 Waiting 
+ Container lumina_prontuario_integracao-db-1 Healthy 
+ Container lumina_prontuario_integracao-api-1 Starting 
+ Container lumina_prontuario_integracao-api-1 Started 
+ Container lumina_prontuario_integracao-db-1 Waiting 
+ Container lumina_prontuario_integracao-api-1 Waiting 
+ Container lumina_prontuario_integracao-db-1 Healthy 
+ Container lumina_prontuario_integracao-api-1 Healthy 
+NAME                                 IMAGE                              COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+lumina_prontuario_integracao-api-1   lumina_prontuario_integracao-api   "uvicorn app.main:ap…"   api       11 seconds ago   Up 5 seconds (healthy)    127.0.0.1:18100->8000/tcp
+lumina_prontuario_integracao-db-1    postgres:16-alpine                 "docker-entrypoint.s…"   db        12 seconds ago   Up 10 seconds (healthy)   127.0.0.1:55450->5432/tcp
+HTTP /health: 200
+HTTP /openapi.json: 200
+API clinica: http://localhost:18100/docs

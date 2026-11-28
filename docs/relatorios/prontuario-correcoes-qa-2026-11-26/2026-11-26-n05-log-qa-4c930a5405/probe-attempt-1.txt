@@ -1,0 +1,149 @@
+
+"""Sondagem independente N05. API real, sem editar loggers/CMD no ensaio."""
+import os,json,time,socket
+from pathlib import Path
+from urllib.parse import quote
+import httpx
+from sqlalchemy import create_engine,text
+BASE="http://api:8000"
+E=create_engine(os.environ["DATABASE_URL"])
+MARKERS=["QA26_QUERY_SENSITIVE_6147","QA26_CLINICAL_BODY_3821","QA26_UNICODE_ação_漢字",
+ "QA26_PARAMETER_NAME_9582","QA26_PATH_VALUE_6159","QA26_HEADER_VALUE_7513",
+ "QA26_HEADER_NAME_4927","QA26_INVALID_TOKEN_3945","QA26_EXCEPTION_5129","QA26_METHOD_8347"]
+R=[]
+tokens=[]
+def sensitive_save():
+ Path("/tmp/qa-sensitive.json").write_text(json.dumps({"markers":MARKERS,"tokens":tokens}))
+ Path("/tmp/qa-sensitive.json").chmod(0o600)
+def leak_forms(value):
+ values=[value]
+ for _ in range(2):
+  values += [quote(v,safe="") for v in list(values)]
+ return set(values)
+def noecho(response):
+ s=response.text
+ return not any(f in s for value in MARKERS+tokens for f in leak_forms(value))
+def request(method,path,token=None,body=None,params=None,headers=None):
+ h={MARKERS[6]:MARKERS[5],"X-QA-Clinical":MARKERS[5],"Connection":"close"}
+ if token:h["Authorization"]="Bearer "+token
+ if headers:h.update(headers)
+ with httpx.Client(base_url=BASE,timeout=30,headers=h) as c:
+  return c.request(method,path,json=body,params=params)
+def record(id,expected,fn):
+ try:
+  ok,observed=fn()
+  row={"id":id,"expected":expected,"obtained":observed,"status":"aprovado" if ok else "reprovado"}
+ except Exception as exc:
+  row={"id":id,"expected":expected,"obtained":{"qa_exception_type":type(exc).__name__},"status":"bloqueado"}
+ R.append(row)
+ Path("/tmp/qa-results.json").write_text(json.dumps(R,indent=2))
+ print("QA_CASE "+json.dumps(row),flush=True)
+ return row
+for _ in range(100):
+ try:
+  if request("GET","/health").status_code==200:break
+ except httpx.HTTPError:pass
+ time.sleep(.2)
+else:raise RuntimeError("API QA indisponivel")
+sensitive_save()
+r=request("POST","/api/v1/auth/login",body={"email":"dentista.demo@example.com","password":"DemoLumina2026!"})
+assert r.status_code==200
+access=r.json()["access_token"];tokens.append(access);sensitive_save()
+r=request("POST","/api/v1/auth/clinical-unlock",access,{"password":"ClinicaDemo2026!"})
+assert r.status_code==200
+clinical=r.json()["clinical_token"];tokens.append(clinical);sensitive_save()
+with E.connect() as db:
+ patients=db.execute(text("SELECT id FROM patients ORDER BY id")).scalars().all()
+ version=db.scalar(text("SHOW server_version"))
+assert len(patients)>=3 and version.startswith("16.")
+p=patients[0]
+record("F01-authentication","login e desbloqueio normais200",lambda:(bool(access and clinical),{"login_http":200,"unlock_http":200}))
+created=request("POST","/api/v1/evolutions",clinical,{"patient_id":p,"description":MARKERS[1]+" "+MARKERS[2]})
+record("F02-create-fixture","201;autor servidor;versao1",lambda:(created.status_code==201 and created.json().get("version")==1,{"http":created.status_code,"version":created.json().get("version")}))
+def search(mode):
+ r=request("GET","/api/v1/clinical/search",clinical,params={"patient_id":p,"q":MARKERS[1],"engine_name":mode})
+ b=r.json();engine=b.get("engine")
+ visible=any(MARKERS[1] in x.get("description","") for x in b.get("results",[]))
+ expected_engine="cpu" if mode=="cpu" else "opencl"
+ return r.status_code==200 and engine==expected_engine and visible,{"http":r.status_code,"engine":engine,"authorized_content_present":visible}
+for mode in ["cpu","auto","opencl"]:
+ record("F03-valid-"+mode,"200;resultado autorizado;motor efetivo esperado",lambda mode=mode:search(mode))
+def observe(id,path,expected,token=clinical,params=None,method="GET",body=None):
+ def run():
+  r=request(method,path,token,body,params)
+  private=noecho(r)
+  return r.status_code==expected and private,{"http":r.status_code,"no_echo":private}
+ record(id,str(expected)+";sem eco de corpo,query,nomes,headers ou tokens",run)
+observe("F04-original-422","/api/v1/clinical/search",422,params={"q":MARKERS[0]})
+observe("F05-unicode-encoded","/api/v1/clinical/search?q="+quote(MARKERS[2],safe=""),422)
+observe("F06-double-encoded","/api/v1/clinical/search?q="+quote(quote(MARKERS[2],safe=""),safe=""),422)
+observe("F07-sensitive-param-name","/api/v1/clinical/search",422,params={MARKERS[3]:MARKERS[0],"q":MARKERS[0]})
+observe("F08-invalid-patient","/api/v1/clinical/search",422,params={"patient_id":MARKERS[4],"q":MARKERS[0]})
+observe("F09-invalid-engine","/api/v1/clinical/search",422,params={"patient_id":p,"q":MARKERS[0],"engine_name":MARKERS[3]})
+observe("F10-clinical-body-422","/api/v1/evolutions",422,method="POST",body={"description":MARKERS[1],"notes":MARKERS[1],MARKERS[3]:MARKERS[2]})
+observe("F11-password-body-422","/api/v1/auth/login",422,token=None,method="POST",body={"email":"qa.invalid","password":{"entry":MARKERS[1]}})
+observe("F12-no-auth","/api/v1/clinical/search",401,token=None,params={"patient_id":p,"q":MARKERS[0]})
+observe("F13-invalid-token","/api/v1/clinical/search",401,token=MARKERS[7],params={"patient_id":p,"q":MARKERS[0]})
+observe("F14-no-link","/api/v1/clinical/search",403,params={"patient_id":patients[2],"q":MARKERS[0]})
+observe("F15-unknown-route","/unknown/"+MARKERS[4],404,params={MARKERS[3]:MARKERS[0]})
+observe("F16-unknown-unicode","/unknown/"+quote(MARKERS[2],safe=""),404,params={"q":quote(MARKERS[0],safe="")})
+observe("F17-parametrized-invalid","/api/v1/patients/"+MARKERS[4]+"/record",422,params={"q":MARKERS[0]})
+# Authorized content is not itself an error/leak.
+def record_route():
+ r=request("GET",f"/api/v1/patients/{p}/record",clinical,params={"q":MARKERS[0]})
+ return r.status_code==200,{"http":r.status_code,"template_expected":"/api/v1/patients/{patient_id}/record"}
+record("F18-parametrized-authorized","200;log usa template sem valor do id",record_route)
+# A real SQL exception containing a fictitious clinical marker; no app monkeypatch.
+def sql_failure():
+ with E.begin() as db:
+  before=db.scalar(text("SELECT count(*) FROM clinical_evolutions"))
+  db.execute(text("CREATE FUNCTION qa_n05_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'QA26_EXCEPTION_5129 %', NEW.description; END $$"))
+  db.execute(text("CREATE TRIGGER qa_n05_failure BEFORE INSERT ON clinical_evolutions FOR EACH ROW EXECUTE FUNCTION qa_n05_failure()"))
+ try:
+  r=request("POST","/api/v1/evolutions?q="+quote(MARKERS[0],safe=""),clinical,{"patient_id":p,"description":MARKERS[1],"notes":MARKERS[2]})
+ finally:
+  with E.begin() as db:
+   db.execute(text("DROP TRIGGER qa_n05_failure ON clinical_evolutions"));db.execute(text("DROP FUNCTION qa_n05_failure()"))
+ with E.connect() as db:after=db.scalar(text("SELECT count(*) FROM clinical_evolutions"))
+ return r.status_code==500 and noecho(r) and before==after,{"http":r.status_code,"no_echo":noecho(r),"evolutions_count_unchanged":before==after,"error":"real PostgreSQL trigger; only scratch DB"}
+record("F19-real-sql-error","500 sem eco;rollback;evento operacional no stderr",sql_failure)
+def raw_send(method,path,version,malformed=False):
+ data=method+" "+path+" HTTP/"+version+"
+Host: api
+Connection: close
+"
+ data+=("Bad Header
+" if malformed else MARKERS[6]+": "+MARKERS[5]+"
+")
+ data+="
+"
+ with socket.create_connection(("api",8000),timeout=5) as sock:
+  sock.sendall(data.encode());sock.settimeout(10);chunks=[]
+  while True:
+   x=sock.recv(65536)
+   if not x:break
+   chunks.append(x)
+ raw=b"".join(chunks).decode(errors="replace")
+ status=int(raw.split(" ",2)[1])
+ private=not any(v in raw for v in MARKERS+tokens)
+ return status,private
+for v in ["1.0","1.1"]:
+ def run(v=v):
+  status,private=raw_send("GET","/health?q="+quote(MARKERS[2],safe=""),v)
+  return status==200 and private,{"http":status,"request_http_version":v,"no_echo":private}
+ record("F20-http-"+v,"200;versao de request preservada em access log",run)
+def malformed():
+ status,private=raw_send("GET","/?q="+MARKERS[0],"1.1",True)
+ return status==400 and private,{"http":status,"no_echo":private}
+record("F21-malformed-http","400;evento sem entrada enviada",malformed)
+def other_method():
+ status,private=raw_send(MARKERS[9],"/health?q="+MARKERS[0],"1.1")
+ return status==405 and private,{"http":status,"no_echo":private,"log_method_expected":"OTHER"}
+record("F22-unrecognized-method","405;metodo arbitrario nao ecoado no log",other_method)
+# OpenAPI contract comparison happens outside from a generated JSON, no content in logs.
+schema=request("GET","/openapi.json")
+assert schema.status_code==200
+Path("/tmp/qa-openapi.json").write_text(json.dumps(schema.json()))
+with E.connect() as db:
+ Path("/tmp/qa-pg-version.txt").write_text(db.scalar(text("SHOW server_version")))
+print(json.dumps({"cases":len(R),"statuses":{s:sum(x["status"]==s for x in R) for s in ["aprovado","reprovado","bloqueado"]},"new_http":True}),flush=True)

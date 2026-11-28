@@ -1,0 +1,1113 @@
+--- 4ccdc30/.dockerignore
++++ pacote/.dockerignore
+@@ -0,0 +1,5 @@
++.env
++.git
++.venv
++__pycache__
++.pytest_cache
+--- 4ccdc30/.env.example
++++ pacote/.env.example
+@@ -0,0 +1,2 @@
++DATABASE_URL=postgresql+psycopg://lumina:lumina@localhost:5432/lumina
++JWT_SECRET=SUBSTITUA_POR_UMA_CHAVE_ALEATORIA_DE_PELO_MENOS_32_CARACTERES
+--- 4ccdc30/.gitignore
++++ pacote/.gitignore
+@@ -0,0 +1,5 @@
++.env
++.venv/
++__pycache__/
++*.pyc
++.pytest_cache/
+--- 4ccdc30/Dockerfile
++++ pacote/Dockerfile
+@@ -2,6 +2,7 @@
+ WORKDIR /app
+ RUN apt-get update && apt-get install -y --no-install-recommends ocl-icd-libopencl1 pocl-opencl-icd && rm -rf /var/lib/apt/lists/*
+ COPY pyproject.toml .
+-RUN pip install --no-cache-dir .
++RUN pip install --no-cache-dir ".[dev]"
+ COPY app/ app/
++COPY tests/ tests/
+ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+--- 4ccdc30/QA_CORRECOES.md
++++ pacote/QA_CORRECOES.md
+@@ -0,0 +1,20 @@
++# Correções propostas — QA 23/11/2026, candidata 4ccdc30
++
++Base: ZIP fornecido, não checkout Git. O ZIP já continha .env.example e sql/; o schema permanece byte a byte igual ao SHA-256 do PR18 informado no PDF: `2ca830bda08ba3711f69408fe5848a5fd3304156373020f90310b04e746eda81`.
++
++| Ficha | Alteração | Reteste necessário |
++|---|---|---|
++| N01 | Lock e autorização antes de selecionar candidatos; libera durante processamento e revalida com lock antes de devolver | Corrida real PostgreSQL, CPU e OpenCL, inclusive durante kernel |
++| N02 | DTO remove scheduled_period interno de listagem, detalhe e mutações; casts de filtros opcionais | GET/PATCH/DELETE e estado persistido |
++| N03 | Mantidos arquivos de inicialização presentes no ZIP; .gitignore e .dockerignore adicionados | Checkout limpo, compose config, build, seed |
++| N04 | Revogação permite paciente/dentista inativo da mesma clínica; concessão continua exigindo ativos | Evento, auditoria, isolamento e reativação |
++| N05 | Handler 422 sem input, ctx ou mensagens que ecoem dados | Sentinelas na resposta e logs |
++| N06 | patient_id obrigatório e filtro por paciente | Dois vinculados e um não vinculado |
++| N07 | version inteiro estrito positivo | PATCH e finalize, tipos inválidos e versão antiga |
++| N08 | Normalização validada antes de selecionar motor; CPU também rejeita vazio | Todos os motores, Unicode |
++
++Decisões propostas: 422 para termo inválido; patient_id obrigatório; scheduled_period não faz parte do DTO público; 413 para orçamento excedido; paginação por candidatos com next_offset (não por resultados). Confirmar com Tech Lead. Também removidos hashes de senha das respostas de atualização de usuários.
++
++Validação local: compileall aprovado; pytest: 4 aprovados, 2 skips (runtime OpenCL e módulo de contrato por falta de psycopg/pwdlib). Docker e PostgreSQL não disponíveis. Não há novo SHA Git nem aceite QA. Os oito defeitos permanecem sujeitos a reteste. A rechecagem de autorização estabelece a ordem transacional antes da serialização; não garante revogação retroativa de dados já enviados. Não foi executada a corrida real nem validada a integração com frontend.
++
++Pendências do relatório: política de exportação, transição API antiga/PR18, inativação durante espera, corrida durante kernel, mais de 1000 candidatos, orçamento de bytes, resets, navegador, conteúdo vencedor e política de rate limit. Migrações históricas não fornecidas no ZIP; não foram recriadas. Execute a suíte original no repositório que contém Alembic. Não use dados reais antes do aceite.
+--- 4ccdc30/README.md
++++ pacote/README.md
+@@ -30,7 +30,7 @@
+ | Evoluções | `GET /patients/{id}/evolutions`, `GET /evolutions/{id}`, `POST /evolutions`, `PATCH /evolutions/{id}`, `POST /evolutions/{id}/finalize` | Dentista autorizado; somente autor edita rascunho |
+ | Acesso clínico | `POST /admin/access`, `GET /access-links`, `GET /access-events` | Admin |
+ | Auditoria | `GET /audit-logs` | Admin |
+-| Pesquisa | `GET /clinical/search?q=...&engine_name=auto` | Dentista com token clínico |
++| Pesquisa | `GET /clinical/search?patient_id=1&q=...&engine_name=auto` | Dentista com token clínico |
+ | Senhas | `POST /admin/users/{id}/reset-login-password` | Admin |
+ 
+ **Exclusão física não é oferecida** para registros clínicos, eventos, auditoria ou vínculos, para preservar o histórico. Pacientes e usuários são desativados; agendamentos são cancelados. Os eventos de acesso são imutáveis por gatilho PostgreSQL. Paciente e prontuário são criados na mesma transação; agendamento, concessão/reativação de vínculo e evento também.
+@@ -45,7 +45,7 @@
+ 
+ ## OpenCL
+ 
+-A pesquisa seleciona os candidatos autorizados no PostgreSQL **antes** de transferir descrições ao motor de busca. O parâmetro `engine_name=auto` tenta OpenCL e utiliza CPU quando o runtime não está disponível; `cpu` força busca sequencial; `opencl` exige OpenCL e devolve HTTP 503 se indisponível. O Dockerfile instala POCL para OpenCL via CPU; aceleração em GPU física requer drivers e exposição explícita do dispositivo. O processamento é literal, insensível a maiúsculas e acentos. A pesquisa tem limite de 1.000 candidatos por requisição: não equivale a busca paginada de todo o histórico.
++A pesquisa seleciona os candidatos autorizados no PostgreSQL **antes** de transferir descrições ao motor de busca. O parâmetro `engine_name=auto` tenta OpenCL e utiliza CPU quando o runtime não está disponível; `cpu` força busca sequencial; `opencl` exige OpenCL e devolve HTTP 503 se indisponível. O Dockerfile instala POCL para OpenCL via CPU; aceleração em GPU física requer drivers e exposição explícita do dispositivo. O processamento é literal, insensível a maiúsculas e acentos. A pesquisa exige `patient_id`, processa até 1.000 candidatos por página e retorna `next_offset` quando há mais candidatos. `total` conta os resultados da página. O orçamento de bytes retorna 413; termo vazio após normalização retorna 422 em todos os motores. A autorização é conferida antes e depois do processamento.
+ 
+ ## Estrutura
+ 
+@@ -59,4 +59,8 @@
+ 
+ ## Importante para implantação
+ 
+-O pacote está **preparado para integração com o frontend**, mas **não está homologado para produção**. Não foram fornecidas as revisões originais Alembic, portanto não foram inventadas migrações históricas. O `verify_disposable.sh` original exige esses arquivos para executar a suíte completa. São necessários testes reais de concorrência, segurança, permissões e LGPD, estratégia de backup/restauração, migrações versionadas e revisão do uso de dados clínicos antes de usar pacientes reais. A aplicação não cria ou altera tabelas automaticamente em runtime.
++O pacote está **candidato a reteste de QA**, mas **não está homologado para produção**. Não foram fornecidas as revisões originais Alembic, portanto não foram inventadas migrações históricas. O `verify_disposable.sh` original exige esses arquivos para executar a suíte completa. São necessários testes reais de concorrência, segurança, permissões e LGPD, estratégia de backup/restauração, migrações versionadas e revisão do uso de dados clínicos antes de usar pacientes reais. A aplicação não cria ou altera tabelas automaticamente em runtime.
++
++## Reteste
++
++Execute `docker compose config` após copiar `.env.example`. Para testes: `docker compose run --rm api python -m pytest -q` (imagem inclui dependências de teste). Consulte `QA_CORRECOES.md`.
+--- 4ccdc30/app/crud.py
++++ pacote/app/crud.py
+@@ -63,6 +63,11 @@
+     offset: int = Field(default=0, ge=0)
+ 
+ 
++def appointment_dto(row):
++    # scheduled_period is an internal PostgreSQL range, not a public field.
++    return {k: v for k, v in row.items() if k != 'scheduled_period'}
++
++
+ def install(app):
+     from app import main as m
+     def require_role(user, *roles):
+@@ -74,8 +79,11 @@
+             if row is None:
+                 raise HTTPException(404, 'Registro não encontrado')
+             m.audit(db, user['id'], action, resource, str(identifier if identifier is not None else row['id']))
++            result = appointment_dto(row) if resource == "appointment" else dict(row)
++            if resource == "user":
++                result = {k: v for k, v in result.items() if k not in ("password_hash", "clinical_password_hash", "session_version", "clinical_version")}
+             db.commit()
+-            return dict(row)
++            return result
+         except IntegrityError:
+             db.rollback()
+             raise HTTPException(409, 'Conflito de integridade ou duplicidade')
+@@ -206,11 +214,11 @@
+         require_role(user,'ADMINISTRATOR','RECEPTIONIST','DENTIST')
+         if user['role']=='DENTIST':
+             dentist_id=m.dentist_for(db,user)
+-        return m.allrows(db,'''SELECT a.* FROM appointments a WHERE a.clinic_id=:clinic
+-            AND (:patient IS NULL OR a.patient_id=:patient)
+-            AND (:dentist IS NULL OR a.dentist_id=:dentist)
++        return [appointment_dto(row) for row in m.allrows(db,'''SELECT a.* FROM appointments a WHERE a.clinic_id=:clinic
++            AND (CAST(:patient AS INTEGER) IS NULL OR a.patient_id=:patient)
++            AND (CAST(:dentist AS INTEGER) IS NULL OR a.dentist_id=:dentist)
+             ORDER BY a.scheduled_at DESC LIMIT :limit OFFSET :offset''',
+-            clinic=user['clinic_id'],patient=patient_id,dentist=dentist_id,limit=limit,offset=offset)
++            clinic=user['clinic_id'],patient=patient_id,dentist=dentist_id,limit=limit,offset=offset)]
+ 
+     @router.get('/appointments/{appointment_id}',tags=['Agendamentos'])
+     def appointment_get(appointment_id:int,user=Depends(m.access_user),db=Depends(m.db_dep)):
+@@ -219,7 +227,7 @@
+         m.require(row is not None,404,'Agendamento não encontrado')
+         if user['role']=='DENTIST':
+             m.require(row['dentist_id']==m.dentist_for(db,user),403,'Sem acesso a este agendamento')
+-        return dict(row)
++        return appointment_dto(row)
+ 
+     @router.patch('/appointments/{appointment_id}',tags=['Agendamentos'])
+     def appointment_update(appointment_id:int,body:AppointmentPatch,user=Depends(m.access_user),db=Depends(m.db_dep)):
+@@ -264,8 +272,8 @@
+                      user=Depends(m.access_user),db=Depends(m.db_dep)):
+         require_role(user,'ADMINISTRATOR')
+         return m.allrows(db,'''SELECT * FROM clinical_access_links WHERE clinic_id=:clinic
+-            AND (:patient IS NULL OR patient_id=:patient)
+-            AND (:dentist IS NULL OR dentist_id=:dentist)
++            AND (CAST(:patient AS INTEGER) IS NULL OR patient_id=:patient)
++            AND (CAST(:dentist AS INTEGER) IS NULL OR dentist_id=:dentist)
+             ORDER BY id LIMIT :limit OFFSET :offset''',clinic=user['clinic_id'],patient=patient_id,
+             dentist=dentist_id,limit=limit,offset=offset)
+ 
+@@ -274,7 +282,7 @@
+                       user=Depends(m.access_user),db=Depends(m.db_dep)):
+         require_role(user,'ADMINISTRATOR')
+         return m.allrows(db,'''SELECT e.* FROM clinical_access_events e JOIN clinical_access_links l ON l.id=e.link_id
+-            WHERE l.clinic_id=:clinic AND (:link IS NULL OR e.link_id=:link)
++            WHERE l.clinic_id=:clinic AND (CAST(:link AS INTEGER) IS NULL OR e.link_id=:link)
+             ORDER BY e.id DESC LIMIT :limit OFFSET :offset''',
+             clinic=user['clinic_id'],link=link_id,limit=limit,offset=offset)
+ 
+--- 4ccdc30/app/main.py
++++ pacote/app/main.py
+@@ -3,7 +3,9 @@
+ from functools import lru_cache
+ import os
+ import jwt
+-from fastapi import FastAPI, Depends, HTTPException
++from fastapi import FastAPI, Depends, HTTPException, Request, Query
++from fastapi.exceptions import RequestValidationError
++from fastapi.responses import JSONResponse
+ from fastapi.middleware.cors import CORSMiddleware
+ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+ from pydantic import BaseModel, Field
+@@ -11,16 +13,30 @@
+ from sqlalchemy import create_engine, text
+ from sqlalchemy.exc import IntegrityError
+ from sqlalchemy.orm import Session, sessionmaker
+-from app.opencl_search import OpenCLSearch, OpenCLUnavailable, sequential_search
+-
+-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql+psycopg://lumina:lumina@localhost:5432/lumina')
+-JWT_SECRET = os.getenv('JWT_SECRET', '')
++from app.opencl_search import OpenCLSearch, OpenCLUnavailable, sequential_search, normalize
++from app.config import settings
++
++DATABASE_URL = settings.database_url
++JWT_SECRET = settings.jwt_secret
+ engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+ SessionLocal = sessionmaker(bind=engine)
+ hasher = PasswordHash.recommended()
+ bearer = HTTPBearer(auto_error=False)
+ app = FastAPI(title='Lumina Odonto - API REST', version='2.0.0')
+ app.add_middleware(CORSMiddleware, allow_origins=[x.strip() for x in os.getenv('CORS_ORIGINS','http://localhost:3000').split(',') if x.strip()], allow_methods=['GET','POST','PATCH','DELETE'], allow_headers=['Authorization','Content-Type'])
++
++@app.exception_handler(RequestValidationError)
++async def private_validation_error(request: Request, exc: RequestValidationError):
++    # Never return input, context, custom messages or arbitrary field names.
++    known = {'body', 'query', 'path', 'header', 'patient_id', 'dentist_id',
++             'description', 'notes', 'procedure_performed', 'appointment_id',
++             'version', 'q', 'engine_name', 'offset', 'limit', 'email', 'password',
++             'new_password', 'scheduled_at', 'duration_minutes', 'status',
++             'full_name', 'cpf', 'birth_date', 'medical_record_number', 'action'}
++    return JSONResponse(status_code=422, content={'detail': [
++        {'loc': [part if isinstance(part, str) and part in known else 'field'
++                 for part in error['loc']], 'msg': 'Campo ausente ou inválido',
++         'type': 'validation_error'} for error in exc.errors()]})
+ 
+ class Login(BaseModel):
+     email: str
+@@ -45,12 +61,12 @@
+     procedure_performed: str | None = None
+     notes: str | None = None
+ class EvolutionPatch(BaseModel):
+-    version: int = Field(ge=1)
++    version: int = Field(ge=1, strict=True)
+     description: str | None = None
+     procedure_performed: str | None = None
+     notes: str | None = None
+ class FinalizeIn(BaseModel):
+-    version: int = Field(ge=1)
++    version: int = Field(ge=1, strict=True)
+ class AdminAccess(BaseModel):
+     patient_id: int
+     dentist_id: int
+@@ -107,15 +123,15 @@
+     require(d is not None, 403, 'Perfil profissional inexistente')
+     return d['id']
+ 
+-def patient_for(db, clinic_id, patient_id):
+-    p = one(db, 'SELECT * FROM patients WHERE id=:id AND clinic_id=:clinic AND is_active',
++def patient_for(db, clinic_id, patient_id, active=True):
++    p = one(db, 'SELECT * FROM patients WHERE id=:id AND clinic_id=:clinic' + (' AND is_active' if active else ''),
+             id=patient_id, clinic=clinic_id)
+     require(p is not None, 404, 'Paciente não encontrado')
+     return p
+ 
+-def dentist_in_clinic(db, clinic_id, dentist_id):
++def dentist_in_clinic(db, clinic_id, dentist_id, active=True):
+     d = one(db, '''SELECT d.id FROM dentists d JOIN users u ON u.id=d.user_id
+-        WHERE d.id=:id AND u.clinic_id=:clinic AND u.is_active AND u.role='DENTIST' ''',
++        WHERE d.id=:id AND u.clinic_id=:clinic AND u.role='DENTIST' ''' + (' AND u.is_active' if active else ''),
+         id=dentist_id, clinic=clinic_id)
+     require(d is not None, 422, 'Dentista incompatível com a clínica')
+ 
+@@ -127,10 +143,19 @@
+     return one(db, query, clinic=clinic_id, patient=patient_id, dentist=dentist_id)
+ 
+ def allowed(db, user, patient_id, lock=False):
+-    patient_for(db, user['clinic_id'], patient_id)
++    # Check the current state, not the identity snapshot from token decoding.
+     dentist = dentist_for(db, user)
+     link = link_for(db, user['clinic_id'], patient_id, dentist, lock)
+     require(link and link['status'] == 'ACTIVE', 403, 'Acesso clínico não autorizado')
++    current = one(db, 'SELECT * FROM users WHERE id=:id', id=user['id'])
++    require(current and current['is_active'] and current['role'] == 'DENTIST'
++            and current['clinic_id'] == user['clinic_id']
++            and current['session_version'] == user['session_version']
++            and current['clinical_version'] == user['clinical_version'], 401, 'Sessão inválida')
++    clinic = one(db, 'SELECT is_active FROM clinics WHERE id=:id', id=user['clinic_id'])
++    require(clinic and clinic['is_active'], 403, 'Clínica inativa')
++    patient_for(db, user['clinic_id'], patient_id)
++    require(dentist_for(db, user) == dentist, 403, 'Perfil profissional alterado')
+     return dentist
+ 
+ def record_for(db, patient_id):
+@@ -144,10 +169,12 @@
+ 
+ def change_link(db, actor, patient_id, dentist_id, source, action=None, appointment=None):
+     clinic = actor['clinic_id']
+-    patient_for(db, clinic, patient_id)
+-    dentist_in_clinic(db, clinic, dentist_id)
++    revoking = source == "ADMIN" and action == "REVOKED"
++    patient_for(db, clinic, patient_id, active=not revoking)
++    dentist_in_clinic(db, clinic, dentist_id, active=not revoking)
+     # Lock de paciente serializa criação e alteração do vínculo para o mesmo paciente.
+     db.execute(text('SELECT id FROM patients WHERE id=:id FOR UPDATE'), {'id': patient_id})
++    patient_for(db, clinic, patient_id, active=not revoking)
+     link = link_for(db, clinic, patient_id, dentist_id, lock=True)
+     if source == 'APPOINTMENT':
+         require(appointment is not None, 422, 'Consulta necessária')
+@@ -330,34 +357,40 @@
+     return OpenCLSearch()
+ 
+ @app.get('/api/v1/clinical/search')
+-def search(q: str, engine_name: str = 'auto', user=Depends(clinical_user), db: Session = Depends(db_dep)):
+-    require(0 < len(q.strip()) <= 128, 422, 'Termo deve ter entre 1 e 128 caracteres')
++def search(q: str, patient_id: int = Query(gt=0), engine_name: str = 'auto',
++           offset: int = Query(0, ge=0), user=Depends(clinical_user), db: Session = Depends(db_dep)):
++    require(0 < len(q.strip()) <= 128 and bool(normalize(q).strip()), 422, 'Termo inválido')
+     require(engine_name in ('auto','cpu','opencl'), 422, 'Motor inválido')
+-    dentist = dentist_for(db, user)
+-    # A consulta SQL restringe clínica, vínculo ativo e privacidade dos rascunhos ANTES de usar OpenCL.
+-    rows = allrows(db, '''SELECT e.id,e.description,e.status,e.dentist_id,r.patient_id
++    # Wait for any existing revocation BEFORE fetching clinical content.
++    dentist = allowed(db, user, patient_id, lock=True)
++    rows = allrows(db, """SELECT e.id,e.description,e.status,e.dentist_id,r.patient_id
+         FROM clinical_evolutions e JOIN medical_records r ON r.id=e.medical_record_id
+-        JOIN patients p ON p.id=r.patient_id
+-        JOIN clinical_access_links l ON l.patient_id=p.id AND l.clinic_id=p.clinic_id
+-        WHERE p.clinic_id=:clinic AND p.is_active AND l.dentist_id=:dentist AND l.status='ACTIVE'
++        WHERE r.patient_id=:patient
+           AND (e.status='FINALIZED' OR (e.status='DRAFT' AND e.dentist_id=:dentist))
+-        ORDER BY e.id LIMIT 1000''', clinic=user['clinic_id'], dentist=dentist)
+-    # Mantém locks compartilhados nos vínculos até a leitura ser concluída.
+-    db.execute(text('''SELECT id FROM clinical_access_links WHERE clinic_id=:clinic AND dentist_id=:dentist
+-        AND status='ACTIVE' FOR SHARE'''), {'clinic': user['clinic_id'], 'dentist': dentist}).all()
++        ORDER BY e.id LIMIT 1001 OFFSET :offset""", patient=patient_id, dentist=dentist, offset=offset)
++    more = len(rows) > 1000
++    rows = rows[:1000]
++    # Release locks during computation so a revocation can complete.
++    db.rollback()
+     texts = [r['description'] for r in rows]
++    require(sum(len(normalize(t).encode('utf-8')) for t in texts) <= settings.opencl_max_text_bytes,
++            413, 'Lote excede orçamento de bytes')
+     used = 'cpu'
+     if engine_name != 'cpu':
+         try:
+             indexes = opencl_engine().search(texts, q)
+             used = 'opencl'
+-        except (OpenCLUnavailable, ValueError, RuntimeError) as exc:
++        except (OpenCLUnavailable, ValueError, RuntimeError):
+             if engine_name == 'opencl':
+-                raise HTTPException(503, f'OpenCL indisponível: {type(exc).__name__}')
++                raise HTTPException(503, 'OpenCL indisponível')
+             indexes = sequential_search(texts, q)
+     else:
+         indexes = sequential_search(texts, q)
+-    return {'engine': used, 'total': len(indexes), 'results': [rows[i] for i in indexes], 'candidate_limit': 1000}
++    # Fresh transaction, recheck authorization after the kernel and lock until
++    # response serialization. A revocation committed during compute wins.
++    require(allowed(db, user, patient_id, lock=True) == dentist)
++    return {'engine': used, 'total': len(indexes), 'results': [rows[i] for i in indexes],
++            'candidate_limit': 1000, 'offset': offset, 'next_offset': offset + 1000 if more else None}
+ 
+ @app.post('/api/v1/admin/users/{user_id}/reset-login-password')
+ def reset_login(user_id: int, body: PasswordReset, user=Depends(access_user), db: Session = Depends(db_dep)):
+--- 4ccdc30/app/opencl_search.py
++++ pacote/app/opencl_search.py
+@@ -17,6 +17,8 @@
+ 
+ def sequential_search(texts: list[str], term: str) -> list[int]:
+     needle = normalize(term)
++    if not needle.strip():
++        raise ValueError("Termo de busca inválido")
+     return [i for i, text in enumerate(texts) if needle in normalize(text)]
+ 
+ class OpenCLUnavailable(RuntimeError):
+@@ -47,10 +49,10 @@
+     def search(self, texts: list[str], term: str) -> list[int]:
+         needle = normalize(term).encode("utf-8")
+         encoded = [normalize(t).encode("utf-8") for t in texts]
++        if not needle.strip() or len(needle) > settings.opencl_max_term_chars * 4:
++            raise ValueError("Termo de busca inválido.")
+         if not encoded:
+             return []
+-        if len(needle) == 0 or len(needle) > settings.opencl_max_term_chars * 4:
+-            raise ValueError("Termo de busca inválido.")
+         total = sum(map(len, encoded))
+         if total > settings.opencl_max_text_bytes:
+             raise ValueError("Lote de busca excede o limite configurado.")
+@@ -58,7 +60,7 @@
+         for i, item in enumerate(encoded):
+             offsets[i + 1] = offsets[i] + len(item)
+         blob = b"".join(encoded)
+-        haystack = np.frombuffer(blob, dtype=np.uint8).copy()
++        haystack = np.frombuffer(blob or b"\x00", dtype=np.uint8).copy()
+         needle_arr = np.frombuffer(needle, dtype=np.uint8).copy()
+         result = np.zeros(len(encoded), dtype=np.uint8)
+         mf = cl.mem_flags
+@@ -67,8 +69,9 @@
+         o_buf = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=offsets)
+         n_buf = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=needle_arr)
+         r_buf = cl.Buffer(self.ctx, mf.WRITE_ONLY, result.nbytes)
++        queue = cl.CommandQueue(self.ctx)
+         kernel = self.program.contains_bytes
+-        kernel(self.queue, (len(encoded),), None, h_buf, o_buf, np.uint64(len(encoded)),
++        kernel(queue, (len(encoded),), None, h_buf, o_buf, np.uint64(len(encoded)),
+                n_buf, np.uint64(len(needle_arr)), r_buf)
+-        cl.enqueue_copy(self.queue, result, r_buf).wait()
++        cl.enqueue_copy(queue, result, r_buf).wait()
+         return np.flatnonzero(result).astype(int).tolist()
+--- 4ccdc30/sql/check_clinical_schema.sql
++++ pacote/sql/check_clinical_schema.sql
+@@ -0,0 +1,208 @@
++-- Verificações reproduzíveis; execute somente em banco descartável.
++-- Comando: psql -v ON_ERROR_STOP=1 -f check_clinical_schema.sql
++-- As linhas inseridas são revertidas ao final; sequências podem avançar.
++\set ON_ERROR_STOP on
++BEGIN;
++
++DO $$
++DECLARE
++    clinic_key INTEGER;
++    admin_key INTEGER;
++    dentist_user_key INTEGER;
++    dentist_key INTEGER;
++    patient_key INTEGER;
++    record_key INTEGER;
++    appointment_key INTEGER;
++    adjacent_key INTEGER;
++    link_key INTEGER;
++    event_key INTEGER;
++BEGIN
++    INSERT INTO clinics (name, cnpj, email)
++    VALUES ('Verificação descartável', '99999999000199', 'schema-check@example.test')
++    RETURNING id INTO clinic_key;
++    INSERT INTO users (clinic_id, full_name, email, password_hash, cpf, role)
++    VALUES (clinic_key, 'Administrador de teste', 'admin-check@example.test',
++        'sem-login', '99999999991', 'ADMINISTRATOR')
++    RETURNING id INTO admin_key;
++    INSERT INTO users (clinic_id, full_name, email, password_hash, cpf, role)
++    VALUES (clinic_key, 'Dentista de teste', 'dentist-check@example.test',
++        'sem-login', '99999999992', 'DENTIST')
++    RETURNING id INTO dentist_user_key;
++    INSERT INTO dentists (user_id, cro_number, cro_state)
++    VALUES (dentist_user_key, 'CHECK-999', 'SP') RETURNING id INTO dentist_key;
++    INSERT INTO patients (clinic_id, full_name, cpf, medical_record_number, birth_date)
++    VALUES (clinic_key, 'Paciente de teste', '99999999993', 'CHECK-999', '1990-01-01')
++    RETURNING id INTO patient_key;
++    INSERT INTO medical_records (patient_id)
++    VALUES (patient_key) RETURNING id INTO record_key;
++    BEGIN
++        INSERT INTO medical_records (patient_id) VALUES (patient_key);
++        RAISE EXCEPTION 'Falhou: prontuário duplicado aceito';
++    EXCEPTION WHEN unique_violation THEN NULL;
++    END;
++    IF EXISTS (SELECT 1 FROM users WHERE id = admin_key
++        AND (session_version <> 1 OR clinical_version <> 1)) THEN
++        RAISE EXCEPTION 'Falhou: versões iniciais do usuário';
++    END IF;
++    BEGIN
++        UPDATE users SET session_version = 0 WHERE id = admin_key;
++        RAISE EXCEPTION 'Falhou: versão de sessão inválida aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    BEGIN
++        UPDATE users SET clinical_version = 0 WHERE id = admin_key;
++        RAISE EXCEPTION 'Falhou: versão clínica inválida aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++
++    INSERT INTO appointments (clinic_id, patient_id, dentist_id, scheduled_at)
++    VALUES (clinic_key, patient_key, dentist_key, '2099-01-15 10:00:00+00')
++    RETURNING id INTO appointment_key;
++    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id = appointment_key
++        AND scheduled_period = tstzrange(
++            '2099-01-15 10:00:00+00', '2099-01-15 10:30:00+00', '[)')) THEN
++        RAISE EXCEPTION 'Falhou: período não calculado';
++    END IF;
++    INSERT INTO appointments (clinic_id, patient_id, dentist_id, scheduled_at)
++    VALUES (clinic_key, patient_key, dentist_key, '2099-01-15 10:30:00+00')
++    RETURNING id INTO adjacent_key;
++    BEGIN
++        INSERT INTO appointments (clinic_id, patient_id, dentist_id, scheduled_at)
++        VALUES (clinic_key, patient_key, dentist_key, '2099-01-15 10:15:00+00');
++        RAISE EXCEPTION 'Falhou: sobreposição ativa aceita';
++    EXCEPTION WHEN exclusion_violation THEN NULL;
++    END;
++    INSERT INTO appointments (clinic_id, patient_id, dentist_id, scheduled_at, status)
++    VALUES (clinic_key, patient_key, dentist_key, '2099-01-15 10:15:00+00', 'CANCELED');
++    BEGIN
++        UPDATE appointments SET duration_minutes = 0 WHERE id = appointment_key;
++        RAISE EXCEPTION 'Falhou: duração inválida aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++
++    INSERT INTO clinical_evolutions (medical_record_id, dentist_id, description)
++    VALUES (record_key, dentist_key, 'Descrição válida, sem consulta vinculada');
++    BEGIN
++        INSERT INTO clinical_evolutions (medical_record_id, dentist_id, description)
++        VALUES (record_key, dentist_key, '   ');
++        RAISE EXCEPTION 'Falhou: descrição vazia aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    BEGIN
++        INSERT INTO clinical_evolutions (medical_record_id, dentist_id, description)
++        VALUES (record_key, dentist_key, E'\t\n\r ');
++        RAISE EXCEPTION 'Falhou: descrição apenas com caracteres de espaço aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    BEGIN
++        INSERT INTO clinical_evolutions (medical_record_id, dentist_id, description, version)
++        VALUES (record_key, dentist_key, 'Descrição', 0);
++        RAISE EXCEPTION 'Falhou: versão inválida da evolução aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    BEGIN
++        INSERT INTO clinical_evolutions (medical_record_id, dentist_id, description, status)
++        VALUES (record_key, dentist_key, 'Descrição', 'FINALIZED');
++        RAISE EXCEPTION 'Falhou: finalização sem data aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    BEGIN
++        INSERT INTO clinical_evolutions (
++            medical_record_id, dentist_id, description, finalized_at)
++        VALUES (record_key, dentist_key, 'Descrição', now());
++        RAISE EXCEPTION 'Falhou: rascunho com data de finalização aceito';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    INSERT INTO clinical_evolutions (
++        medical_record_id, dentist_id, description, status, finalized_at)
++    VALUES (record_key, dentist_key, 'Finalização válida', 'FINALIZED', now());
++
++    INSERT INTO clinical_access_links (clinic_id, patient_id, dentist_id)
++    VALUES (clinic_key, patient_key, dentist_key) RETURNING id INTO link_key;
++    BEGIN
++        INSERT INTO clinical_access_links (clinic_id, patient_id, dentist_id)
++        VALUES (clinic_key, patient_key, dentist_key);
++        RAISE EXCEPTION 'Falhou: vínculo duplicado aceito';
++    EXCEPTION WHEN unique_violation THEN NULL;
++    END;
++    INSERT INTO clinical_access_events (
++        link_id, action, actor_user_id, appointment_id, source,
++        appointment_scheduled_at, link_version)
++    VALUES (link_key, 'GRANTED', admin_key, appointment_key, 'APPOINTMENT',
++        '2099-01-15 10:00:00+00', 1) RETURNING id INTO event_key;
++    BEGIN
++        INSERT INTO clinical_access_events (
++            link_id, action, actor_user_id, appointment_id, source,
++            appointment_scheduled_at, link_version)
++        VALUES (link_key, 'REACTIVATED', admin_key, appointment_key, 'APPOINTMENT',
++            '2099-01-15 10:00:00+00', 2);
++        RAISE EXCEPTION 'Falhou: consulta repetida concedeu acesso';
++    EXCEPTION WHEN unique_violation THEN NULL;
++    END;
++    BEGIN
++        INSERT INTO clinical_access_events (link_id, action, actor_user_id, source, link_version)
++        VALUES (link_key, 'REVOKED', admin_key, 'ADMIN', 1);
++        RAISE EXCEPTION 'Falhou: evento duplicado por versão aceito';
++    EXCEPTION WHEN unique_violation THEN NULL;
++    END;
++    BEGIN
++        INSERT INTO clinical_access_events (link_id, action, actor_user_id, source, link_version)
++        VALUES (link_key, 'GRANTED', admin_key, 'APPOINTMENT', 2);
++        RAISE EXCEPTION 'Falhou: origem sem consulta/snapshot aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    UPDATE clinical_access_links SET status = 'REVOKED', version = 2 WHERE id = link_key;
++    INSERT INTO clinical_access_events (link_id, action, actor_user_id, source, link_version)
++    VALUES (link_key, 'REVOKED', admin_key, 'ADMIN', 2);
++    UPDATE appointments SET scheduled_at = '2099-02-15 10:00:00+00',
++        status = 'COMPLETED' WHERE id = appointment_key;
++    IF (SELECT appointment_scheduled_at FROM clinical_access_events WHERE id = event_key)
++        <> '2099-01-15 10:00:00+00'::timestamptz THEN
++        RAISE EXCEPTION 'Falhou: snapshot histórico alterado';
++    END IF;
++    IF (SELECT status FROM clinical_access_links WHERE id = link_key) <> 'REVOKED' THEN
++        RAISE EXCEPTION 'Falhou: status antigo reativou vínculo';
++    END IF;
++    BEGIN
++        UPDATE clinical_access_events SET action = 'REACTIVATED' WHERE id = event_key;
++        RAISE EXCEPTION 'Falhou: atualização de histórico aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    BEGIN
++        UPDATE clinical_access_links SET version = 0 WHERE id = link_key;
++        RAISE EXCEPTION 'Falhou: versão inválida de vínculo aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    UPDATE clinical_access_links SET status = 'ACTIVE', version = 3 WHERE id = link_key;
++    INSERT INTO clinical_access_events (
++        link_id, action, actor_user_id, appointment_id, source,
++        appointment_scheduled_at, link_version)
++    VALUES (link_key, 'REACTIVATED', admin_key, adjacent_key, 'APPOINTMENT',
++        '2099-01-15 10:30:00+00', 3);
++    IF (SELECT count(*) FROM clinical_access_events WHERE link_id = link_key) <> 3 THEN
++        RAISE EXCEPTION 'Falhou: trilha concessão/revogação/reativação incompleta';
++    END IF;
++    BEGIN
++        DELETE FROM clinical_access_events WHERE id = event_key;
++        RAISE EXCEPTION 'Falhou: exclusão de histórico aceita';
++    EXCEPTION WHEN check_violation THEN NULL;
++    END;
++    BEGIN
++        DELETE FROM clinical_access_links WHERE id = link_key;
++        RAISE EXCEPTION 'Falhou: vínculo com histórico excluído';
++    EXCEPTION WHEN foreign_key_violation THEN NULL;
++    END;
++    BEGIN
++        DELETE FROM appointments WHERE id = appointment_key;
++        RAISE EXCEPTION 'Falhou: origem de histórico excluída';
++    EXCEPTION WHEN foreign_key_violation THEN NULL;
++    END;
++    UPDATE clinical_access_links SET updated_at = '2000-01-01' WHERE id = link_key;
++    IF (SELECT updated_at FROM clinical_access_links WHERE id = link_key)
++        = '2000-01-01'::timestamptz THEN
++        RAISE EXCEPTION 'Falhou: gatilho de atualização';
++    END IF;
++    RAISE NOTICE 'OK: versões, prontuário único, agenda, evolução, auditoria e idempotência';
++END;
++$$;
++ROLLBACK;
+--- 4ccdc30/sql/fixture_9d3e5f7a1b2c.sql
++++ pacote/sql/fixture_9d3e5f7a1b2c.sql
+@@ -0,0 +1,27 @@
++-- Dados fictícios compatíveis com a revisão B; somente ensaio descartável.
++\set ON_ERROR_STOP on
++BEGIN;
++INSERT INTO clinics (name, cnpj, email)
++VALUES ('Clínica Legada Fictícia', '88888888000188', 'legacy@example.test');
++INSERT INTO users (clinic_id, full_name, email, password_hash, cpf, role)
++SELECT id, 'Dentista Legado', 'legacy-dentist@example.test', 'sem-login',
++    '88888888881', 'DENTIST' FROM clinics;
++INSERT INTO dentists (user_id, cro_number, cro_state)
++SELECT id, 'LEGACY-888', 'SP' FROM users;
++INSERT INTO patients (clinic_id, full_name, cpf, medical_record_number, birth_date)
++SELECT c.id, p.name, p.cpf, p.record, '1980-01-01'::date
++FROM clinics c CROSS JOIN (VALUES
++    ('Paciente com prontuário', '88888888882', 'LEGACY-1'),
++    ('Paciente sem prontuário', '88888888883', 'LEGACY-2')
++) AS p(name, cpf, record);
++INSERT INTO medical_records (patient_id, general_notes)
++SELECT id, 'Conteúdo legado preservado' FROM patients WHERE cpf = '88888888882';
++INSERT INTO appointments (clinic_id, patient_id, dentist_id, scheduled_at, status)
++SELECT p.clinic_id, p.id, d.id, '2030-05-10 12:00:00+00'::timestamptz, 'SCHEDULED'
++FROM patients p CROSS JOIN dentists d WHERE p.cpf = '88888888882';
++INSERT INTO clinical_evolutions (
++    medical_record_id, dentist_id, appointment_id, description, status, finalized_at)
++SELECT r.id, a.dentist_id, a.id, 'Evolução legada preservada', 'FINALIZED',
++    '2026-10-01 12:00:00+00'::timestamptz
++FROM medical_records r JOIN appointments a ON a.patient_id = r.patient_id;
++COMMIT;
+--- 4ccdc30/sql/schema.sql
++++ pacote/sql/schema.sql
+@@ -0,0 +1,307 @@
++-- Esquema canônico do Lumina para PostgreSQL 16.
++-- Equivalente à cadeia Alembic até a revisão a6e8f0b2c4d6.
++-- Execute somente em banco vazio. Para banco existente, use Alembic.
++-- O serviço cria Patient e MedicalRecord na mesma transação.
++-- Vínculos são concedidos apenas pela aplicação; consultas antigas não concedem acesso.
++-- Eventos preservam ator, origem e data original do agendamento e são imutáveis.
++-- A agenda mantém período calculado, exclusão GiST e gatilhos de atualização.
++-- Este arquivo não marca uma revisão em alembic_version.
++-- Comparação verificável: pg_dump --schema-only, desconsiderando alembic_version.
++
++BEGIN;
++
++CREATE TABLE clinics (
++    id SERIAL NOT NULL,
++    name VARCHAR(150) NOT NULL,
++    cnpj VARCHAR(14) NOT NULL,
++    phone VARCHAR(20),
++    email VARCHAR(255) NOT NULL,
++    address TEXT,
++    is_active BOOLEAN DEFAULT true NOT NULL,
++    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    PRIMARY KEY (id),
++    CONSTRAINT uq_clinics_cnpj UNIQUE (cnpj),
++    CONSTRAINT uq_clinics_email UNIQUE (email)
++);
++
++CREATE TABLE users (
++    id SERIAL NOT NULL,
++    clinic_id INTEGER NOT NULL,
++    full_name VARCHAR(150) NOT NULL,
++    email VARCHAR(255) NOT NULL,
++    password_hash VARCHAR(255) NOT NULL,
++    cpf VARCHAR(11) NOT NULL,
++    phone VARCHAR(20),
++    role VARCHAR(20) NOT NULL,
++    is_active BOOLEAN DEFAULT true NOT NULL,
++    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    PRIMARY KEY (id),
++    FOREIGN KEY(clinic_id) REFERENCES clinics (id),
++    CONSTRAINT uq_users_email UNIQUE (email),
++    CONSTRAINT uq_users_cpf UNIQUE (cpf)
++);
++
++CREATE INDEX ix_users_clinic_id ON users (clinic_id);
++
++CREATE TABLE patients (
++    id SERIAL NOT NULL,
++    clinic_id INTEGER NOT NULL,
++    full_name VARCHAR(150) NOT NULL,
++    cpf VARCHAR(11) NOT NULL,
++    medical_record_number VARCHAR(30) NOT NULL,
++    birth_date DATE NOT NULL,
++    phone VARCHAR(20),
++    email VARCHAR(255),
++    address TEXT,
++    is_active BOOLEAN DEFAULT true NOT NULL,
++    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    PRIMARY KEY (id),
++    FOREIGN KEY(clinic_id) REFERENCES clinics (id) ON DELETE RESTRICT,
++    CONSTRAINT uq_patients_clinic_cpf UNIQUE (clinic_id, cpf),
++    CONSTRAINT uq_patients_clinic_record UNIQUE (clinic_id, medical_record_number)
++);
++
++CREATE INDEX ix_patients_clinic_id ON patients (clinic_id);
++
++CREATE TABLE dentists (
++    id SERIAL NOT NULL,
++    user_id INTEGER NOT NULL,
++    cro_number VARCHAR(30) NOT NULL,
++    cro_state VARCHAR(2) NOT NULL,
++    specialty VARCHAR(100),
++    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    PRIMARY KEY (id),
++    FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE RESTRICT,
++    CONSTRAINT uq_dentists_user UNIQUE (user_id),
++    CONSTRAINT uq_dentists_cro UNIQUE (cro_number, cro_state)
++);
++
++CREATE INDEX ix_dentists_user_id ON dentists (user_id);
++
++CREATE TABLE appointments (
++    id SERIAL NOT NULL,
++    clinic_id INTEGER NOT NULL,
++    patient_id INTEGER NOT NULL,
++    dentist_id INTEGER NOT NULL,
++    scheduled_at TIMESTAMP WITH TIME ZONE NOT NULL,
++    status VARCHAR(20) DEFAULT 'SCHEDULED' NOT NULL,
++    notes TEXT,
++    duration_minutes INTEGER DEFAULT '30' NOT NULL,
++    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    PRIMARY KEY (id),
++    FOREIGN KEY(clinic_id) REFERENCES clinics (id) ON DELETE RESTRICT,
++    FOREIGN KEY(patient_id) REFERENCES patients (id) ON DELETE RESTRICT,
++    FOREIGN KEY(dentist_id) REFERENCES dentists (id) ON DELETE RESTRICT,
++    CONSTRAINT ck_appointments_status CHECK (status IN ('SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELED', 'NO_SHOW')),
++    CONSTRAINT ck_appointments_duration CHECK (duration_minutes > 0)
++);
++
++CREATE INDEX ix_appointments_clinic_id ON appointments (clinic_id);
++
++CREATE INDEX ix_appointments_patient_id ON appointments (patient_id);
++
++CREATE INDEX ix_appointments_dentist_id ON appointments (dentist_id);
++
++CREATE INDEX ix_appointments_scheduled_at ON appointments (scheduled_at);
++
++CREATE TABLE medical_records (
++    id SERIAL NOT NULL,
++    patient_id INTEGER NOT NULL,
++    opened_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    general_notes TEXT,
++    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    PRIMARY KEY (id),
++    FOREIGN KEY(patient_id) REFERENCES patients (id) ON DELETE RESTRICT,
++    CONSTRAINT uq_medical_records_patient UNIQUE (patient_id)
++);
++
++CREATE TABLE clinical_evolutions (
++    id SERIAL NOT NULL,
++    medical_record_id INTEGER NOT NULL,
++    dentist_id INTEGER NOT NULL,
++    appointment_id INTEGER,
++    recorded_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    status VARCHAR(20) DEFAULT 'DRAFT' NOT NULL,
++    description TEXT NOT NULL,
++    procedure_performed TEXT,
++    notes TEXT,
++    finalized_at TIMESTAMP WITH TIME ZONE,
++    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
++    PRIMARY KEY (id),
++    FOREIGN KEY(medical_record_id) REFERENCES medical_records (id) ON DELETE RESTRICT,
++    FOREIGN KEY(dentist_id) REFERENCES dentists (id) ON DELETE RESTRICT,
++    FOREIGN KEY(appointment_id) REFERENCES appointments (id) ON DELETE RESTRICT,
++    CONSTRAINT uq_clinical_evolutions_appointment UNIQUE (appointment_id),
++    CONSTRAINT ck_clinical_evolutions_status CHECK (status IN ('DRAFT', 'FINALIZED'))
++);
++
++ALTER TABLE users ADD COLUMN clinical_password_hash VARCHAR(255);
++
++ALTER TABLE users
++            ADD COLUMN session_version INTEGER NOT NULL DEFAULT 1,
++            ADD COLUMN clinical_version INTEGER NOT NULL DEFAULT 1,
++            ADD CONSTRAINT ck_users_session_version CHECK (session_version >= 1),
++            ADD CONSTRAINT ck_users_clinical_version CHECK (clinical_version >= 1),
++            ADD CONSTRAINT ck_users_role
++                CHECK (role IN ('ADMINISTRATOR', 'RECEPTIONIST', 'DENTIST'));
++        ALTER TABLE clinical_evolutions
++            ADD COLUMN version INTEGER NOT NULL DEFAULT 1,
++            ADD CONSTRAINT ck_clinical_evolutions_version CHECK (version >= 1),
++            ADD CONSTRAINT ck_clinical_evolutions_description
++                CHECK (description ~ '[^[:space:]]'),
++            ADD CONSTRAINT ck_clinical_evolutions_finalization CHECK (
++                (status = 'DRAFT' AND finalized_at IS NULL)
++                OR (status = 'FINALIZED' AND finalized_at IS NOT NULL)
++            );
++        CREATE INDEX ix_clinical_evolutions_medical_record_id
++            ON clinical_evolutions (medical_record_id);
++        CREATE INDEX ix_clinical_evolutions_dentist_id
++            ON clinical_evolutions (dentist_id);
++
++        CREATE TABLE clinical_access_links (
++            id SERIAL PRIMARY KEY,
++            clinic_id INTEGER NOT NULL REFERENCES clinics(id) ON DELETE RESTRICT,
++            patient_id INTEGER NOT NULL REFERENCES patients(id) ON DELETE RESTRICT,
++            dentist_id INTEGER NOT NULL REFERENCES dentists(id) ON DELETE RESTRICT,
++            status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
++            version INTEGER NOT NULL DEFAULT 1,
++            created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
++            updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
++            CONSTRAINT uq_clinical_access_links_scope
++                UNIQUE (clinic_id, patient_id, dentist_id),
++            CONSTRAINT ck_clinical_access_links_status
++                CHECK (status IN ('ACTIVE', 'REVOKED')),
++            CONSTRAINT ck_clinical_access_links_version CHECK (version >= 1)
++        );
++        CREATE INDEX ix_clinical_access_links_dentist_id
++            ON clinical_access_links (dentist_id);
++        CREATE TABLE clinical_access_events (
++            id SERIAL PRIMARY KEY,
++            link_id INTEGER NOT NULL REFERENCES clinical_access_links(id) ON DELETE RESTRICT,
++            action VARCHAR(20) NOT NULL,
++            actor_user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
++            appointment_id INTEGER REFERENCES appointments(id) ON DELETE RESTRICT,
++            source VARCHAR(20) NOT NULL,
++            appointment_scheduled_at TIMESTAMPTZ,
++            created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
++            link_version INTEGER NOT NULL,
++            CONSTRAINT uq_clinical_access_events_appointment UNIQUE (appointment_id),
++            CONSTRAINT uq_clinical_access_events_link_version UNIQUE (link_id, link_version),
++            CONSTRAINT ck_clinical_access_events_action
++                CHECK (action IN ('GRANTED', 'REVOKED', 'REACTIVATED')),
++            CONSTRAINT ck_clinical_access_events_source CHECK (
++                (source = 'APPOINTMENT' AND appointment_id IS NOT NULL
++                    AND appointment_scheduled_at IS NOT NULL
++                    AND action IN ('GRANTED', 'REACTIVATED'))
++                OR (source = 'ADMIN' AND appointment_id IS NULL
++                    AND appointment_scheduled_at IS NULL)
++            ),
++            CONSTRAINT ck_clinical_access_events_link_version CHECK (link_version >= 1)
++        );
++        CREATE INDEX ix_clinical_access_events_actor_user_id
++            ON clinical_access_events (actor_user_id);
++        CREATE INDEX ix_clinical_access_events_link_created_at
++            ON clinical_access_events (link_id, created_at);
++        CREATE TABLE audit_logs (
++            id SERIAL PRIMARY KEY,
++            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
++            action VARCHAR(50) NOT NULL,
++            resource VARCHAR(100) NOT NULL,
++            ip_address VARCHAR(45),
++            details TEXT,
++            occurred_at TIMESTAMPTZ NOT NULL DEFAULT now()
++        );
++        CREATE INDEX ix_audit_logs_user_id ON audit_logs (user_id);
++        CREATE INDEX ix_audit_logs_occurred_at ON audit_logs (occurred_at);
++
++        CREATE EXTENSION IF NOT EXISTS btree_gist;
++        ALTER TABLE appointments ADD COLUMN scheduled_period TSTZRANGE;
++        UPDATE appointments SET scheduled_period = tstzrange(
++            scheduled_at, scheduled_at + make_interval(mins => duration_minutes), '[)'
++        );
++        ALTER TABLE appointments
++            ALTER COLUMN scheduled_period SET NOT NULL,
++            ADD CONSTRAINT ck_appointments_period_not_empty
++                CHECK (NOT isempty(scheduled_period)),
++            ADD CONSTRAINT ex_appointments_dentist_active_period
++                EXCLUDE USING gist (dentist_id WITH =, scheduled_period WITH &&)
++                WHERE (status IN ('SCHEDULED', 'CONFIRMED'));
++        CREATE INDEX ix_appointments_dentist_scheduled_at
++            ON appointments (dentist_id, scheduled_at);
++
++        CREATE FUNCTION set_updated_at() RETURNS TRIGGER LANGUAGE plpgsql AS $$
++        BEGIN
++            NEW.updated_at = CURRENT_TIMESTAMP;
++            RETURN NEW;
++        END;
++        $$;
++        CREATE FUNCTION set_appointment_period() RETURNS TRIGGER LANGUAGE plpgsql AS $$
++        BEGIN
++            NEW.scheduled_period := tstzrange(
++                NEW.scheduled_at,
++                NEW.scheduled_at + make_interval(mins => NEW.duration_minutes), '[)'
++            );
++            RETURN NEW;
++        END;
++        $$;
++        CREATE TRIGGER trg_appointments_set_period
++            BEFORE INSERT OR UPDATE ON appointments
++            FOR EACH ROW EXECUTE FUNCTION set_appointment_period();
++
++        CREATE FUNCTION preserve_clinical_access_event() RETURNS TRIGGER
++        LANGUAGE plpgsql AS $$
++        BEGIN
++            RAISE EXCEPTION 'O histórico de acesso clínico não pode ser alterado ou excluído.'
++                USING ERRCODE = '23514';
++        END;
++        $$;
++        CREATE TRIGGER trg_clinical_access_events_preserve
++            BEFORE UPDATE OR DELETE ON clinical_access_events
++            FOR EACH ROW EXECUTE FUNCTION preserve_clinical_access_event();
++
++        INSERT INTO medical_records (patient_id)
++            SELECT p.id FROM patients p
++            WHERE NOT EXISTS (
++                SELECT 1 FROM medical_records r WHERE r.patient_id = p.id
++            );;
++
++CREATE TRIGGER trg_clinics_set_updated_at
++            BEFORE UPDATE ON clinics
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++CREATE TRIGGER trg_users_set_updated_at
++            BEFORE UPDATE ON users
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++CREATE TRIGGER trg_patients_set_updated_at
++            BEFORE UPDATE ON patients
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++CREATE TRIGGER trg_dentists_set_updated_at
++            BEFORE UPDATE ON dentists
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++CREATE TRIGGER trg_appointments_set_updated_at
++            BEFORE UPDATE ON appointments
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++CREATE TRIGGER trg_medical_records_set_updated_at
++            BEFORE UPDATE ON medical_records
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++CREATE TRIGGER trg_clinical_evolutions_set_updated_at
++            BEFORE UPDATE ON clinical_evolutions
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++CREATE TRIGGER trg_clinical_access_links_set_updated_at
++            BEFORE UPDATE ON clinical_access_links
++            FOR EACH ROW EXECUTE FUNCTION set_updated_at();
++
++COMMIT;
+--- 4ccdc30/sql/seed_demo.sql
++++ pacote/sql/seed_demo.sql
+@@ -0,0 +1,107 @@
++-- Carga demonstrativa fictícia; somente banco descartável com esquema atual.
++-- Recusa banco que já possui dados. Não sobrescreve senhas nem cadastros.
++-- Login fictício: admin.demo@example.com / dentista.demo@example.com
++-- Senha fictícia: DemoLumina2026! ; senha clínica: ClinicaDemo2026!
++\set ON_ERROR_STOP on
++BEGIN;
++DO $$
++BEGIN
++    IF EXISTS (SELECT 1 FROM clinics)
++        OR EXISTS (SELECT 1 FROM users)
++        OR EXISTS (SELECT 1 FROM patients) THEN
++        RAISE EXCEPTION 'Carga demonstrativa exige banco descartável vazio.';
++    END IF;
++END;
++$$;
++
++INSERT INTO clinics (name, cnpj, email, phone)
++VALUES ('Lumina Demonstração Fictícia', '00000000000191',
++    'clinica.demo@example.test', '11900000000');
++
++INSERT INTO users (
++    clinic_id, full_name, email, password_hash, cpf, role)
++SELECT id, 'Administrador Fictício', 'admin.demo@example.com',
++    '<hash-ficticio-omitido>',
++    '00000000001', 'ADMINISTRATOR'
++FROM clinics;
++
++INSERT INTO users (
++    clinic_id, full_name, email, password_hash, clinical_password_hash, cpf, role)
++SELECT id, 'Dentista Fictício', 'dentista.demo@example.com',
++    '<hash-ficticio-omitido>',
++    '<hash-ficticio-omitido>',
++    '00000000002', 'DENTIST'
++FROM clinics;
++
++INSERT INTO dentists (user_id, cro_number, cro_state, specialty)
++SELECT id, 'DEMO-0001', 'SP', 'Clínica geral'
++FROM users WHERE email = 'dentista.demo@example.com';
++
++INSERT INTO patients (clinic_id, full_name, cpf, medical_record_number, birth_date)
++SELECT c.id, demo.full_name, demo.cpf, demo.record_number, demo.birth_date::date
++FROM clinics c CROSS JOIN (VALUES
++    ('Paciente Fictício Ativo', '00000000011', 'DEMO-001', '1990-02-10'),
++    ('Paciente Fictício Revogado', '00000000012', 'DEMO-002', '1985-06-20'),
++    ('Paciente Fictício Sem Vínculo', '00000000013', 'DEMO-003', '2000-10-05')
++) AS demo(full_name, cpf, record_number, birth_date);
++
++INSERT INTO medical_records (patient_id)
++SELECT id FROM patients;
++
++INSERT INTO appointments (
++    clinic_id, patient_id, dentist_id, scheduled_at, status, notes)
++SELECT p.clinic_id, p.id, d.id,
++    '2030-01-15 13:00:00+00'::timestamptz, 'SCHEDULED',
++    'Consulta fictícia: concessão de vínculo ativo'
++FROM patients p CROSS JOIN dentists d WHERE p.cpf = '00000000011';
++
++INSERT INTO appointments (
++    clinic_id, patient_id, dentist_id, scheduled_at, status, notes)
++SELECT p.clinic_id, p.id, d.id,
++    '2026-10-15 13:00:00+00'::timestamptz, 'COMPLETED',
++    'Consulta fictícia antiga: vínculo posteriormente revogado'
++FROM patients p CROSS JOIN dentists d WHERE p.cpf = '00000000012';
++
++INSERT INTO clinical_access_links (clinic_id, patient_id, dentist_id, status, version)
++SELECT p.clinic_id, p.id, d.id, 'ACTIVE', 1
++FROM patients p CROSS JOIN dentists d WHERE p.cpf = '00000000011';
++
++INSERT INTO clinical_access_links (clinic_id, patient_id, dentist_id, status, version)
++SELECT p.clinic_id, p.id, d.id, 'REVOKED', 2
++FROM patients p CROSS JOIN dentists d WHERE p.cpf = '00000000012';
++
++INSERT INTO clinical_access_events (
++    link_id, action, actor_user_id, appointment_id, source,
++    appointment_scheduled_at, link_version)
++SELECT l.id, 'GRANTED', u.id, a.id, 'APPOINTMENT', a.scheduled_at, 1
++FROM clinical_access_links l
++JOIN appointments a ON a.patient_id = l.patient_id AND a.dentist_id = l.dentist_id
++JOIN users u ON u.email = 'admin.demo@example.com';
++
++INSERT INTO clinical_access_events (
++    link_id, action, actor_user_id, source, link_version)
++SELECT l.id, 'REVOKED', u.id, 'ADMIN', 2
++FROM clinical_access_links l
++JOIN users u ON u.email = 'admin.demo@example.com'
++WHERE l.status = 'REVOKED';
++
++INSERT INTO clinical_evolutions (medical_record_id, dentist_id, description)
++SELECT r.id, d.id, 'Evolução fictícia em rascunho, sem consulta vinculada.'
++FROM medical_records r
++JOIN patients p ON p.id = r.patient_id
++CROSS JOIN dentists d WHERE p.cpf = '00000000011';
++
++INSERT INTO clinical_evolutions (
++    medical_record_id, dentist_id, appointment_id, status, description, finalized_at)
++SELECT r.id, a.dentist_id, a.id, 'FINALIZED',
++    'Evolução fictícia finalizada para revisão do esquema.', now()
++FROM medical_records r
++JOIN patients p ON p.id = r.patient_id
++JOIN appointments a ON a.patient_id = p.id
++WHERE p.cpf = '00000000012';
++
++INSERT INTO audit_logs (user_id, action, resource, details)
++SELECT id, 'CREATE', 'DEMO_DATABASE',
++    'Carga inteiramente fictícia para revisão em banco descartável.'
++FROM users WHERE email = 'admin.demo@example.com';
++COMMIT;
+--- 4ccdc30/tests/test_opencl.py
++++ pacote/tests/test_opencl.py
+@@ -1,12 +1,23 @@
+-from app.opencl_search import normalize, sequential_search, OpenCLSearch, OpenCLUnavailable
++import os
++import pytest
++os.environ.setdefault('DATABASE_URL', 'postgresql+psycopg://lumina:lumina@localhost/lumina')
++os.environ.setdefault('JWT_SECRET', 'test-only-not-for-production-00000000')
++from app.opencl_search import sequential_search, OpenCLSearch, OpenCLUnavailable
+ 
+ def test_cpu_search():
+     assert sequential_search(['Evolução Clínica', 'Consulta inicial', 'EVOLUCAO'], 'evolucao') == [0, 2]
++
++@pytest.mark.parametrize('term', ['', '  ', '\u0301'])
++def test_cpu_rejects_empty(term):
++    with pytest.raises(ValueError):
++        sequential_search(['texto'], term)
+ 
+ def test_opencl_matches_cpu_when_available():
+     data = ['Clínica odontológica', 'Consulta de retorno', 'CLINICA']
+     try:
+         opencl = OpenCLSearch()
+     except OpenCLUnavailable:
+-        return
++        pytest.skip('Runtime OpenCL indisponível')
+     assert opencl.search(data, 'clinica') == sequential_search(data, 'clinica')
++    with pytest.raises(ValueError):
++        opencl.search(data, '\u0301')
+--- 4ccdc30/tests/test_qa_contract.py
++++ pacote/tests/test_qa_contract.py
+@@ -0,0 +1,44 @@
++import os
++import pytest
++os.environ.setdefault('DATABASE_URL', 'postgresql+psycopg://lumina:lumina@localhost/lumina')
++os.environ.setdefault('JWT_SECRET', 'test-only-not-for-production-00000000')
++pytest.importorskip('psycopg')
++pytest.importorskip('pwdlib')
++from fastapi.testclient import TestClient
++from fastapi import HTTPException
++from app import main as m
++from app.crud import appointment_dto
++from pydantic import ValidationError
++
++@pytest.mark.parametrize('value', ['2', True, None, 0, -1])
++@pytest.mark.parametrize('model', [m.EvolutionPatch, m.FinalizeIn])
++def test_strict_version(model, value):
++    with pytest.raises(ValidationError):
++        model(version=value)
++
++def test_range_not_exposed():
++    assert appointment_dto({'id': 1, 'scheduled_period': object()}) == {'id': 1}
++
++def test_validation_no_echo():
++    m.app.dependency_overrides[m.clinical_user] = lambda: {}
++    m.app.dependency_overrides[m.db_dep] = lambda: None
++    try:
++        response = TestClient(m.app).post('/api/v1/evolutions', json={'description': 'SECRET_SENTINEL'})
++        assert response.status_code == 422
++        assert 'SECRET_SENTINEL' not in response.text
++    finally:
++        m.app.dependency_overrides.clear()
++
++def test_revocation_during_compute(monkeypatch):
++    class DB:
++        def rollback(self): pass
++    calls = []
++    def allowed(*args, **kwargs):
++        calls.append(1)
++        if len(calls) == 2: raise HTTPException(403)
++        return 1
++    monkeypatch.setattr(m, 'allowed', allowed)
++    monkeypatch.setattr(m, 'allrows', lambda *a, **kw: [{'description':'texto', 'patient_id':7}])
++    with pytest.raises(HTTPException) as exc:
++        m.search('texto', 7, 'cpu', 0, {}, DB())
++    assert exc.value.status_code == 403

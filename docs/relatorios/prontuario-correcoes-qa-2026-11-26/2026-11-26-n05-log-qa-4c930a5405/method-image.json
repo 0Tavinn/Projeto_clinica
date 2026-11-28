@@ -1,0 +1,12 @@
+{
+  "id": "sha256:18321a1c4c831ec39597c9ded1564ce7fd3f3188e55439eed19b87425b939acf",
+  "cmd": [
+    "uvicorn",
+    "app.main:app",
+    "--host",
+    "0.0.0.0",
+    "--port",
+    "8000"
+  ],
+  "database": "nao usado; somente HTTP405 antes de dependencias"
+}

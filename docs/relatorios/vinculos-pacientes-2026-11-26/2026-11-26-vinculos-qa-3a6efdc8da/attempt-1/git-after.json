@@ -1,0 +1,14 @@
+{
+  "/home/paulinho/Work/Projeto_clinica": {
+    "head": "67068ac969cb7b34396b5d94e4ee09a7001ef8b4",
+    "branch": "fix/prontuario-correcoes-qa",
+    "status": " M docs/relatorios/prontuario-correcoes-qa-2026-11-26/README.md\n M lumina_odonto/FRONTEND.md\n M lumina_odonto/README.md\n M lumina_odonto/app/crud.py\n M lumina_odonto/app/logging_policy.py\n M lumina_odonto/app/main.py\n M lumina_odonto/docs/frontend/authentication-and-search.md\n M lumina_odonto/docs/frontend/records-and-evolutions.md\n M lumina_odonto/tests/test_logging_policy.py\n?? lumina_odonto/app/clinical_patients.py\n?? lumina_odonto/app/clinical_patients_repository.py\n?? lumina_odonto/app/clinical_patients_schemas.py\n?? lumina_odonto/app/clinical_patients_service.py\n?? lumina_odonto/docs/frontend/clinical-patients-and-links.md\n?? lumina_odonto/tests/test_clinical_patients.py\n",
+    "index_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "/home/paulinho/Work/Projeto_clinica_clinical_2fa": {
+    "head": "e49a3ce22f899ad64d971a50e8d7fd9c99cb5b3a",
+    "branch": "",
+    "status": "?? docs/relatorios/opencl-1795632915_6782/\n?? docs/relatorios/opencl-1795633113_7ecc7819-fc4/\n?? docs/relatorios/opencl-1795639829_1da7510d-118/\n?? docs/relatorios/qa/2026-11-25-f8f10c5-opencl-agenda/baseline-pr18/\n",
+    "index_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

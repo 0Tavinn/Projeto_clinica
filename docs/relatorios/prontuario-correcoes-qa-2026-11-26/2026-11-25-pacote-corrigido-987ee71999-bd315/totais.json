@@ -1,0 +1,17 @@
+{
+  "groups": {
+    "independente": {
+      "aprovado": 73,
+      "reprovado": 1
+    },
+    "fornecido": {
+      "aprovado": 18
+    },
+    "pendente": {
+      "nao executado": 2,
+      "bloqueado": 7
+    }
+  },
+  "unique_independent_ids": 74,
+  "count_method": "ultimo resultado valido por ID; tentativas preservadas em separado; nao somar fornecidos como cenarios independentes; historico excluido"
+}

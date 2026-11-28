@@ -1,0 +1,4 @@
+BEGIN
+ERROR:  Carga demonstrativa exige banco descartável vazio.
+CONTEXT:  PL/pgSQL function inline_code_block line 6 at RAISE
+Command '['docker', 'compose', '--env-file', '/home/paulinho/Work/Projeto_clinica/lumina_odonto/.env.integration', '-p', 'lumina_prontuario_integracao', '-f', '/home/paulinho/Work/Projeto_clinica/lumina_odonto/compose.integration.yml', 'exec', '-T', 'db', 'psql', '-X', '-v', 'ON_ERROR_STOP=1', '-U', 'lumina_app', '-d', 'lumina_prontuario_integracao']' returned non-zero exit status 3.

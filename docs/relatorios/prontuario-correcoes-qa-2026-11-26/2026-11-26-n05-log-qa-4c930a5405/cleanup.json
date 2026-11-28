@@ -1,0 +1,44 @@
+[
+  {
+    "kind": "container",
+    "name": "lumina-n05-independent-4c930a5405-tests",
+    "id": "1948fde4ac878f80d2c7ecaac1435de6a394c6823be34a7858dd99e39d765c8a",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-independent-4c930a5405-driver",
+    "id": "dabb8d8f154ee7fb44db92dc8ea8f6277bcf2aaaac0c5701d2868fdc950d5e32",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-independent-4c930a5405-api",
+    "id": "901de27a626dcb289082ebcc8a18eb9b750ee84e073c204be11ba3aab8865594",
+    "removed": true
+  },
+  {
+    "kind": "container",
+    "name": "lumina-n05-independent-4c930a5405-db",
+    "id": "6ef51b3b43dd485e2d4ea6509343d1bde6ac6ef05e9e00f20bdac00fa9db2339",
+    "removed": true
+  },
+  {
+    "kind": "volume",
+    "name": "lumina-n05-independent-4c930a5405-data",
+    "id": "lumina-n05-independent-4c930a5405-data",
+    "removed": true
+  },
+  {
+    "kind": "network",
+    "name": "lumina-n05-independent-4c930a5405-net",
+    "id": "412c9cc92132b0dbf71e79a0a9f687bf0a6140bcc394f57831c0ab77dd7e2efc",
+    "removed": true
+  },
+  {
+    "kind": "image",
+    "name": "lumina-n05-independent-4c930a5405:source",
+    "id": "sha256:94300c88ef7b4e4e19c41cf2124c4451d196592ba1f874f6d1ca4d0f94f6ad46",
+    "removed": true
+  }
+]

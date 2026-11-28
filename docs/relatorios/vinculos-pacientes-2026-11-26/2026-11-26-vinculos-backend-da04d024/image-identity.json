@@ -1,0 +1,11 @@
+{
+  "id": "sha256:25b497084577a0d394332f7b5f5a54e19d6984adf4fe2d64f567bc8a50dfb6dd",
+  "cmd": [
+    "uvicorn",
+    "app.main:app",
+    "--host",
+    "0.0.0.0",
+    "--port",
+    "8000"
+  ]
+}

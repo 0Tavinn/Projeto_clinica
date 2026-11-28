@@ -1,0 +1,6 @@
+{
+  "source_matches_frozen_31": true,
+  "documentation_note_received": "Backend pode corrigir texto externo;nao comparar relatorio externo como imutavel enquanto finaliza",
+  "code_observed": "get_patient chama m.allowed antes e depois de lock_patients_and_links no manifesto95fb2b8e;nota posterior dizendo apenas depois diverge desses bytes;nenhum ajuste da fonte realizado",
+  "guide_location": "lumina_odonto/docs/frontend/clinical-patients-and-links.md"
+}

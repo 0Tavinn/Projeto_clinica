@@ -1,0 +1,8 @@
+{
+  "id": "N05-validation-logs",
+  "body_sentinel_in_logs": false,
+  "query_sentinel_in_logs": true,
+  "status": "reprovado",
+  "expected": "nenhuma sentinela clinica no log de validacao422",
+  "source": "docker logs da API original, CMD original com access log"
+}

@@ -1,0 +1,44 @@
+# Ambiente candidato de prontuario; nao reutiliza o volume diario da Agenda.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Execute setup}
+      POSTGRES_USER: ${POSTGRES_USER:?Execute setup}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Execute setup}
+    ports:
+      - "127.0.0.1:${DB_PORT:-55450}:5432"
+    volumes:
+      - integration_data:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    labels:
+      lumina.delivery: clinical-integration
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 2s
+      timeout: 3s
+      retries: 40
+  api:
+    build:
+      context: .
+      labels:
+        org.opencontainers.image.revision: ${SOURCE_COMMIT:-unknown}
+        lumina.delivery: clinical-integration
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET:?Execute setup}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+    ports:
+      - "127.0.0.1:${API_PORT:-18100}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      lumina.delivery: clinical-integration
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+volumes:
+  integration_data:

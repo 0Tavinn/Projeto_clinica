@@ -1,0 +1,41 @@
+{
+  "prefix": "lumina-links-qa-3a6efdc8dar2",
+  "label": "lumina.links.independent",
+  "resources": [
+    {
+      "kind": "image",
+      "name": "lumina-links-qa-3a6efdc8dar2:source",
+      "id": "sha256:21e602ec72e70b83c71d9a3d5727e7025b7f14d0fd30521077dafd05b617c6b5"
+    },
+    {
+      "kind": "network",
+      "name": "lumina-links-qa-3a6efdc8dar2-net",
+      "id": "d77511a7afed4bc3d1a34bee388b560069c52dc89623a3b10a5a82325ebeeadc"
+    },
+    {
+      "kind": "volume",
+      "name": "lumina-links-qa-3a6efdc8dar2-data",
+      "id": "lumina-links-qa-3a6efdc8dar2-data"
+    },
+    {
+      "kind": "container",
+      "name": "lumina-links-qa-3a6efdc8dar2-db",
+      "id": "69921525727b42e4071f52cbef6fdd981ae7c8ab1a606de0acab4436313e3fbf"
+    },
+    {
+      "kind": "container",
+      "name": "lumina-links-qa-3a6efdc8dar2-api",
+      "id": "79d263499fd521c37d13ffd54f5934aca920af268d19066717f187c29abb09bd"
+    },
+    {
+      "kind": "container",
+      "name": "lumina-links-qa-3a6efdc8dar2-driver",
+      "id": "a4ce7aacf64a25076515b5f3c7d23dfbd635119fe24d31251a4cd71d0715679c"
+    },
+    {
+      "kind": "container",
+      "name": "lumina-links-qa-3a6efdc8dar2-tests",
+      "id": "d5d984f642d6e440d6900538ee066e24859c574ef4d3d3e4c0ae3de69ce35966"
+    }
+  ]
+}

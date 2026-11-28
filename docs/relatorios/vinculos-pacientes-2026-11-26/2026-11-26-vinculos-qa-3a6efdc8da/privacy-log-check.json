@@ -1,0 +1,22 @@
+{
+  "stdout_no_sensitive": true,
+  "stderr_no_sensitive": true,
+  "traceback_absent": true,
+  "formatter_error_absent": true,
+  "method_route_status_present": true,
+  "list_template_present": true,
+  "detail_template_present": true,
+  "detail_denied_template_present": true,
+  "admin_links_template_present": true,
+  "legacy_search_template_present": true,
+  "path_id_not_logged": true,
+  "new_routes_not_unmatched": true,
+  "no_query_in_access": true,
+  "startup_event_present": true,
+  "status_200_present": true,
+  "status_201_present": true,
+  "status_401_present": true,
+  "status_403_present": true,
+  "status_404_present": true,
+  "status_422_present": true
+}

@@ -1,0 +1,12 @@
+lumina_pr18_tarcisio-frontend-1 lumina_pr18_tarcisio-frontend 127.0.0.1:18088->80/tcp
+lumina_pr18_tarcisio-api-1 lumina_pr18_tarcisio-api 127.0.0.1:18089->8000/tcp
+lumina_pr18_tarcisio-db-1 postgres:16-alpine 127.0.0.1:55438->5432/tcp
+lumina_ui_20261111175549_186409-frontend-1 lumina_ui_20261111175549_186409-frontend 
+lumina_ui_20261111175549_186409-api-1 lumina_ui_20261111175549_186409-api 
+lumina_ui_20261111175549_186409-db-1 postgres:16-alpine 
+lumina_execucao_20261029-frontend-1 lumina_execucao_20261029-frontend 
+lumina_execucao_20261029-api-1 lumina_execucao_20261029-api 
+lumina_execucao_20261029-db-1 postgres:16-alpine 
+lumina_s07_review_20261023-db-1 postgres:16-alpine 
+lumina_s07_review_20261023-frontend-1 lumina_s07_review_20261023-frontend 
+lumina_s07_review_20261023-api-1 lumina_s07_review_20261023-api 

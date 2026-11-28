@@ -1,0 +1,16 @@
+{
+  "source": "/home/paulinho/Work/lumina_odonto_correcao_N05_20261126",
+  "logical_files": 22,
+  "manifest_sha256": "c2a4186c0a7eef4486f4ad5c28ae6c35674f3ad9120a63f964ee485afd3da135",
+  "image": {
+    "id": "sha256:cd43be8b661a50318455d9f4205c62071212b66ddc3e6dead962da0aa3be8fb0",
+    "cmd": [
+      "uvicorn",
+      "app.main:app",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8000"
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+INFO:     server_event=process_started
+INFO:     server_event=startup_waiting
+INFO:     server_event=startup_complete
+INFO:     server_event=server_event
+/app/app/opencl_search.py:73: RepeatedKernelRetrieval: Kernel 'contains_bytes' has been retrieved more than once. Each retrieval creates a new, independent kernel, at possibly considerable expense. To avoid the expense, reuse the retrieved kernel instance. To avoid this warning, use cl.Kernel(prg, name).
+  kernel = self.program.contains_bytes
+ERROR:    server_event=server_error
+WARNING:  server_event=invalid_http_request
+WARNING:  server_event=invalid_http_request

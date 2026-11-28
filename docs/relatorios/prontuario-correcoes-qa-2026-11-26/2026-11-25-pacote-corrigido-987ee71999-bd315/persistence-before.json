@@ -1,0 +1,42 @@
+{
+  "appointments": {
+    "count": 6,
+    "sha256": "b84734b0aa5d8191e012bec64d5fae56466d3c60c4489974a97c3a0bd7cc7da8"
+  },
+  "audit_logs": {
+    "count": 61,
+    "sha256": "b3d2e7df09e3d88e85dd0f3388d4d1c01e865cd330662605492e7bc57679c1d6"
+  },
+  "clinical_access_events": {
+    "count": 30,
+    "sha256": "5bebe4227e7022b70e0f9a58f99091b6c9b63714b359df657904d810236a8bd4"
+  },
+  "clinical_access_links": {
+    "count": 11,
+    "sha256": "9802ea4ad81bea9ffc6ae217b34d6f9bd1a8dff6a67346fd9992830b1abafe41"
+  },
+  "clinical_evolutions": {
+    "count": 2020,
+    "sha256": "693e5a2d3c2193a6b68d9f3c18dfb1fdee9d1fcb5daea2fcdf6d47dac1c6d178"
+  },
+  "clinics": {
+    "count": 3,
+    "sha256": "80d6bcf1af1efa7bd12bd85b7825f0faaa6538fa384f2540e576f4feae851126"
+  },
+  "dentists": {
+    "count": 5,
+    "sha256": "5862a9c178fae747908939e7acab94454c5c6655d377b8f47ab705da89e134a1"
+  },
+  "medical_records": {
+    "count": 13,
+    "sha256": "e81d5ac721ce6627c57eafac7bce871ec62e290020b2fb167a3714e9fb250610"
+  },
+  "patients": {
+    "count": 13,
+    "sha256": "7ac40803068ac9cc0859078ca1f89e6df869aa9f7c4d8ee2552906746740fbeb"
+  },
+  "users": {
+    "count": 10,
+    "sha256": "e53d5863b33bc21c21da2fd0fb0a449e6ee314ae38a210f45fdc0af578e3af3e"
+  }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "file": ".dockerignore",
+    "status": "added"
+  },
+  {
+    "file": ".env.example",
+    "status": "added"
+  },
+  {
+    "file": ".gitignore",
+    "status": "added"
+  },
+  {
+    "file": "Dockerfile",
+    "status": "modified"
+  },
+  {
+    "file": "QA_CORRECOES.md",
+    "status": "added"
+  },
+  {
+    "file": "README.md",
+    "status": "modified"
+  },
+  {
+    "file": "app/crud.py",
+    "status": "modified"
+  },
+  {
+    "file": "app/main.py",
+    "status": "modified"
+  },
+  {
+    "file": "app/opencl_search.py",
+    "status": "modified"
+  },
+  {
+    "file": "sql/check_clinical_schema.sql",
+    "status": "added"
+  },
+  {
+    "file": "sql/fixture_9d3e5f7a1b2c.sql",
+    "status": "added"
+  },
+  {
+    "file": "sql/schema.sql",
+    "status": "added"
+  },
+  {
+    "file": "sql/seed_demo.sql",
+    "status": "added"
+  },
+  {
+    "file": "tests/test_opencl.py",
+    "status": "modified"
+  },
+  {
+    "file": "tests/test_qa_contract.py",
+    "status": "added"
+  }
+]

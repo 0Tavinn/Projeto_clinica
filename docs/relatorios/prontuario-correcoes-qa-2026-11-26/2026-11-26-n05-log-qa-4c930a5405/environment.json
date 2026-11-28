@@ -1,0 +1,6 @@
+{
+  "db_name": "n05_qa_4c930a5405",
+  "db_user": "qa_n05",
+  "public_ports": [],
+  "secrets": "ephemeral; not distributed"
+}

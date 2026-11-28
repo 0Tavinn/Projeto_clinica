@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-26",
+  "source_files_matched": 31,
+  "source_differences": [],
+  "source_manifest_sha256": "41dac68bcfefe98cf42227fb614e3d93f7528ca19e113a0ab1596ee200f52eca",
+  "final_file_hashes_sha256": "c2749bac59e7e89aeed35de37153099ca0072218aad256a19bddecadfba0babe",
+  "complete_patch_sha256": "a51ec975886958944b9de2f2294d3b5122dc110f0fd38251390626489ab07cbd",
+  "head": "67068ac969cb7b34396b5d94e4ee09a7001ef8b4",
+  "branch": "fix/prontuario-correcoes-qa",
+  "index_sha256": "d475703f26f13c8e1f6b915f5ba422be3054eb53e97ccd9615818beeeca0abcd",
+  "staged_empty": true,
+  "diff_check_exit": 0,
+  "python_changed_files_ast": "OK",
+  "relative_links": "OK",
+  "later_source_or_documentation_changes": false
+}

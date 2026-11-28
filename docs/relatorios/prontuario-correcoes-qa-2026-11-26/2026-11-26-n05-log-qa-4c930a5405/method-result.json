@@ -1,0 +1,12 @@
+{
+  "id": "F22-recognized-trace",
+  "expected": "TRACE aceito pelo parser;405;log OTHER /health;sem eco",
+  "obtained": {
+    "id": "F22-recognized-trace",
+    "http": 405,
+    "no_echo": true,
+    "other_method_logged": true,
+    "log_no_echo": true
+  },
+  "status": "aprovado"
+}

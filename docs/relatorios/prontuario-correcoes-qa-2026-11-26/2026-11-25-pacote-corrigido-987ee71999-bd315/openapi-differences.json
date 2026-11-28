@@ -1,0 +1,69 @@
+[
+  {
+    "method": "get",
+    "path": "/api/v1/clinical/search",
+    "before_parameters": [
+      {
+        "name": "q",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "title": "Q"
+        }
+      },
+      {
+        "name": "engine_name",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "auto",
+          "title": "Engine Name"
+        }
+      }
+    ],
+    "after_parameters": [
+      {
+        "name": "q",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "title": "Q"
+        }
+      },
+      {
+        "name": "patient_id",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "title": "Patient Id"
+        }
+      },
+      {
+        "name": "engine_name",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "auto",
+          "title": "Engine Name"
+        }
+      },
+      {
+        "name": "offset",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "title": "Offset"
+        }
+      }
+    ]
+  }
+]
